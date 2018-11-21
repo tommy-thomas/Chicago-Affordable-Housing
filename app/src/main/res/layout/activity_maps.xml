@@ -5,4 +5,14 @@
     android:name="com.google.android.gms.maps.SupportMapFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="org.affordablehousing.chi.chicagoaffordablehousingapp.MapsActivity" />
+    tools:context="org.affordablehousing.chi.chicagoaffordablehousingapp.MapsActivity"
+    map:cameraBearing="112.5"
+    map:cameraTilt="30"
+    map:cameraZoom="14"
+    map:mapType="normal"
+    map:uiCompass="false"
+    map:uiRotateGestures="true"
+    map:uiScrollGestures="true"
+    map:uiTiltGestures="true"
+    map:uiZoomControls="false"
+    map:uiZoomGestures="true" />
