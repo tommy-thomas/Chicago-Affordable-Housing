@@ -11,12 +11,21 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
+        debug {
+            buildConfigField 'String', "MapsApiKey", MapsAPIKey
+            resValue 'string', "maos_api_key", MapsAPIKey
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            buildConfigField 'String', "MapsApiKey", MapsAPIKey
+            resValue 'string', "maps_api_key", MapsAPIKey
         }
     }
 }
+
+
+
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
