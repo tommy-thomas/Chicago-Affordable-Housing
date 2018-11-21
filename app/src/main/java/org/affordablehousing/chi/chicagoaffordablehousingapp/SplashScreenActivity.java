@@ -8,6 +8,8 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
+import org.affordablehousing.chi.chicagoaffordablehousingapp.ui.MapsActivity;
+
 public class SplashScreenActivity extends AppCompatActivity {
 
     private ImageView logo;

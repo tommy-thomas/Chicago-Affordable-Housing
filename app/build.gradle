@@ -13,7 +13,7 @@ android {
     buildTypes {
         debug {
             buildConfigField 'String', "MapsApiKey", MapsAPIKey
-            resValue 'string', "maos_api_key", MapsAPIKey
+            resValue 'string', "maps_api_key", MapsAPIKey
         }
         release {
             minifyEnabled false
@@ -25,13 +25,14 @@ android {
 }
 
 
-
-
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation 'com.google.android.gms:play-services-maps:16.0.0'
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    implementation 'com.squareup.retrofit2:retrofit:2.5.0'
+    implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
