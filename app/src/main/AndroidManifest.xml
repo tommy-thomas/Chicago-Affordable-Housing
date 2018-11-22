@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.affordablehousing.chi.chicagoaffordablehousingapp">
+    package="org.affordablehousing.chi.housingapp">
 
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
@@ -30,7 +30,7 @@
             android:value="@string/google_maps_key" />
 
         <!-- Splash Screen //-->
-        <activity android:name=".SplashScreenActivity"
+        <activity android:name="org.affordablehousing.chi.housingapp.SplashScreenActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -41,7 +41,7 @@
 
         <!-- Maps Activity // -->
         <activity
-            android:name=".ui.MapsActivity"
+            android:name="org.affordablehousing.chi.housingapp.ui.MapsActivity"
             android:label="@string/title_activity_maps">
         </activity>
 

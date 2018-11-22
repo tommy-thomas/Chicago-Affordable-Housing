@@ -1,39 +1,65 @@
-package org.affordablehousing.chi.chicagoaffordablehousingapp.model;
+package org.affordablehousing.chi.housingapp.model;
 
 import com.google.gson.annotations.SerializedName;
 
+import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+@Entity(tableName = "properties")
 public class Property {
 
+    @NonNull
+    @PrimaryKey
+    @ColumnInfo(name = "propertyId")
+    private String propertyId;
+    @ColumnInfo(name = "property_name")
     @SerializedName("property_name")
     private String property_name;
+    @ColumnInfo(name = "location_state")
     @SerializedName("location_state")
     private String location_state;
+    @ColumnInfo(name = "zip_code")
     @SerializedName("zip_code")
     private String zip_code;
+    @ColumnInfo(name = "location_zip")
     @SerializedName("location_zip")
     private String location_zip;
+    @ColumnInfo(name = "phone_number")
     @SerializedName("phone_number")
     private String phone_number;
+    @ColumnInfo(name = "x_coordinate")
     @SerializedName("x_coordinate")
     private double x_coordinate;
+    @ColumnInfo(name = "latitude")
     @SerializedName("latitude")
     private double latitude;
+    @ColumnInfo(name = "property_type")
     @SerializedName("property_type")
     private String property_type;
+    @ColumnInfo(name = "location_address")
     @SerializedName("location_address")
     private String location_address;
+    @ColumnInfo(name = "location_city")
     @SerializedName("location_city")
     private String location_city;
+    @ColumnInfo(name = "longitude")
     @SerializedName("longitude")
     private double longitude;
+    @ColumnInfo(name = "y_coordinate")
     @SerializedName("y_coordinate")
     private double y_coordinate;
+    @ColumnInfo(name = "units")
     @SerializedName("units")
     private int units;
+    @ColumnInfo(name = "community_area")
     @SerializedName("community_area")
     private String community_area;
+    @ColumnInfo(name = "address")
     @SerializedName("address")
     private String address;
+    @ColumnInfo(name = "community_area_number")
     @SerializedName("community_area_number")
     private String community_area_number;
 

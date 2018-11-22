@@ -1,6 +1,6 @@
-package org.affordablehousing.chi.chicagoaffordablehousingapp.network;
+package org.affordablehousing.chi.housingapp.network;
 
-import org.affordablehousing.chi.chicagoaffordablehousingapp.model.Property;
+import org.affordablehousing.chi.housingapp.model.Property;
 
 import java.util.List;
 

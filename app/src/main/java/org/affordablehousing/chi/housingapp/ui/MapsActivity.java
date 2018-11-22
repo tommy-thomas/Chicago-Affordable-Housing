@@ -1,4 +1,4 @@
-package org.affordablehousing.chi.chicagoaffordablehousingapp.ui;
+package org.affordablehousing.chi.housingapp.ui;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -8,13 +8,14 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import org.affordablehousing.chi.chicagoaffordablehousingapp.R;
-import org.affordablehousing.chi.chicagoaffordablehousingapp.model.Property;
-import org.affordablehousing.chi.chicagoaffordablehousingapp.network.GetPropertyDataService;
-import org.affordablehousing.chi.chicagoaffordablehousingapp.network.RetrofitClientInstance;
+import org.affordablehousing.chi.housingapp.R;
+import org.affordablehousing.chi.housingapp.model.Property;
+import org.affordablehousing.chi.housingapp.network.GetPropertyDataService;
+import org.affordablehousing.chi.housingapp.network.RetrofitClientInstance;
 
 import java.util.List;
 
@@ -25,9 +26,12 @@ import retrofit2.Response;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-    private final String BASE_URL = "https://data.cityofchicago.org";
     private final String TAG = MapsActivity.class.getSimpleName() + " -- udacity";
-    private List<Property> propertList;
+    private List<Property> propertyList;
+    private UiSettings mUiSettings;
+    private LatLng CHICAGO_CENTER = new LatLng(41.8087574,-87.677451);
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,12 +45,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         call.enqueue(new Callback<List<Property>>() {
             @Override
             public void onResponse(Call<List<Property>> call, Response<List<Property>> response) {
-                propertList = response.body();
+                propertyList = response.body();
                 // Obtain the SupportMapFragment and get notified when the map is ready to be used.
                 SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                         .findFragmentById(R.id.map);
                 mapFragment.getMapAsync(MapsActivity.this);
-                Log.v(TAG , propertList.get(1).getAddress());
+                Log.v(TAG , propertyList.get(1).getAddress());
             }
 
             @Override
@@ -54,8 +58,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Log.d(TAG , t.getMessage());
             }
         });
-
-
 
 
     }
@@ -73,21 +75,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mUiSettings = mMap.getUiSettings();
 
-        for (Property property : propertList) {
+        for (Property property : propertyList) {
             LatLng latLng  = new LatLng(property.getLatitude(),property.getLongitude());
             mMap.addMarker(new MarkerOptions().position(latLng).title(property.getAddress()));
         }
+        mUiSettings.setZoomControlsEnabled(true);
+       // mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(CHICAGO.getCenter() , 13));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(CHICAGO_CENTER));
 
-        // Add a marker in Sydney and move the camera
-        LatLng chicago_home  = new LatLng(41.7970789,-87.5923087);
-        LatLng chicago_store  = new LatLng(41.8019229,-87.5902032);
-        mMap.addMarker(new MarkerOptions().position(chicago_home).title("5429 S. Blackstone"));
-        mMap.addMarker(new MarkerOptions().position(chicago_store).title("5118 S Lake Park Ave"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(chicago_home));
     }
-
-
 
 
 }

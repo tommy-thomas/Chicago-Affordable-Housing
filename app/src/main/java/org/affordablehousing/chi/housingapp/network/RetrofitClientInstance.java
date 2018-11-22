@@ -1,4 +1,4 @@
-package org.affordablehousing.chi.chicagoaffordablehousingapp.network;
+package org.affordablehousing.chi.housingapp.network;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;

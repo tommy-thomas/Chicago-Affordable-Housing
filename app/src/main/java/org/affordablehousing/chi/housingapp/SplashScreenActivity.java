@@ -1,4 +1,4 @@
-package org.affordablehousing.chi.chicagoaffordablehousingapp;
+package org.affordablehousing.chi.housingapp;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,7 +8,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
-import org.affordablehousing.chi.chicagoaffordablehousingapp.ui.MapsActivity;
+import org.affordablehousing.chi.housingapp.ui.MapsActivity;
 
 public class SplashScreenActivity extends AppCompatActivity {
 
