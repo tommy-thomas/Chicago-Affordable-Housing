@@ -1,10 +1,8 @@
 package org.affordablehousing.chi.chicagoaffordablehousingapp.ui;
 
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -29,22 +27,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     private final String BASE_URL = "https://data.cityofchicago.org";
     private final String TAG = MapsActivity.class.getSimpleName() + " -- udacity";
-    ProgressDialog progressDoalog;
+    private List<Property> propertList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
-
-        progressDoalog = new ProgressDialog(MapsActivity.this);
-        progressDoalog.setMessage("Loading....");
-        progressDoalog.show();
-
 
         /*Create handle for the RetrofitInstance interface*/
         GetPropertyDataService service = RetrofitClientInstance.getRetrofitInstance().create(GetPropertyDataService.class);
@@ -52,19 +41,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         call.enqueue(new Callback<List<Property>>() {
             @Override
             public void onResponse(Call<List<Property>> call, Response<List<Property>> response) {
-                progressDoalog.dismiss();
-                List<Property> list = response.body();
-                Log.v(TAG , list.get(1).getAddress());
+                propertList = response.body();
+                // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+                SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                        .findFragmentById(R.id.map);
+                mapFragment.getMapAsync(MapsActivity.this);
+                Log.v(TAG , propertList.get(1).getAddress());
             }
 
             @Override
             public void onFailure(Call<List<Property>> call, Throwable t) {
-                progressDoalog.dismiss();
-                Toast.makeText(MapsActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
                 Log.d(TAG , t.getMessage());
             }
         });
-       progressDoalog.dismiss();
+
+
+
+
     }
 
 
@@ -81,6 +74,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
+        for (Property property : propertList) {
+            LatLng latLng  = new LatLng(property.getLatitude(),property.getLongitude());
+            mMap.addMarker(new MarkerOptions().position(latLng).title(property.getAddress()));
+        }
+
         // Add a marker in Sydney and move the camera
         LatLng chicago_home  = new LatLng(41.7970789,-87.5923087);
         LatLng chicago_store  = new LatLng(41.8019229,-87.5902032);
@@ -88,6 +86,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.addMarker(new MarkerOptions().position(chicago_store).title("5118 S Lake Park Ave"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(chicago_home));
     }
+
+
 
 
 }

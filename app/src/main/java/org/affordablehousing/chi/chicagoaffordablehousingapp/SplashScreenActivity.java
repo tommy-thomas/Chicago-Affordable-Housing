@@ -28,6 +28,8 @@ public class SplashScreenActivity extends AppCompatActivity {
                 Intent i = new Intent(SplashScreenActivity.this,MapsActivity.class);
                 startActivity(i);
                 finish();
+
+                overridePendingTransition(R.anim.slide_from_right, R.anim.slide_to_left);
             }
         },splashTimeOut);
 
