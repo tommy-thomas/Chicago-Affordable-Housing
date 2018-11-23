@@ -1,4 +1,4 @@
-package org.affordablehousing.chi.chicagoaffordablehousingapp;
+package org.affordablehousing.chi.housingapp;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,6 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+
+import org.affordablehousing.chi.housingapp.ui.MapsActivity;
 
 public class SplashScreenActivity extends AppCompatActivity {
 
@@ -26,6 +28,8 @@ public class SplashScreenActivity extends AppCompatActivity {
                 Intent i = new Intent(SplashScreenActivity.this,MapsActivity.class);
                 startActivity(i);
                 finish();
+
+                overridePendingTransition(R.anim.slide_from_right, R.anim.slide_to_left);
             }
         },splashTimeOut);
 

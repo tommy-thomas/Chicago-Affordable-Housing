@@ -1,4 +1,4 @@
-package org.affordablehousing.chi.chicagoaffordablehousingapp;
+package org.affordablehousing.chi.housingapp;
 
 import org.junit.Test;
 

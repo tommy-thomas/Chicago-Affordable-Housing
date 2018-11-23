@@ -1,4 +1,4 @@
-package org.affordablehousing.chi.chicagoaffordablehousingapp;
+package org.affordablehousing.chi.housingapp;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("org.affordablehousing.chi.chicagoaffordablehousingapp", appContext.getPackageName());
+        assertEquals("org.affordablehousing.chi.housingapp", appContext.getPackageName());
     }
 }
