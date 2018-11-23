@@ -62,6 +62,9 @@ public class Property {
     @ColumnInfo(name = "community_area_number")
     @SerializedName("community_area_number")
     private String community_area_number;
+    @ColumnInfo(name = "management_company")
+    @SerializedName("management_company")
+    private String management_company;
 
     public Property(String property_name, String location_state, String zip_code, String location_zip, String phone_number, double x_coordinate, double latitude, String property_type, String location_address, String location_city, double longitude, double y_coordinate, int units, String community_area, String address, String community_area_number, String management_company) {
         this.property_name = property_name;
@@ -84,8 +87,7 @@ public class Property {
     }
 
 
-    @SerializedName("management_compan")
-    private String management_company;
+
 
 
     public String getProperty_name() {
