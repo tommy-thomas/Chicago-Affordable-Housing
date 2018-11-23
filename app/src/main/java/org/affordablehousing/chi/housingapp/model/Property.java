@@ -7,13 +7,13 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "properties")
+@Entity(tableName = "property")
 public class Property {
 
     @NonNull
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "propertyId")
-    private String propertyId;
+    private int propertyId;
     @ColumnInfo(name = "property_name")
     @SerializedName("property_name")
     private String property_name;
@@ -86,9 +86,13 @@ public class Property {
         this.management_company = management_company;
     }
 
+    public int getPropertyId() {
+        return propertyId;
+    }
 
-
-
+    public void setPropertyId(int propertyId) {
+        this.propertyId = propertyId;
+    }
 
     public String getProperty_name() {
         return property_name;
@@ -142,7 +146,8 @@ public class Property {
         return latitude;
     }
 
-    public void setLatitude(int latitude) {
+
+    public void setLatitude(double latitude) {
         this.latitude = latitude;
     }
 

@@ -1,7 +1,8 @@
 package org.affordablehousing.chi.housingapp.ui;
 
+import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -13,12 +14,15 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.affordablehousing.chi.housingapp.R;
+import org.affordablehousing.chi.housingapp.data.PropertyDAO;
+import org.affordablehousing.chi.housingapp.data.PropertyDatabase;
 import org.affordablehousing.chi.housingapp.model.Property;
 import org.affordablehousing.chi.housingapp.network.GetPropertyDataService;
 import org.affordablehousing.chi.housingapp.network.RetrofitClientInstance;
 
 import java.util.List;
 
+import androidx.fragment.app.FragmentActivity;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -28,6 +32,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     private final String TAG = MapsActivity.class.getSimpleName() + " -- udacity";
     private List<Property> propertyList;
+    private PropertyDatabase propertyDatabase;
     private UiSettings mUiSettings;
     private LatLng CHICAGO_CENTER = new LatLng(41.8087574,-87.677451);
 
@@ -39,6 +44,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
+        new FetchPropertiesTask(this).execute();
+
+        if( propertyList == null ){
         /*Create handle for the RetrofitInstance interface*/
         GetPropertyDataService service = RetrofitClientInstance.getRetrofitInstance().create(GetPropertyDataService.class);
         Call<List<Property>> call = service.getAllProperties();
@@ -46,6 +54,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onResponse(Call<List<Property>> call, Response<List<Property>> response) {
                 propertyList = response.body();
+
+                new SavePropertiesTask(propertyList).execute();
+
                 // Obtain the SupportMapFragment and get notified when the map is ready to be used.
                 SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                         .findFragmentById(R.id.map);
@@ -58,7 +69,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Log.d(TAG , t.getMessage());
             }
         });
-
+        } else {
+            Log.d(TAG , "From DB.");
+        }
 
     }
 
@@ -85,6 +98,46 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
        // mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(CHICAGO.getCenter() , 13));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(CHICAGO_CENTER));
 
+    }
+
+
+    private class FetchPropertiesTask extends AsyncTask<Void,Void,Void>{
+
+
+        private Context aynscContext;
+
+        public FetchPropertiesTask(Context context) {
+            aynscContext = context;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            PropertyDatabase propertyDatabase = PropertyDatabase.getPropertyDatababse(aynscContext);
+            propertyList = propertyDatabase.propertyDAO().loadAllProperties();
+            return null;
+        }
+    }
+
+
+    private class SavePropertiesTask extends AsyncTask<Void,Void,Void>{
+
+        private List<Property> propertyList;
+
+        public SavePropertiesTask(List<Property> properties){
+            propertyList = properties;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            if( !propertyList.isEmpty() ){
+                PropertyDAO propertyDAO = PropertyDatabase.getPropertyDatababse(MapsActivity.this).propertyDAO();
+                for (Property property : propertyList) {
+                    propertyDAO.save(property);
+                }
+                Log.v(TAG + " -- DATA LOADED " , propertyDAO.loadAllProperties().get(1).getAddress());
+            }
+            return null;
+        }
     }
 
 
