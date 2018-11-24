@@ -1,4 +1,4 @@
-package org.affordablehousing.chi.housingapp.network;
+package org.affordablehousing.chi.housingapp.service;
 
 import org.affordablehousing.chi.housingapp.model.Property;
 
