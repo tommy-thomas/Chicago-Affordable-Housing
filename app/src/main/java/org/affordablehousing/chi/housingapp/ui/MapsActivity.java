@@ -1,9 +1,6 @@
 package org.affordablehousing.chi.housingapp.ui;
 
-import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -14,25 +11,23 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.affordablehousing.chi.housingapp.R;
-import org.affordablehousing.chi.housingapp.data.PropertyDAO;
-import org.affordablehousing.chi.housingapp.data.PropertyDatabase;
-import org.affordablehousing.chi.housingapp.model.Property;
-import org.affordablehousing.chi.housingapp.model.PropertyListLiveDataViewModel;
+import org.affordablehousing.chi.housingapp.model.PropertyEntity;
+import org.affordablehousing.chi.housingapp.viewmodel.PropertyListViewModel;
 
 import java.util.List;
 
 import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-    private final String TAG = MapsActivity.class.getSimpleName() + " -- udacity";
-    private List<Property> propertyList;
-    private PropertyListLiveDataViewModel propertyListLiveDataViewModel;
+    private final String TAG = MapsActivity.class.getSimpleName() + " -- map acctivity";
+    private LiveData <List <PropertyEntity>> propertyList;
+    private PropertyListViewModel propertyListViewModel;
     private UiSettings mUiSettings;
-    private LatLng CHICAGO_CENTER = new LatLng(41.8087574,-87.677451);
-
+    private LatLng CHICAGO_CENTER = new LatLng(41.8087574, -87.677451);
 
 
     @Override
@@ -41,55 +36,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
-//        new FetchPropertiesTask(this).execute();
-//
-//        if( propertyList == null ){
-//        /*Create handle for the RetrofitInstance interface*/
-//        GetPropertyDataService service = RetrofitClientInstance.getRetrofitInstance().create(GetPropertyDataService.class);
-//        Call<List<Property>> call = service.getAllProperties();
-//        call.enqueue(new Callback<List<Property>>() {
-//            @Override
-//            public void onResponse(Call<List<Property>> call, Response<List<Property>> response) {
-//                propertyList = response.body();
-//
-//                new SavePropertiesTask(propertyList).execute();
-//
-//                // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-//                SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-//                        .findFragmentById(R.id.map);
-//                mapFragment.getMapAsync(MapsActivity.this);
-//                Log.v(TAG , propertyList.get(1).getAddress());
-//            }
-//
-//            @Override
-//            public void onFailure(Call<List<Property>> call, Throwable t) {
-//                Log.d(TAG , t.getMessage());
-//            }
-//        });
-//        } else {
-//            Log.d(TAG , "From DB.");
-//        }
-
-        propertyListLiveDataViewModel = ViewModelProviders.of(this).get(PropertyListLiveDataViewModel.class);
-        propertyListLiveDataViewModel.getListLiveData().observe(this,propertyList -> {
-            // Update UI.
-            propertyListLiveDataViewModel.init();
-//        propertyList = (List <Property>) propertyListLiveDataViewModel.getListLiveData();
-
-            // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-            SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                    .findFragmentById(R.id.map);
-            mapFragment.getMapAsync(MapsActivity.this);
-            Log.v(TAG , propertyList.get(1).getAddress());
-        });
-//        propertyListLiveDataViewModel.init();
-//        propertyList = (List <Property>) propertyListLiveDataViewModel.getListLiveData();
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-//        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-//                .findFragmentById(R.id.map);
-//        mapFragment.getMapAsync(MapsActivity.this);
-//        Log.v(TAG , propertyList.get(1).getAddress());
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(MapsActivity.this);
+
 
     }
 
@@ -108,56 +60,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
         mUiSettings = mMap.getUiSettings();
 
-        for (Property property : propertyList) {
-            LatLng latLng  = new LatLng(property.getLatitude(),property.getLongitude());
-            mMap.addMarker(new MarkerOptions().position(latLng).title(property.getAddress()));
-        }
-        mUiSettings.setZoomControlsEnabled(true);
-       // mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(CHICAGO.getCenter() , 13));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(CHICAGO_CENTER));
+        propertyListViewModel =
+                ViewModelProviders.of(this).get(PropertyListViewModel.class);
 
-    }
-
-
-    private class FetchPropertiesTask extends AsyncTask<Void,Void,Void>{
-
-
-        private Context aynscContext;
-
-        public FetchPropertiesTask(Context context) {
-            aynscContext = context;
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            PropertyDatabase propertyDatabase = PropertyDatabase.getPropertyDatababse(aynscContext);
-            propertyList = propertyDatabase.propertyDAO().loadAllProperties();
-            return null;
-        }
-
-    }
-
-
-    private class SavePropertiesTask extends AsyncTask<Void,Void,Void>{
-
-        private List<Property> propertyList;
-
-        public SavePropertiesTask(List<Property> properties){
-            propertyList = properties;
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            if( !propertyList.isEmpty() ){
-                PropertyDAO propertyDAO = PropertyDatabase.getPropertyDatababse(MapsActivity.this).propertyDAO();
-                for (Property property : propertyList) {
-                    propertyDAO.save(property);
+        propertyListViewModel.getProperties().observe(this, propertyEntities -> {
+            if (propertyEntities != null) {
+                for (PropertyEntity property : propertyEntities) {
+                    LatLng latLng = new LatLng(property.getLatitude(), property.getLongitude());
+                    mMap.addMarker(new MarkerOptions().position(latLng).title(property.getAddress()));
                 }
-                Log.v(TAG + " -- DATA LOADED " , propertyDAO.loadAllProperties().get(1).getAddress());
             }
-            return null;
-        }
+        });
+
+
+        mUiSettings.setZoomControlsEnabled(true);
+        // mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(CHICAGO.getCenter() , 13));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(CHICAGO_CENTER));
     }
 
 
 }
+
+

@@ -1,6 +1,6 @@
 package org.affordablehousing.chi.housingapp.service;
 
-import org.affordablehousing.chi.housingapp.model.Property;
+import org.affordablehousing.chi.housingapp.model.PropertyEntity;
 
 import java.util.List;
 
@@ -9,5 +9,5 @@ import retrofit2.http.GET;
 
 public interface GetPropertyDataService {
     @GET("/resource/uahe-iimk.json")
-    Call <List <Property>> getAllProperties();
+    Call <List <PropertyEntity>> getAllProperties();
 }

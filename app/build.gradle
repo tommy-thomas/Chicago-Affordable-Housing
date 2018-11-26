@@ -1,14 +1,20 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion build_versions.target_sdk
+    buildToolsVersion build_versions.build_tools
+
     defaultConfig {
-        applicationId "org.affordablehousing.chi.housingapp"
-        minSdkVersion 27
-        targetSdkVersion 28
+        applicationId 'org.affordablehousing.chi.housingapp'
+        minSdkVersion build_versions.min_sdk
+        targetSdkVersion build_versions.target_sdk
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        vectorDrawables {
+            useSupportLibrary = true
+        }
     }
     buildTypes {
         debug {
@@ -21,6 +27,16 @@ android {
             buildConfigField 'String', "MapsApiKey", MapsAPIKey
             resValue 'string', "maps_api_key", MapsAPIKey
         }
+    }
+
+    dataBinding {
+        enabled = true
+    }
+    productFlavors {
+    }
+
+    lintOptions {
+        abortOnError false
     }
     compileOptions {
         sourceCompatibility = '1.8'
