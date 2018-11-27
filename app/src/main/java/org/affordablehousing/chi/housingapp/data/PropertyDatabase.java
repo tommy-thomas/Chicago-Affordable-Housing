@@ -30,9 +30,9 @@ public abstract class PropertyDatabase extends RoomDatabase {
 
     public static final String TAG = PropertyDatabase.class.getCanonicalName() + " -- database -- ";
 
-    private final MutableLiveData<Boolean> mIsDatabaseCreated = new MutableLiveData<>();
+    private final MutableLiveData <Boolean> mIsDatabaseCreated = new MutableLiveData <>();
 
-    private static List<PropertyEntity> mPropertyEntityList;
+    private static List <PropertyEntity> mPropertyEntityList;
 
 
     public static PropertyDatabase getInstance(Context context, final AppExecutors executors) {
@@ -52,7 +52,7 @@ public abstract class PropertyDatabase extends RoomDatabase {
      * The SQLite database is only created when it's accessed for the first time.
      */
     private static PropertyDatabase buildDatabase(final Context appContext,
-                                             final AppExecutors executors) {
+                                                  final AppExecutors executors) {
         return Room.databaseBuilder(appContext, PropertyDatabase.class, DATABASE_NAME)
                 .addCallback(new Callback() {
                     @Override
@@ -63,7 +63,7 @@ public abstract class PropertyDatabase extends RoomDatabase {
                             PropertyDatabase database = PropertyDatabase.getInstance(appContext, executors);
                             database.setPropertyEntityList();
                             addDelay();
-                            insertData(database , mPropertyEntityList);
+                            insertData(database, mPropertyEntityList);
                             database.setDatabaseCreated();
 
                         });
@@ -75,13 +75,13 @@ public abstract class PropertyDatabase extends RoomDatabase {
     }
 
 
-    private void setPropertyEntityList(){
+    private void setPropertyEntityList() {
         GetPropertyDataService getPropertyDataService = RetrofitClientInstance.getRetrofitInstance().create(GetPropertyDataService.class);
-        Call<List <PropertyEntity>> call = getPropertyDataService.getAllProperties();
+        Call <List <PropertyEntity>> call = getPropertyDataService.getAllProperties();
         call.enqueue(new retrofit2.Callback <List <PropertyEntity>>() {
             @Override
-            public void onResponse(Call <List <PropertyEntity>> call, Response<List <PropertyEntity>> response) {
-               mPropertyEntityList = response.body();
+            public void onResponse(Call <List <PropertyEntity>> call, Response <List <PropertyEntity>> response) {
+                mPropertyEntityList = response.body();
             }
 
             @Override
@@ -101,17 +101,17 @@ public abstract class PropertyDatabase extends RoomDatabase {
         }
     }
 
-    private void setDatabaseCreated(){
+    private void setDatabaseCreated() {
         mIsDatabaseCreated.postValue(true);
     }
 
-    private static void insertData(final PropertyDatabase database, final List<PropertyEntity> propertyEntities) {
+    private static void insertData(final PropertyDatabase database, final List <PropertyEntity> propertyEntities) {
         database.runInTransaction(() -> {
             database.propertyDAO().insertAll(propertyEntities);
         });
     }
 
-    public LiveData<Boolean> getDatabaseCreated() {
+    public LiveData <Boolean> getDatabaseCreated() {
         return mIsDatabaseCreated;
     }
 

@@ -23,6 +23,10 @@ public interface PropertyDAO {
     @Query("SELECT * FROM properties")
     LiveData<List<PropertyEntity>> loadAllProperties();
 
+    @Query("SELECT * FROM properties where property_type = :property_type")
+    LiveData<List<PropertyEntity>> loadAllPropertiesByType(String property_type);
+
+
     @Query("select * from properties where propertyId = :propertyId")
     LiveData<PropertyEntity> loadProperty(int propertyId);
 

@@ -3,6 +3,7 @@ package org.affordablehousing.chi.housingapp.ui;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -18,9 +19,11 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.affordablehousing.chi.housingapp.R;
+import org.affordablehousing.chi.housingapp.model.MarkerTag;
 import org.affordablehousing.chi.housingapp.model.PropertyEntity;
 import org.affordablehousing.chi.housingapp.viewmodel.PropertyListViewModel;
 
@@ -29,16 +32,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     private final String TAG = MapsActivity.class.getSimpleName() + " -- map acctivity";
-    private LiveData <List <PropertyEntity>> propertyList;
-    private PropertyListViewModel propertyListViewModel;
+    private PropertyListViewModel mPropertyListViewModel;
     private UiSettings mUiSettings;
+    private ArrayList <Marker> mMapMarkers;
     private LatLng CURRENT_COMMUNITY = new LatLng(41.8087574, -87.677451);
 
 
@@ -48,7 +50,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
-        propertyListViewModel =
+        mMapMarkers = new ArrayList <>();
+
+        mPropertyListViewModel =
                 ViewModelProviders.of(this).get(PropertyListViewModel.class);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -71,28 +75,53 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Spinner spinner = (Spinner) item.getActionView();
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemSelected(AdapterView <?> parent, View view, int position, long id) {
                 String selectedCommunityText = (String) parent.getItemAtPosition(position);
                 // Notify the selected item text
-                if( position != 0 ){
-                    MoveCameraToCommuty( selectedCommunityText );
+                if (position != 0) {
+                    // Move camera to new selected community
+                    MoveCameraToCommuty(selectedCommunityText);
                 }
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+            public void onNothingSelected(AdapterView <?> parent) {
 
             }
         });
 
         MenuItem item1 = menu.findItem(R.id.property_type_spinner);
         Spinner spinner1 = (Spinner) item1.getActionView();
+        spinner1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView <?> parent, View view, int position, long id) {
+                String selectedPropertyTypeText = (String) parent.getItemAtPosition(position);
+                showAllMarkers();
+                // Notify the selected item text
+                if (position != 0) {
+                    for (Marker m : mMapMarkers) {
+                        MarkerTag markerTag = (MarkerTag) m.getTag();
+                        if ( !markerTag.getPropertyType().equals(selectedPropertyTypeText) ) {
+                            Log.d(TAG, m.toString());
+                            m.setVisible(false);
+                        } else {
+                            m.setVisible(true);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView <?> parent) {
+
+            }
+        });
 
 
-        propertyListViewModel.getComminites().observe(this, communites -> {
+        mPropertyListViewModel.getComminites().observe(this, communites -> {
             if (communites != null) {
                 communites.add(0, "Community");
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                ArrayAdapter <String> adapter = new ArrayAdapter <String>(
                         this,
                         android.R.layout.simple_spinner_item,
                         communites
@@ -104,10 +133,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
 
 
-        propertyListViewModel.getPropertyTypes().observe(this, property_types -> {
+        mPropertyListViewModel.getPropertyTypes().observe(this, property_types -> {
             if (property_types != null) {
                 property_types.add(0, "Property Type");
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                ArrayAdapter <String> adapter = new ArrayAdapter <String>(
                         this,
                         android.R.layout.simple_spinner_item,
                         property_types
@@ -136,11 +165,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap = googleMap;
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
-        propertyListViewModel.getProperties().observe(this, propertyEntities -> {
+        mPropertyListViewModel.getProperties().observe(this, propertyEntities -> {
             if (propertyEntities != null) {
                 for (PropertyEntity property : propertyEntities) {
                     LatLng latLng = new LatLng(property.getLatitude(), property.getLongitude());
-                    mMap.addMarker(new MarkerOptions().position(latLng).title(property.getAddress()));
+                    Marker marker = mMap.addMarker(new MarkerOptions().position(latLng).title(property.getAddress()));
+                    marker.setTag(new MarkerTag(property.getProperty_type()));
+                    mMapMarkers.add(marker);
                 }
             }
         });
@@ -165,7 +196,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
-    private void MoveCameraToCommuty( String community ) {
+    private void showAllMarkers() {
+        if (mMapMarkers.size() > 0) {
+            for (Marker m : mMapMarkers) {
+                m.setVisible(true);
+            }
+        }
+
+    }
+
+    private void MoveCameraToCommuty(String community) {
         if (Geocoder.isPresent()) {
             try {
                 String communityName = community + "Chicago, IL";
@@ -189,6 +229,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             .build();
 
                     mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                } else {
+
                 }
 
             } catch (IOException e) {
