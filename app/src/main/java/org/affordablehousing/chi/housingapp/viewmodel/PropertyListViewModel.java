@@ -22,6 +22,10 @@ public class PropertyListViewModel extends AndroidViewModel {
     // MediatorLiveData can observe other LiveData objects and react on their emissions.
     private final MediatorLiveData<List<PropertyEntity>> mObservableProperties;
 
+    private final MediatorLiveData<List<String>> mObservableCommunities;
+
+    private final MediatorLiveData<List<String>> mObservablePropertyTypes;
+
     public PropertyListViewModel(Application application) {
         super(application);
 
@@ -29,11 +33,23 @@ public class PropertyListViewModel extends AndroidViewModel {
         // set by default null, until we get data from the database.
         mObservableProperties.setValue(null);
 
+        mObservableCommunities = new MediatorLiveData <>();
+        mObservableCommunities.setValue(null);
+
+        mObservablePropertyTypes = new MediatorLiveData <>();
+        mObservablePropertyTypes.setValue(null);
+
         mRepository = ((App) application).getRepository();
         LiveData<List<PropertyEntity>> properties = mRepository.getProperties();
 
         // observe the changes of the properties from the database and forward them
         mObservableProperties.addSource(properties, mObservableProperties::setValue);
+
+        LiveData<List<String>> communities = mRepository.getCommunites();
+        mObservableCommunities.addSource( communities , mObservableCommunities::setValue);
+
+        LiveData<List<String>> property_types = mRepository.getPropertyTypes();
+        mObservablePropertyTypes.addSource( property_types , mObservablePropertyTypes::setValue);
 
     }
 
@@ -43,6 +59,10 @@ public class PropertyListViewModel extends AndroidViewModel {
     public LiveData<List<PropertyEntity>> getProperties() {
         return mObservableProperties;
     }
+
+    public LiveData<List<String>> getComminites() { return mObservableCommunities; }
+
+    public LiveData<List<String>> getPropertyTypes() { return mObservablePropertyTypes; }
 
 //    public LiveData<List<PropertyEntity>> searchProducts(String query) {
 //        return mRepository.searchProducts(query);

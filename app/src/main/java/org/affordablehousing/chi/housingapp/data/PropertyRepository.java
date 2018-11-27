@@ -47,6 +47,15 @@ public class PropertyRepository {
         return mObservableProperties;
     }
 
+    public LiveData<List<String>> getCommunites(){
+        return mDatabase.propertyDAO().loadCommunities();
+    }
+
+    public LiveData<List<String>> getPropertyTypes(){
+        return mDatabase.propertyDAO().loadPropertyTypes();
+    }
+
+
     public LiveData<PropertyEntity> loadPProperty(final int propertyId) {
         return mDatabase.propertyDAO().loadProperty(propertyId);
     }

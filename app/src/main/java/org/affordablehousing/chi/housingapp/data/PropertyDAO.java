@@ -26,4 +26,11 @@ public interface PropertyDAO {
     @Query("select * from properties where propertyId = :propertyId")
     LiveData<PropertyEntity> loadProperty(int propertyId);
 
+    @Query("select distinct community_area from properties order by community_area asc")
+    LiveData<List<String>> loadCommunities();
+
+    @Query("select distinct property_type from properties order by property_type asc")
+    LiveData<List<String>> loadPropertyTypes();
+
+
 }

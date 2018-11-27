@@ -117,7 +117,7 @@ public abstract class PropertyDatabase extends RoomDatabase {
 
     private static void addDelay() {
         try {
-            Thread.sleep(4000);
+            Thread.sleep(5000);
         } catch (InterruptedException ignored) {
         }
     }
