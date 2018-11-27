@@ -1,9 +1,13 @@
 package org.affordablehousing.chi.housingapp.ui;
 
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
@@ -20,6 +24,8 @@ import org.affordablehousing.chi.housingapp.R;
 import org.affordablehousing.chi.housingapp.model.PropertyEntity;
 import org.affordablehousing.chi.housingapp.viewmodel.PropertyListViewModel;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -33,7 +39,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private LiveData <List <PropertyEntity>> propertyList;
     private PropertyListViewModel propertyListViewModel;
     private UiSettings mUiSettings;
-    private LatLng CHICAGO_CENTER = new LatLng(41.8087574, -87.677451);
+    private LatLng CURRENT_COMMUNITY = new LatLng(41.8087574, -87.677451);
 
 
     @Override
@@ -63,6 +69,21 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         MenuItem item = menu.findItem(R.id.community_spinner);
         Spinner spinner = (Spinner) item.getActionView();
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selectedCommunityText = (String) parent.getItemAtPosition(position);
+                // Notify the selected item text
+                if( position != 0 ){
+                    MoveCameraToCommuty( selectedCommunityText );
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         MenuItem item1 = menu.findItem(R.id.property_type_spinner);
         Spinner spinner1 = (Spinner) item1.getActionView();
@@ -70,6 +91,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         propertyListViewModel.getComminites().observe(this, communites -> {
             if (communites != null) {
+                communites.add(0, "Community");
                 ArrayAdapter<String> adapter = new ArrayAdapter<String>(
                         this,
                         android.R.layout.simple_spinner_item,
@@ -84,12 +106,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         propertyListViewModel.getPropertyTypes().observe(this, property_types -> {
             if (property_types != null) {
+                property_types.add(0, "Property Type");
                 ArrayAdapter<String> adapter = new ArrayAdapter<String>(
                         this,
                         android.R.layout.simple_spinner_item,
                         property_types
                 );
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spinner.setPrompt("Residence Type");
                 spinner1.setAdapter(adapter);
             }
         });
@@ -129,19 +153,50 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mUiSettings.setZoomGesturesEnabled(true);
 
         CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(CHICAGO_CENTER)
+                .target(CURRENT_COMMUNITY)
                 .bearing(112)
                 .tilt(45)
                 .zoom(13)
                 .build();
 
         // mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(CHICAGO.getCenter() , 13));
-        // mMap.moveCamera(CameraUpdateFactory.newLatLng(CHICAGO_CENTER));
+        // mMap.moveCamera(CameraUpdateFactory.newLatLng(CURRENT_COMMUNITY));
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
     }
 
+    private void MoveCameraToCommuty( String community ) {
+        if (Geocoder.isPresent()) {
+            try {
+                String communityName = community + "Chicago, IL";
+                // String location = "theNameOfTheLocation";
+                Geocoder gc = new Geocoder(getApplicationContext());
+                List <Address> addresses = gc.getFromLocationName(communityName, 5); // get the found Address Objects
 
+                List <LatLng> ll = new ArrayList <LatLng>(addresses.size()); // A list to save the coordinates if they are available
+                for (Address a : addresses) {
+                    if (a.hasLatitude() && a.hasLongitude()) {
+                        ll.add(new LatLng(a.getLatitude(), a.getLongitude()));
+                    }
+                }
+                if (ll.get(0) != null) {
+                    CURRENT_COMMUNITY = ll.get(0);
+                    CameraPosition cameraPosition = new CameraPosition.Builder()
+                            .target(CURRENT_COMMUNITY)
+                            .bearing(112)
+                            .tilt(45)
+                            .zoom(13)
+                            .build();
+
+                    mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                }
+
+            } catch (IOException e) {
+                // handle the exception
+            }
+        }
+
+    }
 }
 
 
