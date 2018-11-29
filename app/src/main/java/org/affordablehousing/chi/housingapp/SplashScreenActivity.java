@@ -14,7 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 public class SplashScreenActivity extends AppCompatActivity {
 
     private ImageView logo;
-    private static int splashTimeOut=5000;
+    private static int splashTimeOut=3000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

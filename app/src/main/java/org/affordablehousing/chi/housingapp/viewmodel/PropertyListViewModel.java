@@ -45,7 +45,7 @@ public class PropertyListViewModel extends AndroidViewModel {
         // observe the changes of the properties from the database and forward them
         mObservableProperties.addSource(properties, mObservableProperties::setValue);
 
-        LiveData<List<String>> communities = mRepository.getCommunites();
+        LiveData<List<String>> communities = mRepository.getCommunities();
         mObservableCommunities.addSource( communities , mObservableCommunities::setValue);
 
         LiveData<List<String>> property_types = mRepository.getPropertyTypes();
@@ -60,7 +60,7 @@ public class PropertyListViewModel extends AndroidViewModel {
         return mObservableProperties;
     }
 
-    public LiveData<List<String>> getComminites() { return mObservableCommunities; }
+    public LiveData<List<String>> getCommunities() { return mObservableCommunities; }
 
     public LiveData<List<String>> getPropertyTypes() { return mObservablePropertyTypes; }
 

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_community"
+        android:title="Community"
+        android:icon="@drawable/ic_round_location_city_24px" />
+    <!--<item-->
+        <!--android:id="@+id/action_property_type"-->
+        <!--android:title="Property Type"-->
+        <!--app:actionViewClass="android.widget.Spinner"-->
+        <!--android:orderInCategory="2"-->
+        <!--android:background="#ff00"-->
+</menu>

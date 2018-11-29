@@ -47,7 +47,7 @@ public class PropertyRepository {
         return mObservableProperties;
     }
 
-    public LiveData<List<String>> getCommunites(){
+    public LiveData<List<String>> getCommunities(){
         return mDatabase.propertyDAO().loadCommunities();
     }
 

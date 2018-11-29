@@ -43,6 +43,7 @@
         <!-- Maps Activity // -->
         <activity
             android:name="org.affordablehousing.chi.housingapp.ui.MapsActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar">
             android:label="@string/title_activity_maps">
         </activity>
 
