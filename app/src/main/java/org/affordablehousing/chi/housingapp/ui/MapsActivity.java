@@ -10,7 +10,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -21,7 +23,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationView;
 
 import org.affordablehousing.chi.housingapp.R;
 import org.affordablehousing.chi.housingapp.model.MarkerTag;
@@ -32,13 +34,20 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProviders;
 
-public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class MapsActivity extends AppCompatActivity implements
+        OnMapReadyCallback,
+        NavigationView.OnNavigationItemSelectedListener,
+        PropertyTypeListFragment.PropertyTypeClickListener {
 
     private GoogleMap mMap;
     private final String TAG = MapsActivity.class.getSimpleName() + " -- map acctivity";
@@ -48,24 +57,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private boolean mLocationPermissionGranted;
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private LatLng CURRENT_LOCATION = new LatLng(41.8087574, -87.677451);
-    private ArrayList <String> mCommunityList;
-
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = new BottomNavigationView.OnNavigationItemSelectedListener() {
-
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.action_community:
-                    BottomSheetFragment bottomSheetFragment =
-                            BottomSheetFragment.newInstance();
-                    bottomSheetFragment.setMenuVisibility(true);
-                    bottomSheetFragment.show(getSupportFragmentManager(),
-                            "fragnment_bottomsheet");
-            }
-            return false;
-        }
-    };
+    private ArrayList <String> mPropertyTypeListFilter;
+    private ArrayList <String> mPropertyTypeList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,10 +68,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         mMapMarkers = new ArrayList <>();
 
-        mCommunityList = new ArrayList <>();
+        mPropertyTypeListFilter = new ArrayList <>();
 
         mPropertyListViewModel =
                 ViewModelProviders.of(this).get(PropertyListViewModel.class);
+
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = SupportMapFragment.newInstance();
@@ -86,28 +80,66 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .add(R.id.map_fragment_container, mapFragment).commit();
         mapFragment.getMapAsync(this);
 
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.bottom_navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
-//        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
 
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+
+        navigationView.setNavigationItemSelectedListener(this);
+
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
     }
 
 
+    @Override
+    protected void onStart() {
+
+        Toast toast = Toast.makeText(getApplicationContext(),
+                "Activity Started.",
+                Toast.LENGTH_SHORT);
+        toast.show();
+
+        if( mPropertyTypeListFilter.size() > 0 && mMapMarkers.size() > 0 ){
+
+            toast = Toast.makeText(getApplicationContext(),
+                    "This is a message displayed in a Toast",
+                    Toast.LENGTH_SHORT);
+            toast.show();
+
+            filterMarkers();
+        }
+        super.onStart();
+    }
+
+    private void  filterMarkers(){
+        for (int i=0; i< mMapMarkers.size(); i++ ) {
+            Marker marker = mMapMarkers.get(i);
+            MarkerTag markerTag = (MarkerTag) marker.getTag();
+            if( !mPropertyTypeListFilter.contains(markerTag) ){
+                mMapMarkers.get(i).setVisible(false);
+            }
+        }
+
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.actions_map, menu);
 
-        inflater.inflate(R.menu.actions_bottom_nav, menu);
+        inflater.inflate(R.menu.community_list, menu);
 
         MenuItem community = menu.findItem(R.id.action_community);
         Spinner spinner = (Spinner) community.getActionView();
-
-
-
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView <?> parent, View view, int position, long id) {
@@ -123,69 +155,21 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onNothingSelected(AdapterView <?> parent) {
 
             }
+        });
+        mPropertyListViewModel.getCommunities().observe(this, communites -> {
+            if (communites != null) {
+                communites.add(0, "Community");
+                ArrayAdapter <String> adapter = new ArrayAdapter <String>(
+                        this,
+                        android.R.layout.simple_spinner_item,
+                        communites
+                );
 
-
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spinner.setAdapter(adapter);
+            }
         });
 
-//        MenuItem property_type = menu.findItem(R.id.action_property_type);
-//        Spinner spinner1 = (Spinner) property_type.getActionView();
-//        spinner1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView <?> parent, View view, int position, long id) {
-//                String selectedPropertyTypeText = (String) parent.getItemAtPosition(position);
-//                //showAllMarkers();
-//                // Notify the selected item text
-//                if (position != 0) {
-//                    for (Marker m : mMapMarkers) {
-//                        MarkerTag markerTag = (MarkerTag) m.getTag();
-//                        if ( !markerTag.getPropertyType().equals(selectedPropertyTypeText) ) {
-//                            Log.d(TAG, m.toString());
-//                            m.setVisible(false);
-//                        } else {
-//                            m.setVisible(true);
-//                        }
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void onNothingSelected(AdapterView <?> parent) {
-//
-//            }
-//        });
-
-//        MenuItem reset =  menu.findItem(R.id.action_reset);
-//        Button resetButton = (Button) reset.getActionView();
-
-
-//        mPropertyListViewModel.getCommunities().observe(this, communites -> {
-//            if (communites != null) {
-//                communites.add(0, "Community");
-//                ArrayAdapter <String> adapter = new ArrayAdapter <String>(
-//                        this,
-//                        android.R.layout.simple_spinner_item,
-//                        communites
-//                );
-//
-//                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//                spinner.setAdapter(adapter);
-//            }
-//        });
-
-
-//        mPropertyListViewModel.getPropertyTypes().observe(this, property_types -> {
-//            if (property_types != null) {
-//                property_types.add(0, "Property Type");
-//                ArrayAdapter <String> adapter = new ArrayAdapter <String>(
-//                        this,
-//                        android.R.layout.simple_spinner_item,
-//                        property_types
-//                );
-//                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//                spinner.setPrompt("Residence Type");
-//                spinner1.setAdapter(adapter);
-//            }
-//        });
 
         return true;
     }
@@ -194,7 +178,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         switch (item.getItemId()) {
-            case R.id.action_community:
+            case R.id.action_property_type_filter:
+
+                PropertyTypeListFragment propertyTypeListFragment = new PropertyTypeListFragment();
+
+                Bundle bundle = new Bundle();
+                bundle.putStringArrayList( "LIST_FILTER", mPropertyTypeListFilter );
+                propertyTypeListFragment.setArguments( bundle );
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                ft.replace(R.id.map_fragment_container, propertyTypeListFragment);
+                ft.commit();
+                ft.addToBackStack(null);
 
             default:
                 return super.onOptionsItemSelected(item);
@@ -228,7 +222,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
             }
         });
-
 
         mUiSettings = mMap.getUiSettings();
 
@@ -336,6 +329,42 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         } catch (SecurityException e) {
             Log.e("Exception: %s", e.getMessage());
         }
+    }
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.nav_camera) {
+            // Handle the camera action
+        } else if (id == R.id.nav_gallery) {
+
+        } else if (id == R.id.nav_slideshow) {
+
+        } else if (id == R.id.nav_manage) {
+
+        } else if (id == R.id.nav_share) {
+
+        } else if (id == R.id.nav_send) {
+
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    @Override
+    public void onPropertypeSelected(String propertyType) {
+
+        if( !propertyType.isEmpty() &&  !mPropertyTypeListFilter.contains(propertyType)){
+            mPropertyTypeListFilter.add( propertyType );
+        } else {
+            mPropertyTypeListFilter.remove( propertyType );
+        }
+
     }
 }
 

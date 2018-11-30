@@ -7,7 +7,7 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.http.GET;
 
-public interface GetPropertyDataService {
+public interface PropertyDataService {
     @GET("/resource/uahe-iimk.json")
     Call <List <PropertyEntity>> getAllProperties();
 }

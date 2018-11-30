@@ -4,7 +4,7 @@ import android.content.Context;
 
 import org.affordablehousing.chi.housingapp.AppExecutors;
 import org.affordablehousing.chi.housingapp.model.PropertyEntity;
-import org.affordablehousing.chi.housingapp.service.GetPropertyDataService;
+import org.affordablehousing.chi.housingapp.service.PropertyDataService;
 import org.affordablehousing.chi.housingapp.service.RetrofitClientInstance;
 
 import java.util.List;
@@ -76,8 +76,8 @@ public abstract class PropertyDatabase extends RoomDatabase {
 
 
     private void setPropertyEntityList() {
-        GetPropertyDataService getPropertyDataService = RetrofitClientInstance.getRetrofitInstance().create(GetPropertyDataService.class);
-        Call <List <PropertyEntity>> call = getPropertyDataService.getAllProperties();
+        PropertyDataService propertyDataService = RetrofitClientInstance.getRetrofitInstance().create(PropertyDataService.class);
+        Call <List <PropertyEntity>> call = propertyDataService.getAllProperties();
         call.enqueue(new retrofit2.Callback <List <PropertyEntity>>() {
             @Override
             public void onResponse(Call <List <PropertyEntity>> call, Response <List <PropertyEntity>> response) {

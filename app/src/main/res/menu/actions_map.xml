@@ -1,29 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item
-        android:id="@+id/action_community"
-        android:title="Community"
-        app:actionViewClass="android.widget.Spinner"
-        android:background="#ff00"
-        android:orderInCategory="1"
-        app:showAsAction="always" />
-    <!--<item-->
-        <!--android:id="@+id/action_property_type"-->
-        <!--android:title="Property Type"-->
-        <!--app:actionViewClass="android.widget.Spinner"-->
-        <!--android:orderInCategory="2"-->
-        <!--android:background="#ff00"-->
-        <!--app:showAsAction="always" />-->
-    <item
-        android:id="@+id/action_reset"
-        android:title="Reset"
-        android:orderInCategory="3"
-        android:background="#ff00"
-        app:showAsAction="never" />
+
     <item
         android:id="@+id/action_property_type_filter"
         android:title="Property Type"
+        android:orderInCategory="2"
+        app:actionViewClass="android.widget.Spinner"
+        android:background="#ff00"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_reset"
+        android:title="Refresh"
         android:orderInCategory="3"
         android:background="#ff00"
         app:showAsAction="never" />
