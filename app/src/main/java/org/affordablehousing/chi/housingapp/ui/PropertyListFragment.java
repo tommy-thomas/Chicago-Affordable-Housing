@@ -40,7 +40,7 @@ public class PropertyListFragment extends Fragment {
 
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString()
-                    + " must implement PropertyTypeClickListener.");
+                    + " must implement PropertyClickListener.");
         }
     }
 
