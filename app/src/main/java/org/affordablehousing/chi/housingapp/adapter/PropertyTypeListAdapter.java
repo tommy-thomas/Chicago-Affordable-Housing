@@ -1,7 +1,6 @@
 package org.affordablehousing.chi.housingapp.adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,13 +20,13 @@ public class PropertyTypeListAdapter extends RecyclerView.Adapter<PropertyTypeLi
 
     private ArrayList<String> mPropertyTypes;
     private ArrayList<String> mPropertyTypeFilter;
-    private Context context;
+    private Context mContext;
     private PropertyTypeClickListener propertyTypeClickListener;
     private final static String TAG = PropertyTypeListAdapter.class.getSimpleName() + "-- property list --";
 
     public PropertyTypeListAdapter(Context context , ArrayList<String> property_types, ArrayList<String> filter, PropertyTypeClickListener listener){
         this.mPropertyTypes = property_types;
-        this.context = context;
+        this.mContext = context;
         this.mPropertyTypeFilter = filter;
         propertyTypeClickListener = listener;
     }
@@ -59,17 +58,6 @@ public class PropertyTypeListAdapter extends RecyclerView.Adapter<PropertyTypeLi
                 }
             });
 
-            Log.d(TAG , mPropertyTypes.get(position)  );
-
-//            viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    Step currentStep = steps.get(position);
-//                    int previousStepPos = position != 0 ? position - 1 : -1;
-//                    int nextStepPos = ( position < steps.size()-1 ) ? position + 1 : -1;
-//                    stepClickListener.onStepSelected(currentStep , previousStepPos, nextStepPos);
-//                }
-//            });
 
         }
     }

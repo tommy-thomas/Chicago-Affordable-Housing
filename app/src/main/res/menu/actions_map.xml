@@ -3,14 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/action_property_type_filter"
-        android:title="Property Type"
-        android:orderInCategory="2"
-        app:actionViewClass="android.widget.Spinner"
-        android:background="#ff00"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/action_reset"
+        android:id="@+id/action_refresh"
         android:title="Refresh"
         android:orderInCategory="3"
         android:background="#ff00"

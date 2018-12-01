@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.affordablehousing.chi.housingapp.R;
-import org.affordablehousing.chi.housingapp.adapter.PropertyTypeListAdapter;
+import org.affordablehousing.chi.housingapp.adapter.PropertyListAdapter;
 import org.affordablehousing.chi.housingapp.viewmodel.PropertyListViewModel;
 
 import java.util.ArrayList;
@@ -20,16 +20,12 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class PropertyTypeListFragment extends Fragment {
+public class PropertyListFragment extends Fragment {
 
-    PropertyTypeClickListener propertyTypeClickListener;
+    PropertyClickListener mPropertyClickListener;
 
-    PropertyTypeListAdapter mPropertyTypeListAdapter;
-
-    public interface PropertyTypeClickListener {
-
-        void onPropertypeSelected(String propertyType);
-
+    public interface PropertyClickListener {
+        void onPropertySelected();
     }
 
     // Override onAttach to make sure that the container activity has implemented the callback
@@ -40,7 +36,7 @@ public class PropertyTypeListFragment extends Fragment {
         // This makes sure that the host activity has implemented the callback interface
         // If not, it throws an exception
         try {
-            propertyTypeClickListener = (PropertyTypeClickListener) context;
+            mPropertyClickListener = (PropertyClickListener) context;
 
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString()
@@ -48,43 +44,38 @@ public class PropertyTypeListFragment extends Fragment {
         }
     }
 
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        final View rootView = inflater.inflate(R.layout.fragment_property_list, container, false);
 
-
-        final View rootView = inflater.inflate(R.layout.fragment_property_type_list, container, false);
-
-
-        ArrayList <String> listFilter = getArguments().getStringArrayList("LIST_FILTER");
-
+        ArrayList<String> listFilter = getArguments().getStringArrayList("LIST_FILTER");
+        String current_community = getArguments().getString("CURRENT_COMMUNITY");
 
         PropertyListViewModel propertyListViewModel = ViewModelProviders.of(this).get(PropertyListViewModel.class);
 
 
-        propertyListViewModel.getPropertyTypes().observe(this, propertyTypes -> {
+        propertyListViewModel.getProperties().observe(this, properties -> {
 
-            if (propertyTypes != null) {
-                final RecyclerView recyclerView = rootView.findViewById(R.id.rv_property_type);
+            if (properties!= null) {
+                final RecyclerView recyclerView = rootView.findViewById(R.id.rv_property_list);
                 recyclerView.setHasFixedSize(true);
-                RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getContext(), 2);
+                RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getContext(), 1);
                 recyclerView.setLayoutManager(layoutManager);
                 if (getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-                    recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
+                    recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 1));
                 } else {
-                    recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 4));
+                    recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
                 }
 
-                mPropertyTypeListAdapter = new PropertyTypeListAdapter(getContext(), (ArrayList <String>) propertyTypes, listFilter, propertyTypeClickListener);
-                recyclerView.setAdapter(mPropertyTypeListAdapter);
+                PropertyListAdapter propertyListAdapter = new PropertyListAdapter(getContext(), properties, current_community, listFilter, mPropertyClickListener);
+                recyclerView.setAdapter(propertyListAdapter);
             }
 
 
         });
 
-
-
         return rootView;
+
     }
 }

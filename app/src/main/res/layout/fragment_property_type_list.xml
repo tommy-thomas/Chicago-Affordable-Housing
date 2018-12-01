@@ -6,11 +6,22 @@
     android:id="@+id/fragment_property_type_list"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorWhite"
+    android:background="#f1f1f1"
+    android:orientation="vertical"
     tools:context=".ui.MapsActivity">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:textSize="30sp"
+        android:layout_marginBottom="@dimen/dp_40"
+        android:text="@string/community_types"
+        android:textColor="#000000"
+        android:textStyle="bold"
+        />
 
     <androidx.recyclerview.widget.RecyclerView
+        android:layout_marginTop="@dimen/dp_40"
         android:id="@+id/rv_property_type"
         android:scrollbars="vertical"
         android:layout_width="match_parent"
