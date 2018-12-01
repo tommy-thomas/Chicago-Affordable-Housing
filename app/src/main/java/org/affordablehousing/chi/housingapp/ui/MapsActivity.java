@@ -12,7 +12,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -61,6 +60,7 @@ public class MapsActivity extends AppCompatActivity implements
     private boolean mLocationPermissionGranted;
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private LatLng CURRENT_LOCATION = new LatLng(41.8087574, -87.677451);
+    private LatLng DEFAULT_LOCATION = new LatLng(41.8087574, -87.677451);
     private String CURRENT_COMMUNITY = "";
     private ArrayList <String> mPropertyTypeListFilter;
 
@@ -133,10 +133,6 @@ public class MapsActivity extends AppCompatActivity implements
 
     @Override
     protected void onResume(){
-        Toast toast = Toast.makeText(getApplicationContext(),
-                "Activity Resumed.",
-                Toast.LENGTH_SHORT);
-        toast.show();
         super.onResume();
 
     }
@@ -154,7 +150,7 @@ public class MapsActivity extends AppCompatActivity implements
     private void  filterMarkers(){
 
         if( mPropertyTypeListFilter.isEmpty() ){
-            refreshMarkers();
+            resetMarkers();
             return;
         }
 
@@ -216,8 +212,8 @@ public class MapsActivity extends AppCompatActivity implements
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         switch (item.getItemId()) {
-            case R.id.action_refresh:
-                refreshMarkers();
+            case R.id.action_reset:
+                resetMarkers();
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -297,9 +293,29 @@ public class MapsActivity extends AppCompatActivity implements
 
     }
 
-    private void refreshMarkers() {
+    private void resetMarkers() {
         for( int i =0; i< mMapMarkers.size(); i++ ){
             mMapMarkers.get(i).setVisible(true);
+        }
+        mPropertyTypeListFilter.clear();
+       moveCameraToDefaultLocation();
+
+    }
+
+    private void moveCameraToDefaultLocation() {
+        if (Geocoder.isPresent()) {
+            try {
+                CameraPosition cameraPosition = new CameraPosition.Builder()
+                        .target(DEFAULT_LOCATION)
+                        .bearing(112)
+                        .tilt(45)
+                        .zoom(13)
+                        .build();
+
+                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+            } catch (Exception e) {
+                // handle the exception
+            }
         }
 
     }
