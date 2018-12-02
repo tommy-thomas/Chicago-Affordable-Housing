@@ -292,6 +292,11 @@ public class MapsActivity extends AppCompatActivity implements
 
     @Override
     public void onPropertySelected( int id ) {
+        PropertyDetailFragment fragment = PropertyDetailFragment.forProperty(id);
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.map_fragment_container, fragment);
+        ft.commit();
+        ft.addToBackStack(null);
 
     }
 

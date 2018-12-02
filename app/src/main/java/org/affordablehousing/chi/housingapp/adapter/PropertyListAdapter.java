@@ -73,10 +73,14 @@ public class PropertyListAdapter extends RecyclerView.Adapter <PropertyListAdapt
         if (holder != null) {
             holder.mHeader.setText(mPropertyEntityList.get(position).getProperty_name());
             holder.mAddress.setText(mPropertyEntityList.get(position).getAddress());
-//
-//            holder.itemView.setOnClickListener(new View.OnClickListener() {
-//
-//            });
+
+            holder.mHeader.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mPropertyClickListener.onPropertySelected( mPropertyEntityList.get(position).getPropertyId());
+                }
+            });
+
         }
     }
 
