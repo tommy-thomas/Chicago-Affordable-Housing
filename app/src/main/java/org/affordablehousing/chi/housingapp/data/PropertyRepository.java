@@ -56,7 +56,7 @@ public class PropertyRepository {
     }
 
 
-    public LiveData<PropertyEntity> loadPProperty(final int propertyId) {
+    public LiveData<PropertyEntity> loadProperty(final int propertyId) {
         return mDatabase.propertyDAO().loadProperty(propertyId);
     }
 

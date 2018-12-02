@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -61,32 +62,9 @@ public class MapsActivity extends AppCompatActivity implements
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private LatLng CURRENT_LOCATION = new LatLng(41.8087574, -87.677451);
     private LatLng DEFAULT_LOCATION = new LatLng(41.8087574, -87.677451);
-    private String CURRENT_COMMUNITY = "";
+    private String CURRENT_COMMUNITY = "Community";
     private ArrayList <String> mPropertyTypeListFilter;
-
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = new BottomNavigationView.OnNavigationItemSelectedListener() {
-
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.navigation_home:
-                    filterMarkers();
-                    FragmentManager fm = getSupportFragmentManager();
-                    for (int i = 0; i < fm.getBackStackEntryCount(); ++i) {
-                        fm.popBackStack();
-                    }
-                    return true;
-                case R.id.navigation_list:
-                    showPropertyList();
-                    return true;
-                case R.id.navigation_filter:
-                    showPropertyTypeFilterList();
-                    return true;
-            }
-            return false;
-        }
-    };
+    private boolean mIsListDisplay = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,11 +106,30 @@ public class MapsActivity extends AppCompatActivity implements
 
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
+        updateLocationUI();
+
+        Toast toast = Toast.makeText(getApplicationContext(),
+                String.valueOf("Create : " + getCurrentCommunity()),
+                Toast.LENGTH_SHORT);
+        toast.show();
 
     }
 
     @Override
-    protected void onResume(){
+    protected void onPause(){
+        Toast toast = Toast.makeText(getApplicationContext(),
+                String.valueOf("Pause: " + getCurrentCommunity()),
+                Toast.LENGTH_SHORT);
+        toast.show();
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        Toast toast = Toast.makeText(getApplicationContext(),
+                String.valueOf("Resume: " + getCurrentCommunity()),
+                Toast.LENGTH_SHORT);
+        toast.show();
         super.onResume();
 
     }
@@ -140,29 +137,58 @@ public class MapsActivity extends AppCompatActivity implements
     @Override
     protected void onStart() {
 
-        if( mPropertyTypeListFilter.size() > 0 && mMapMarkers.size() > 0 ){
+        Toast toast = Toast.makeText(getApplicationContext(),
+                String.valueOf("Start : " + getCurrentCommunity()),
+                Toast.LENGTH_SHORT);
+        toast.show();
+        super.onResume();
+
+        if (mPropertyTypeListFilter.size() > 0 && mMapMarkers.size() > 0) {
 
             filterMarkers();
         }
         super.onStart();
     }
 
-    private void  filterMarkers(){
+    private void filterMarkers() {
 
-        if( mPropertyTypeListFilter.isEmpty() ){
+        if (mPropertyTypeListFilter.isEmpty()) {
             resetMarkers();
             return;
         }
 
-        for (int i=0; i< mMapMarkers.size(); i++ ) {
+        for (int i = 0; i < mMapMarkers.size(); i++) {
             Marker marker = mMapMarkers.get(i);
             MarkerTag markerTag = (MarkerTag) marker.getTag();
-            if( !mPropertyTypeListFilter.contains(markerTag.getPropertyType()) ){
+            if (!mPropertyTypeListFilter.contains(markerTag.getPropertyType())) {
                 mMapMarkers.get(i).setVisible(false);
             }
         }
-
     }
+
+    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
+            = new BottomNavigationView.OnNavigationItemSelectedListener() {
+
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.navigation_home:
+                    filterMarkers();
+                    FragmentManager fm = getSupportFragmentManager();
+                    for (int i = 0; i < fm.getBackStackEntryCount(); ++i) {
+                        fm.popBackStack();
+                    }
+                    return true;
+                case R.id.navigation_list:
+                    showPropertyList();
+                    return true;
+                case R.id.navigation_filter:
+                    showPropertyTypeFilterList();
+                    return true;
+            }
+            return false;
+        }
+    };
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -178,9 +204,15 @@ public class MapsActivity extends AppCompatActivity implements
             public void onItemSelected(AdapterView <?> parent, View view, int position, long id) {
                 String selectedCommunityText = (String) parent.getItemAtPosition(position);
                 // Notify the selected item text
+                setCurrentCommunity( selectedCommunityText );
                 if (position != 0) {
                     // Move camera to new selected community
+                    if( isListDisplay() ){
+                        showPropertyList();
+                    }
                     moveCameraToCommunity(selectedCommunityText);
+                } else {
+                   moveCameraToDefaultLocation();
                 }
             }
 
@@ -219,25 +251,76 @@ public class MapsActivity extends AppCompatActivity implements
         }
     }
 
-    private void showPropertyList(){
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        switch (item.getItemId()) {
+            case R.id.navigation_home:
+                return true;
+        }
+
+//        if (id == R.id.nav_camera) {
+//            // Handle the camera action
+//        } else if (id == R.id.nav_gallery) {
+//
+//        } else if (id == R.id.nav_slideshow) {
+//
+//        } else if (id == R.id.nav_manage) {
+//
+//        } else if (id == R.id.nav_share) {
+//
+//        } else if (id == R.id.navigation_filter) {
+//            showPropertyTypeFilterList();
+//        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    @Override
+    public void onPropertypeSelected(String propertyType) {
+
+        if (!propertyType.isEmpty() && !mPropertyTypeListFilter.contains(propertyType)) {
+            mPropertyTypeListFilter.add(propertyType);
+        } else {
+            mPropertyTypeListFilter.remove(propertyType);
+        }
+
+    }
+
+    @Override
+    public void onPropertySelected( int id ) {
+
+    }
+
+    private boolean isListDisplay(){
+        return mIsListDisplay;
+    }
+
+    private void showPropertyList() {
+
+        mIsListDisplay = true;
         PropertyListFragment propertyListFragment = new PropertyListFragment();
 
         Bundle bundle = new Bundle();
-        bundle.putStringArrayList( "LIST_FILTER", mPropertyTypeListFilter );
-        bundle.putString("CURRENT_COMMUNITY" , CURRENT_COMMUNITY);
-        propertyListFragment.setArguments( bundle );
+        bundle.putStringArrayList("LIST_FILTER", mPropertyTypeListFilter);
+        bundle.putString("CURRENT_COMMUNITY", getCurrentCommunity());
+        propertyListFragment.setArguments(bundle);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.map_fragment_container, propertyListFragment);
         ft.commit();
         ft.addToBackStack(null);
     }
 
-    private void showPropertyTypeFilterList(){
+    private void showPropertyTypeFilterList() {
+        mIsListDisplay = false;
         PropertyTypeListFragment propertyTypeListFragment = new PropertyTypeListFragment();
 
         Bundle bundle = new Bundle();
-        bundle.putStringArrayList( "LIST_FILTER", mPropertyTypeListFilter );
-        propertyTypeListFragment.setArguments( bundle );
+        bundle.putStringArrayList("LIST_FILTER", mPropertyTypeListFilter);
+        propertyTypeListFragment.setArguments(bundle);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.map_fragment_container, propertyTypeListFragment);
         ft.commit();
@@ -293,13 +376,20 @@ public class MapsActivity extends AppCompatActivity implements
 
     }
 
+    private void setCurrentCommunity( String currentCommunity ){
+        CURRENT_COMMUNITY = currentCommunity;
+    }
+
+    private String getCurrentCommunity(){
+        return CURRENT_COMMUNITY;
+    }
+
     private void resetMarkers() {
-        for( int i =0; i< mMapMarkers.size(); i++ ){
+        for (int i = 0; i < mMapMarkers.size(); i++) {
             mMapMarkers.get(i).setVisible(true);
         }
-        mPropertyTypeListFilter.clear();
-       moveCameraToDefaultLocation();
-
+        mPropertyTypeListFilter = new ArrayList <>();
+        moveCameraToDefaultLocation();
     }
 
     private void moveCameraToDefaultLocation() {
@@ -321,7 +411,7 @@ public class MapsActivity extends AppCompatActivity implements
     }
 
     private void moveCameraToCommunity(String community) {
-        CURRENT_COMMUNITY = community;
+        setCurrentCommunity(community);
         if (Geocoder.isPresent()) {
             try {
                 String communityName = community + "Chicago, IL";
@@ -397,50 +487,6 @@ public class MapsActivity extends AppCompatActivity implements
         } catch (SecurityException e) {
             Log.e("Exception: %s", e.getMessage());
         }
-    }
-
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        switch (item.getItemId()) {
-            case R.id.navigation_home:
-                return true;
-        }
-
-//        if (id == R.id.nav_camera) {
-//            // Handle the camera action
-//        } else if (id == R.id.nav_gallery) {
-//
-//        } else if (id == R.id.nav_slideshow) {
-//
-//        } else if (id == R.id.nav_manage) {
-//
-//        } else if (id == R.id.nav_share) {
-//
-//        } else if (id == R.id.navigation_filter) {
-//            showPropertyTypeFilterList();
-//        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
-
-    @Override
-    public void onPropertypeSelected(String propertyType) {
-
-        if( !propertyType.isEmpty() &&  !mPropertyTypeListFilter.contains(propertyType)){
-            mPropertyTypeListFilter.add( propertyType );
-        } else {
-            mPropertyTypeListFilter.remove( propertyType );
-        }
-
-    }
-
-    @Override
-    public void onPropertySelected() {
-
     }
 }
 

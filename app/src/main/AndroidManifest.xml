@@ -30,8 +30,9 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <!-- Splash Screen //-->
-        <activity android:name="org.affordablehousing.chi.housingapp.SplashScreenActivity"
+        <!-- Splash Screen // -->
+        <activity
+            android:name=".SplashScreenActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -42,11 +43,10 @@
 
         <!-- Maps Activity // -->
         <activity
-            android:name="org.affordablehousing.chi.housingapp.ui.MapsActivity"
+            android:name=".ui.MapsActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar">
             android:label="@string/title_activity_maps">
         </activity>
-
     </application>
 
 </manifest>
