@@ -142,4 +142,3 @@ public class LocationListAdapter extends RecyclerView.Adapter <LocationListAdapt
     }
 
 }
-
