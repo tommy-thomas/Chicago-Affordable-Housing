@@ -8,13 +8,13 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "properties")
-public class PropertyEntity implements Property{
+@Entity(tableName = "location")
+public class LocationEntity implements Location {
 
     @NonNull
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "propertyId")
-    public int propertyId;
+    @ColumnInfo(name = "locationId")
+    public int locationId;
     @ColumnInfo(name = "property_name")
     @SerializedName("property_name")
     public String property_name;
@@ -68,7 +68,7 @@ public class PropertyEntity implements Property{
     public String management_company;
 
     @Ignore
-    public PropertyEntity(String property_name, String location_state, String zip_code, String location_zip, String phone_number, double x_coordinate, double latitude, String property_type, String location_address, String location_city, double longitude, double y_coordinate, int units, String community_area, String address, String community_area_number, String management_company) {
+    public LocationEntity(String property_name, String location_state, String zip_code, String location_zip, String phone_number, double x_coordinate, double latitude, String property_type, String location_address, String location_city, double longitude, double y_coordinate, int units, String community_area, String address, String community_area_number, String management_company) {
         this.property_name = property_name;
         this.location_state = location_state;
         this.zip_code = zip_code;
@@ -88,10 +88,10 @@ public class PropertyEntity implements Property{
         this.management_company = management_company;
     }
 
-    public PropertyEntity(){}
+    public LocationEntity(){}
 
-    public PropertyEntity(Property property) {
-        this.propertyId = property.getPropertyId();
+    public LocationEntity(Location property) {
+        this.locationId= property.getLocationId();
         this.property_name = property.getProperty_name();
         this.location_state =  property.getLocation_state();
         this.zip_code = property.getZip_code();
@@ -112,12 +112,12 @@ public class PropertyEntity implements Property{
     }
 
     @Override
-    public int getPropertyId() {
-        return propertyId;
+    public int getLocationId() {
+        return locationId;
     }
 
-    public void setPropertyId(int propertyId) {
-        this.propertyId = propertyId;
+    public void setLocationId(int locationId) {
+        this.locationId = locationId;
     }
 
     @Override

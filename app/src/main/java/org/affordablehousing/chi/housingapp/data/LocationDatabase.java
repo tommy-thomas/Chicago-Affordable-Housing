@@ -3,8 +3,8 @@ package org.affordablehousing.chi.housingapp.data;
 import android.content.Context;
 
 import org.affordablehousing.chi.housingapp.AppExecutors;
-import org.affordablehousing.chi.housingapp.model.PropertyEntity;
-import org.affordablehousing.chi.housingapp.service.PropertyDataService;
+import org.affordablehousing.chi.housingapp.model.LocationEntity;
+import org.affordablehousing.chi.housingapp.service.LocationDataService;
 import org.affordablehousing.chi.housingapp.service.RetrofitClientInstance;
 
 import java.util.List;
@@ -19,25 +19,25 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 import retrofit2.Call;
 import retrofit2.Response;
 
-@Database(entities = {PropertyEntity.class}, version = 1, exportSchema = false)
-public abstract class PropertyDatabase extends RoomDatabase {
+@Database(entities = {LocationEntity.class}, version = 1, exportSchema = false)
+public abstract class LocationDatabase extends RoomDatabase {
 
-    private static PropertyDatabase sInstance;
+    private static LocationDatabase sInstance;
 
-    public abstract PropertyDAO propertyDAO();
+    public abstract LocationDAO locationDAO();
 
-    public static final String DATABASE_NAME = "properties";
+    public static final String DATABASE_NAME = "location_data";
 
-    public static final String TAG = PropertyDatabase.class.getCanonicalName() + " -- database -- ";
+    public static final String TAG = LocationDatabase.class.getCanonicalName() + " -- database -- ";
 
     private final MutableLiveData <Boolean> mIsDatabaseCreated = new MutableLiveData <>();
 
-    private static List <PropertyEntity> mPropertyEntityList;
+    private static List <LocationEntity> mLocationEntityList;
 
 
-    public static PropertyDatabase getInstance(Context context, final AppExecutors executors) {
+    public static LocationDatabase getInstance(Context context, final AppExecutors executors) {
         if (sInstance == null) {
-            synchronized (PropertyDatabase.class) {
+            synchronized (LocationDatabase.class) {
                 sInstance = buildDatabase(context.getApplicationContext(), executors);
                 sInstance.updateDatabaseCreated(context.getApplicationContext());
             }
@@ -51,19 +51,19 @@ public abstract class PropertyDatabase extends RoomDatabase {
      * creates a new instance of the database.
      * The SQLite database is only created when it's accessed for the first time.
      */
-    private static PropertyDatabase buildDatabase(final Context appContext,
+    private static LocationDatabase buildDatabase(final Context appContext,
                                                   final AppExecutors executors) {
-        return Room.databaseBuilder(appContext, PropertyDatabase.class, DATABASE_NAME)
+        return Room.databaseBuilder(appContext, LocationDatabase.class, DATABASE_NAME)
                 .addCallback(new Callback() {
                     @Override
                     public void onCreate(@NonNull SupportSQLiteDatabase db) {
                         super.onCreate(db);
                         executors.diskIO().execute(() -> {
                             // Add a delay to simulate a long-running operation
-                            PropertyDatabase database = PropertyDatabase.getInstance(appContext, executors);
+                            LocationDatabase database = LocationDatabase.getInstance(appContext, executors);
                             database.setPropertyEntityList();
                             addDelay();
-                            insertData(database, mPropertyEntityList);
+                            insertData(database, mLocationEntityList);
                             database.setDatabaseCreated();
 
                         });
@@ -76,16 +76,16 @@ public abstract class PropertyDatabase extends RoomDatabase {
 
 
     private void setPropertyEntityList() {
-        PropertyDataService propertyDataService = RetrofitClientInstance.getRetrofitInstance().create(PropertyDataService.class);
-        Call <List <PropertyEntity>> call = propertyDataService.getAllProperties();
-        call.enqueue(new retrofit2.Callback <List <PropertyEntity>>() {
+        LocationDataService locationDataService = RetrofitClientInstance.getRetrofitInstance().create(LocationDataService.class);
+        Call <List <LocationEntity>> call = locationDataService.getAllProperties();
+        call.enqueue(new retrofit2.Callback <List <LocationEntity>>() {
             @Override
-            public void onResponse(Call <List <PropertyEntity>> call, Response <List <PropertyEntity>> response) {
-                mPropertyEntityList = response.body();
+            public void onResponse(Call <List <LocationEntity>> call, Response <List <LocationEntity>> response) {
+                mLocationEntityList = response.body();
             }
 
             @Override
-            public void onFailure(Call <List <PropertyEntity>> call, Throwable t) {
+            public void onFailure(Call <List <LocationEntity>> call, Throwable t) {
 
             }
 
@@ -105,9 +105,9 @@ public abstract class PropertyDatabase extends RoomDatabase {
         mIsDatabaseCreated.postValue(true);
     }
 
-    private static void insertData(final PropertyDatabase database, final List <PropertyEntity> propertyEntities) {
+    private static void insertData(final LocationDatabase database, final List <LocationEntity> locationEntities) {
         database.runInTransaction(() -> {
-            database.propertyDAO().insertAll(propertyEntities);
+            database.locationDAO().insertAll(locationEntities);
         });
     }
 

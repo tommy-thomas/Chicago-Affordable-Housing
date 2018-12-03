@@ -8,8 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.affordablehousing.chi.housingapp.R;
-import org.affordablehousing.chi.housingapp.adapter.PropertyListAdapter;
-import org.affordablehousing.chi.housingapp.viewmodel.PropertyListViewModel;
+import org.affordablehousing.chi.housingapp.adapter.LocationListAdapter;
+import org.affordablehousing.chi.housingapp.viewmodel.LoactionListViewModel;
 
 import java.util.ArrayList;
 
@@ -20,12 +20,12 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class PropertyListFragment extends Fragment {
+public class LocationListFragment extends Fragment {
 
-    PropertyClickListener mPropertyClickListener;
+    LocationClickListener mLocationClickListener;
 
-    public interface PropertyClickListener {
-        void onPropertySelected(int id );
+    public interface LocationClickListener {
+        void onLocationSelected(int id );
     }
 
     // Override onAttach to make sure that the container activity has implemented the callback
@@ -36,28 +36,28 @@ public class PropertyListFragment extends Fragment {
         // This makes sure that the host activity has implemented the callback interface
         // If not, it throws an exception
         try {
-            mPropertyClickListener = (PropertyClickListener) context;
+            mLocationClickListener = (LocationClickListener) context;
 
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString()
-                    + " must implement PropertyClickListener.");
+                    + " must implement LocationClickListener.");
         }
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        final View rootView = inflater.inflate(R.layout.fragment_property_list, container, false);
+        final View rootView = inflater.inflate(R.layout.fragment_location_list, container, false);
 
         ArrayList <String> listFilter = getArguments().getStringArrayList("LIST_FILTER");
         String current_community = getArguments().getString("CURRENT_COMMUNITY");
 
-        PropertyListViewModel propertyListViewModel = ViewModelProviders.of(this).get(PropertyListViewModel.class);
+        LoactionListViewModel loactionListViewModel = ViewModelProviders.of(this).get(LoactionListViewModel.class);
 
-        propertyListViewModel.getProperties().observe(this, properties -> {
+        loactionListViewModel.getProperties().observe(this, properties -> {
 
             if (properties != null) {
-                final RecyclerView recyclerView = rootView.findViewById(R.id.rv_property_list);
+                final RecyclerView recyclerView = rootView.findViewById(R.id.rv_location_list);
                 recyclerView.setHasFixedSize(true);
                 RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getContext(), 1);
                 recyclerView.setLayoutManager(layoutManager);
@@ -68,8 +68,8 @@ public class PropertyListFragment extends Fragment {
                 }
 
 
-                PropertyListAdapter propertyListAdapter = new PropertyListAdapter(getContext(), properties, current_community, listFilter, mPropertyClickListener);
-                recyclerView.setAdapter(propertyListAdapter);
+                LocationListAdapter locationListAdapter = new LocationListAdapter(getContext(), properties, current_community, listFilter, mLocationClickListener);
+                recyclerView.setAdapter(locationListAdapter);
             }
         });
         return rootView;

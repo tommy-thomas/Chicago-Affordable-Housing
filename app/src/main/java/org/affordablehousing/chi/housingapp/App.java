@@ -2,8 +2,8 @@ package org.affordablehousing.chi.housingapp;
 
 import android.app.Application;
 
-import org.affordablehousing.chi.housingapp.data.PropertyDatabase;
-import org.affordablehousing.chi.housingapp.data.PropertyRepository;
+import org.affordablehousing.chi.housingapp.data.LocationDatabase;
+import org.affordablehousing.chi.housingapp.data.LocationRepository;
 
 /**
  * Android Application class. Used for accessing singletons.
@@ -19,11 +19,11 @@ public class App extends Application {
         mAppExecutors = new AppExecutors();
     }
 
-    public PropertyDatabase getDatabase() {
-        return PropertyDatabase.getInstance(this, mAppExecutors);
+    public LocationDatabase getDatabase() {
+        return LocationDatabase.getInstance(this, mAppExecutors);
     }
 
-    public PropertyRepository getRepository() {
-        return PropertyRepository.getInstance(getDatabase());
+    public LocationRepository getRepository() {
+        return LocationRepository.getInstance(getDatabase());
     }
 }

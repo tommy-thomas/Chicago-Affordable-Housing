@@ -7,7 +7,7 @@
     android:focusable="true">
 
     <TextView
-        android:id="@+id/tv_property_list_header"
+        android:id="@+id/tv_location_list_header"
         android:layout_width="match_parent"
         android:layout_height="25dp"
         android:layout_marginStart="@dimen/dp_8"
@@ -18,10 +18,10 @@
         android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/tv_property_list_address"
+        android:id="@+id/tv_location_list_address"
         android:layout_width="match_parent"
         android:layout_height="25dp"
-        android:layout_below="@+id/tv_property_list_header"
+        android:layout_below="@+id/tv_location_list_header"
         android:layout_marginStart="@dimen/dp_8"
         android:layout_marginEnd="@dimen/dp_8"
         android:layout_marginBottom="@dimen/dp_8"
@@ -31,7 +31,7 @@
     <View
         android:layout_width="fill_parent"
         android:layout_height="1dp"
-        android:layout_below="@+id/tv_property_list_address"
+        android:layout_below="@+id/tv_location_list_address"
         android:background="#aaaaaa"
         android:paddingLeft="@dimen/dp_8" />
 

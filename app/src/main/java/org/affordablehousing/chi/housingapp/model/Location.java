@@ -1,8 +1,8 @@
 package org.affordablehousing.chi.housingapp.model;
 
-public interface Property {
+public interface Location {
 
-    int getPropertyId();
+    int getLocationId();
 
     String getProperty_name();
 

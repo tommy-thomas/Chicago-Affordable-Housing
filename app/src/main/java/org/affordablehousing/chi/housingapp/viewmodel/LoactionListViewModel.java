@@ -3,8 +3,8 @@ package org.affordablehousing.chi.housingapp.viewmodel;
 import android.app.Application;
 
 import org.affordablehousing.chi.housingapp.App;
-import org.affordablehousing.chi.housingapp.data.PropertyRepository;
-import org.affordablehousing.chi.housingapp.model.PropertyEntity;
+import org.affordablehousing.chi.housingapp.data.LocationRepository;
+import org.affordablehousing.chi.housingapp.model.LocationEntity;
 
 import java.util.List;
 
@@ -13,25 +13,25 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 
 
-public class PropertyListViewModel extends AndroidViewModel {
+public class LoactionListViewModel extends AndroidViewModel {
 
-    private final PropertyRepository mRepository;
+    private final LocationRepository mRepository;
 
-    private final String TAG = PropertyListViewModel.class.getSimpleName() + " -- view model -- ";
+    private final String TAG = LoactionListViewModel.class.getSimpleName() + " -- view model -- ";
 
     // MediatorLiveData can observe other LiveData objects and react on their emissions.
-    private final MediatorLiveData<List<PropertyEntity>> mObservableProperties;
+    private final MediatorLiveData<List<LocationEntity>> mObservableLocations;
 
     private final MediatorLiveData<List<String>> mObservableCommunities;
 
     private final MediatorLiveData<List<String>> mObservablePropertyTypes;
 
-    public PropertyListViewModel(Application application) {
+    public LoactionListViewModel(Application application) {
         super(application);
 
-        mObservableProperties = new MediatorLiveData<>();
+        mObservableLocations = new MediatorLiveData<>();
         // set by default null, until we get data from the database.
-        mObservableProperties.setValue(null);
+        mObservableLocations.setValue(null);
 
         mObservableCommunities = new MediatorLiveData <>();
         mObservableCommunities.setValue(null);
@@ -40,10 +40,10 @@ public class PropertyListViewModel extends AndroidViewModel {
         mObservablePropertyTypes.setValue(null);
 
         mRepository = ((App) application).getRepository();
-        LiveData<List<PropertyEntity>> properties = mRepository.getProperties();
+        LiveData<List<LocationEntity>> locations = mRepository.getLocations();
 
         // observe the changes of the properties from the database and forward them
-        mObservableProperties.addSource(properties, mObservableProperties::setValue);
+        mObservableLocations.addSource(locations, mObservableLocations::setValue);
 
         LiveData<List<String>> communities = mRepository.getCommunities();
         mObservableCommunities.addSource( communities , mObservableCommunities::setValue);
@@ -56,15 +56,15 @@ public class PropertyListViewModel extends AndroidViewModel {
     /**
      * Expose the LiveData Products query so the UI can observe it.
      */
-    public LiveData<List<PropertyEntity>> getProperties() {
-        return mObservableProperties;
+    public LiveData<List<LocationEntity>> getProperties() {
+        return mObservableLocations;
     }
 
     public LiveData<List<String>> getCommunities() { return mObservableCommunities; }
 
     public LiveData<List<String>> getPropertyTypes() { return mObservablePropertyTypes; }
 
-//    public LiveData<List<PropertyEntity>> searchProducts(String query) {
+//    public LiveData<List<LocationEntity>> searchProducts(String query) {
 //        return mRepository.searchProducts(query);
 //    }
 }

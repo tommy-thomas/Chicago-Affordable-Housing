@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 
 import org.affordablehousing.chi.housingapp.R;
 import org.affordablehousing.chi.housingapp.adapter.PropertyTypeListAdapter;
-import org.affordablehousing.chi.housingapp.viewmodel.PropertyListViewModel;
+import org.affordablehousing.chi.housingapp.viewmodel.LoactionListViewModel;
 
 import java.util.ArrayList;
 
@@ -25,6 +25,8 @@ public class PropertyTypeListFragment extends Fragment {
     PropertyTypeClickListener propertyTypeClickListener;
 
     PropertyTypeListAdapter mPropertyTypeListAdapter;
+
+    private final String LIST_FILTER ="list-filter";
 
     public interface PropertyTypeClickListener {
 
@@ -57,13 +59,13 @@ public class PropertyTypeListFragment extends Fragment {
         final View rootView = inflater.inflate(R.layout.fragment_property_type_list, container, false);
 
 
-        ArrayList <String> listFilter = getArguments().getStringArrayList("LIST_FILTER");
+        ArrayList <String> listFilter = getArguments().getStringArrayList(LIST_FILTER);
 
 
-        PropertyListViewModel propertyListViewModel = ViewModelProviders.of(this).get(PropertyListViewModel.class);
+        LoactionListViewModel loactionListViewModel = ViewModelProviders.of(this).get(LoactionListViewModel.class);
 
 
-        propertyListViewModel.getPropertyTypes().observe(this, propertyTypes -> {
+        loactionListViewModel.getPropertyTypes().observe(this, propertyTypes -> {
 
             if (propertyTypes != null) {
                 final RecyclerView recyclerView = rootView.findViewById(R.id.rv_property_type);

@@ -3,8 +3,8 @@ package org.affordablehousing.chi.housingapp.viewmodel;
 import android.app.Application;
 
 import org.affordablehousing.chi.housingapp.App;
-import org.affordablehousing.chi.housingapp.data.PropertyRepository;
-import org.affordablehousing.chi.housingapp.model.PropertyEntity;
+import org.affordablehousing.chi.housingapp.data.LocationRepository;
+import org.affordablehousing.chi.housingapp.model.LocationEntity;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.ObservableField;
@@ -13,23 +13,23 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-public class PropertyViewModel extends AndroidViewModel {
+public class LoactionViewModel extends AndroidViewModel {
     
-    private final LiveData<PropertyEntity> mObservableProperty;
+    private final LiveData<LocationEntity> mObservableLocation;
 
-    public ObservableField<PropertyEntity> property = new ObservableField<>();
+    public ObservableField<LocationEntity> location = new ObservableField<>();
 
-    private final int mPropertyId;
+    private final int mLocationId;
 
     //private final LiveData<List<CommentEntity>> mObservableComments;
 
-    public PropertyViewModel(@NonNull Application application, PropertyRepository repository,
-                            final int propertyId) {
+    public LoactionViewModel(@NonNull Application application, LocationRepository repository,
+                             final int locationId) {
         super(application);
-        mPropertyId = propertyId;
+        mLocationId = locationId;
 
-        //mObservableComments = repository.loadComments(mPropertyId);
-        mObservableProperty = repository.loadProperty(mPropertyId);
+        //mObservableComments = repository.loadComments(mLocationId);
+        mObservableLocation = repository.loadLocation(mLocationId);
     }
 
     /**
@@ -39,12 +39,12 @@ public class PropertyViewModel extends AndroidViewModel {
 //        return mObservableComments;
 //    }
 
-    public LiveData<PropertyEntity> getObservableProperty() {
-        return mObservableProperty;
+    public LiveData<LocationEntity> getObservableProperty() {
+        return mObservableLocation;
     }
 
-    public void setProperty(PropertyEntity property) {
-        this.property.set(property);
+    public void setProperty(LocationEntity locationEntity) {
+        this.location.set(locationEntity);
     }
 
     /**
@@ -58,20 +58,20 @@ public class PropertyViewModel extends AndroidViewModel {
         @NonNull
         private final Application mApplication;
 
-        private final int mPropertyId;
+        private final int mLocationId;
 
-        private final PropertyRepository mRepository;
+        private final LocationRepository mRepository;
 
-        public Factory(@NonNull Application application, int propertyId) {
+        public Factory(@NonNull Application application, int locationId) {
             mApplication = application;
-            mPropertyId = propertyId;
+            mLocationId= locationId;
             mRepository = ((App) application).getRepository();
         }
 
         @Override
         public <T extends ViewModel> T create(Class<T> modelClass) {
             //noinspection unchecked
-            return (T) new PropertyViewModel(mApplication, mRepository, mPropertyId);
+            return (T) new LoactionViewModel(mApplication, mRepository, mLocationId);
         }
     }
 }
