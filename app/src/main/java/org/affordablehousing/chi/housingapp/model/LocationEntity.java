@@ -66,6 +66,8 @@ public class LocationEntity implements Location {
     @ColumnInfo(name = "management_company")
     @SerializedName("management_company")
     public String management_company;
+    @ColumnInfo(name = "is_favorite")
+    public boolean is_favorite = false;
 
     @Ignore
     public LocationEntity(String property_name, String location_state, String zip_code, String location_zip, String phone_number, double x_coordinate, double latitude, String property_type, String location_address, String location_city, double longitude, double y_coordinate, int units, String community_area, String address, String community_area_number, String management_company) {
@@ -109,7 +111,9 @@ public class LocationEntity implements Location {
         this.address = property.getAddress();
         this.community_area_number = property.getCommunity_area_number();
         this.management_company = property.getManagement_company();
+
     }
+
 
     @Override
     public int getLocationId() {
@@ -273,5 +277,12 @@ public class LocationEntity implements Location {
         this.management_company = management_company;
     }
 
+    public void setFavorite(boolean favorite) {
+        is_favorite = favorite;
+    }
 
+    public boolean isFavorite() {
+        return is_favorite
+                ;
+    }
 }

@@ -68,7 +68,7 @@ public class LocationListFragment extends Fragment {
                 }
 
 
-                LocationListAdapter locationListAdapter = new LocationListAdapter(getContext(), properties, current_community, listFilter, mLocationClickListener);
+                LocationListAdapter locationListAdapter = new LocationListAdapter(getContext(), properties, current_community, listFilter, mLocationClickListener,loactionListViewModel);
                 recyclerView.setAdapter(locationListAdapter);
             }
         });

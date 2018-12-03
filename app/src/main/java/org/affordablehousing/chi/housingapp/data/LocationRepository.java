@@ -60,6 +60,11 @@ public class LocationRepository {
         return mDatabase.locationDAO().loadLocation(propertyId);
     }
 
+    public int setFavorite( int locationId , boolean is_favorite){
+        return mDatabase.locationDAO().setFavorite( locationId , is_favorite);
+
+    }
+
 
 //    public LiveData<List<ProductEntity>> searchProducts(String query) {
 //        return mDatabase.productDao().searchAllProducts(query);

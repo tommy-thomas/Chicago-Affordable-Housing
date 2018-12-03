@@ -19,7 +19,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 import retrofit2.Call;
 import retrofit2.Response;
 
-@Database(entities = {LocationEntity.class}, version = 1, exportSchema = false)
+@Database(entities = {LocationEntity.class}, version = 2, exportSchema = false)
 public abstract class LocationDatabase extends RoomDatabase {
 
     private static LocationDatabase sInstance;
@@ -70,6 +70,7 @@ public abstract class LocationDatabase extends RoomDatabase {
 
                     }
                 })
+                .fallbackToDestructiveMigration()
                 .build();
 
     }
@@ -126,6 +127,8 @@ public abstract class LocationDatabase extends RoomDatabase {
     public static void destroyInstance() {
         sInstance = null;
     }
+
+
 
 
 }

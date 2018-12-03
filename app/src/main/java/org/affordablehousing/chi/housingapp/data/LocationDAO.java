@@ -20,6 +20,9 @@ public interface LocationDAO {
     @Insert(onConflict = REPLACE)
     void insertAll(List<LocationEntity> locationEntityList);
 
+    @Query("Update location set is_favorite = :is_favorite where locationId = :locationId")
+    int setFavorite(int locationId , boolean is_favorite);
+
     @Query("SELECT * FROM location")
     LiveData<List<LocationEntity>> loadAllLocations();
 

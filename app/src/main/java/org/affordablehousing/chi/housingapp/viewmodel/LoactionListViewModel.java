@@ -1,6 +1,7 @@
 package org.affordablehousing.chi.housingapp.viewmodel;
 
 import android.app.Application;
+import android.os.AsyncTask;
 
 import org.affordablehousing.chi.housingapp.App;
 import org.affordablehousing.chi.housingapp.data.LocationRepository;
@@ -63,6 +64,31 @@ public class LoactionListViewModel extends AndroidViewModel {
     public LiveData<List<String>> getCommunities() { return mObservableCommunities; }
 
     public LiveData<List<String>> getPropertyTypes() { return mObservablePropertyTypes; }
+
+    public void setFavorite( int locationId, boolean favorite){
+        new AddFavoriteTask( mRepository , locationId , favorite).execute();
+    }
+
+    private class AddFavoriteTask extends AsyncTask<Void,Void,Void> {
+
+        private int mLocationId;
+        private boolean mIsFavorite;
+        private LocationRepository mRepository;
+
+        public AddFavoriteTask(LocationRepository repository, int id, boolean favorite ){
+            mLocationId = id;
+            mIsFavorite = favorite;
+            mRepository = repository;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            mRepository.setFavorite( mLocationId , mIsFavorite);
+            return null;
+        }
+
+
+    }
 
 //    public LiveData<List<LocationEntity>> searchProducts(String query) {
 //        return mRepository.searchProducts(query);

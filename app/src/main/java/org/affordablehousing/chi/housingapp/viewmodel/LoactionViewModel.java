@@ -47,6 +47,7 @@ public class LoactionViewModel extends AndroidViewModel {
         this.location.set(locationEntity);
     }
 
+
     /**
      * A creator is used to inject the product ID into the ViewModel
      * <p>
