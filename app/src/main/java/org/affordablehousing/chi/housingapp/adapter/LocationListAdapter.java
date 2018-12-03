@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import org.affordablehousing.chi.housingapp.R;
@@ -95,18 +96,18 @@ public class LocationListAdapter extends RecyclerView.Adapter <LocationListAdapt
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     if ( isChecked ) {
                         holder.mToggleButtonFavorite.setBackgroundDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_outline_favorite_24px));
+                        Toast toast = Toast.makeText(mContext,
+                                mLocationEntityList.get(position).getProperty_name() + " added to favorites.",
+                                Toast.LENGTH_SHORT);
+                        toast.show();
                     } else {
                         holder.mToggleButtonFavorite.setBackgroundDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_round_favorite_border_24px));
+                        Toast toast = Toast.makeText(mContext,
+                                mLocationEntityList.get(position).getProperty_name() + " removed from favorites.",
+                                Toast.LENGTH_SHORT);
+                        toast.show();
                     }
                     mLocationListViewModel.setFavorite(mLocationEntityList.get(position).getLocationId(), isChecked);
-                }
-            });
-
-            holder.mToggleButtonFavorite.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    boolean isFavorite = mLocationEntityList.get(position).isFavorite() ? false : true;
-                    mLocationListViewModel.setFavorite(mLocationEntityList.get(position).getLocationId(), isFavorite);
                 }
             });
 
