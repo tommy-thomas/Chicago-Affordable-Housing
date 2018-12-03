@@ -29,7 +29,7 @@ import com.google.android.material.navigation.NavigationView;
 import org.affordablehousing.chi.housingapp.R;
 import org.affordablehousing.chi.housingapp.model.LocationEntity;
 import org.affordablehousing.chi.housingapp.model.MarkerTag;
-import org.affordablehousing.chi.housingapp.viewmodel.LoactionListViewModel;
+import org.affordablehousing.chi.housingapp.viewmodel.LocationListViewModel;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -55,7 +55,7 @@ public class MapsActivity extends AppCompatActivity implements
 
     private GoogleMap mMap;
     private final String TAG = MapsActivity.class.getSimpleName() + " -- map acctivity";
-    private LoactionListViewModel mLoactionListViewModel;
+    private LocationListViewModel mLocationListViewModel;
     private UiSettings mUiSettings;
     private ArrayList <Marker> mMapMarkers;
     private boolean mLocationPermissionGranted;
@@ -65,7 +65,8 @@ public class MapsActivity extends AppCompatActivity implements
     private String CURRENT_COMMUNITY = "Community";
     private ArrayList <String> mPropertyTypeListFilter;
     private boolean mIsListDisplay = false;
-    private final String LIST_FILTER = "list-filter";
+    private final String KEY_LIST_FILTER = "list-filter";
+    private final String KEY_CURRENT_COMMUNITY = "current-community";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,15 +78,17 @@ public class MapsActivity extends AppCompatActivity implements
 
         mPropertyTypeListFilter = new ArrayList <>();
 
-        mLoactionListViewModel =
-                ViewModelProviders.of(this).get(LoactionListViewModel.class);
-
+        mLocationListViewModel =
+                ViewModelProviders.of(this).get(LocationListViewModel.class);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = SupportMapFragment.newInstance();
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.map_fragment_container, mapFragment).commit();
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map_fragment_container);
+        if( mapFragment == null ){
+            mapFragment = SupportMapFragment.newInstance();
+            getSupportFragmentManager().beginTransaction().replace(R.id.map_fragment_container, mapFragment).commit();
+        }
         mapFragment.getMapAsync(this);
+
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -222,7 +225,7 @@ public class MapsActivity extends AppCompatActivity implements
 
             }
         });
-        mLoactionListViewModel.getCommunities().observe(this, communites -> {
+        mLocationListViewModel.getCommunities().observe(this, communites -> {
             if (communites != null) {
                 communites.add(0, "Community");
                 ArrayAdapter <String> adapter = new ArrayAdapter <String>(
@@ -311,8 +314,8 @@ public class MapsActivity extends AppCompatActivity implements
         LocationListFragment locationListFragment = new LocationListFragment();
 
         Bundle bundle = new Bundle();
-        bundle.putStringArrayList("LIST_FILTER", mPropertyTypeListFilter);
-        bundle.putString("CURRENT_COMMUNITY", getCurrentCommunity());
+        bundle.putStringArrayList(KEY_LIST_FILTER, mPropertyTypeListFilter);
+        bundle.putString(KEY_CURRENT_COMMUNITY, getCurrentCommunity());
         locationListFragment.setArguments(bundle);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.map_fragment_container, locationListFragment);
@@ -325,7 +328,7 @@ public class MapsActivity extends AppCompatActivity implements
         PropertyTypeListFragment propertyTypeListFragment = new PropertyTypeListFragment();
 
         Bundle bundle = new Bundle();
-        bundle.putStringArrayList(LIST_FILTER, mPropertyTypeListFilter);
+        bundle.putStringArrayList(KEY_LIST_FILTER, mPropertyTypeListFilter);
         propertyTypeListFragment.setArguments(bundle);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.map_fragment_container, propertyTypeListFragment);
@@ -350,7 +353,7 @@ public class MapsActivity extends AppCompatActivity implements
 
         getLocationPermission();
 
-        mLoactionListViewModel.getProperties().observe(this, propertyEntities -> {
+        mLocationListViewModel.getProperties().observe(this, propertyEntities -> {
             if (propertyEntities != null) {
                 for (LocationEntity property : propertyEntities) {
                     LatLng latLng = new LatLng(property.getLatitude(), property.getLongitude());

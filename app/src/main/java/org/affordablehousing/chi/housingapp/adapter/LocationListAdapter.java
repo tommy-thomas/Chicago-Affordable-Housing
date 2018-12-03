@@ -11,7 +11,7 @@ import android.widget.ToggleButton;
 import org.affordablehousing.chi.housingapp.R;
 import org.affordablehousing.chi.housingapp.model.LocationEntity;
 import org.affordablehousing.chi.housingapp.ui.LocationListFragment;
-import org.affordablehousing.chi.housingapp.viewmodel.LoactionListViewModel;
+import org.affordablehousing.chi.housingapp.viewmodel.LocationListViewModel;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -29,16 +29,16 @@ public class LocationListAdapter extends RecyclerView.Adapter <LocationListAdapt
     String mCurrrentCommunity;
     ArrayList <String> mLocationTypeFilter;
     LocationListFragment.LocationClickListener mLocationClickListener;
-    LoactionListViewModel mLoactionListViewModel;
+    LocationListViewModel mLocationListViewModel;
 
-    public LocationListAdapter(Context context, List <LocationEntity> list, String current_community, ArrayList <String> filter, LocationListFragment.LocationClickListener listener, LoactionListViewModel model) {
+    public LocationListAdapter(Context context, List <LocationEntity> list, String current_community, ArrayList <String> filter, LocationListFragment.LocationClickListener listener, LocationListViewModel model) {
         this.mContext = context;
         this.mLocationEntityListMaster = list;
         this.mLocationEntityList = new ArrayList <>();
         this.mCurrrentCommunity = current_community;
         this.mLocationTypeFilter = filter;
         this.mLocationClickListener = listener;
-        this.mLoactionListViewModel = model;
+        this.mLocationListViewModel = model;
         copyMasterList();
         filterList();
     }
@@ -82,16 +82,31 @@ public class LocationListAdapter extends RecyclerView.Adapter <LocationListAdapt
             holder.mAddress.setText(mLocationEntityList.get(position).getAddress());
 
             //holder.mToggleButtonFavorite.setChecked(false);
-            holder.mToggleButtonFavorite.setBackgroundDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_round_favorite_border_24px));
+            if( mLocationEntityList.get(position).isFavorite() ){
+                holder.mToggleButtonFavorite.setBackgroundDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_outline_favorite_24px));
+                holder.mToggleButtonFavorite.setChecked(true);
+            } else {
+                holder.mToggleButtonFavorite.setBackgroundDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_round_favorite_border_24px));
+                holder.mToggleButtonFavorite.setChecked(false);
+            }
+
             holder.mToggleButtonFavorite.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    //mLoactionListViewModel.setFavorite(mLocationEntityList.get(position).getLocationId(), isChecked);
-                    if (isChecked) {
+                    if ( isChecked ) {
                         holder.mToggleButtonFavorite.setBackgroundDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_outline_favorite_24px));
                     } else {
                         holder.mToggleButtonFavorite.setBackgroundDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_round_favorite_border_24px));
                     }
+                    mLocationListViewModel.setFavorite(mLocationEntityList.get(position).getLocationId(), isChecked);
+                }
+            });
+
+            holder.mToggleButtonFavorite.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    boolean isFavorite = mLocationEntityList.get(position).isFavorite() ? false : true;
+                    mLocationListViewModel.setFavorite(mLocationEntityList.get(position).getLocationId(), isFavorite);
                 }
             });
 

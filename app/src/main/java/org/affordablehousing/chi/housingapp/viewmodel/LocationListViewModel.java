@@ -14,11 +14,11 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 
 
-public class LoactionListViewModel extends AndroidViewModel {
+public class LocationListViewModel extends AndroidViewModel {
 
     private final LocationRepository mRepository;
 
-    private final String TAG = LoactionListViewModel.class.getSimpleName() + " -- view model -- ";
+    private final String TAG = LocationListViewModel.class.getSimpleName() + " -- view model -- ";
 
     // MediatorLiveData can observe other LiveData objects and react on their emissions.
     private final MediatorLiveData<List<LocationEntity>> mObservableLocations;
@@ -27,7 +27,7 @@ public class LoactionListViewModel extends AndroidViewModel {
 
     private final MediatorLiveData<List<String>> mObservablePropertyTypes;
 
-    public LoactionListViewModel(Application application) {
+    public LocationListViewModel(Application application) {
         super(application);
 
         mObservableLocations = new MediatorLiveData<>();

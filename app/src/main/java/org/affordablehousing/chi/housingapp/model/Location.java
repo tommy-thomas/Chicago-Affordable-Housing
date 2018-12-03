@@ -38,5 +38,4 @@ public interface Location {
 
     String getManagement_company();
 
-
 }

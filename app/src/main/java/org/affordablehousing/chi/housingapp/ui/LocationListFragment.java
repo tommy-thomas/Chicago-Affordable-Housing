@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 
 import org.affordablehousing.chi.housingapp.R;
 import org.affordablehousing.chi.housingapp.adapter.LocationListAdapter;
-import org.affordablehousing.chi.housingapp.viewmodel.LoactionListViewModel;
+import org.affordablehousing.chi.housingapp.viewmodel.LocationListViewModel;
 
 import java.util.ArrayList;
 
@@ -23,6 +23,8 @@ import androidx.recyclerview.widget.RecyclerView;
 public class LocationListFragment extends Fragment {
 
     LocationClickListener mLocationClickListener;
+    private final String KEY_LIST_FILTER = "list-filter";
+    private final String KEY_CURRENT_COMMUNITY = "current-community";
 
     public interface LocationClickListener {
         void onLocationSelected(int id );
@@ -49,12 +51,12 @@ public class LocationListFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_location_list, container, false);
 
-        ArrayList <String> listFilter = getArguments().getStringArrayList("LIST_FILTER");
-        String current_community = getArguments().getString("CURRENT_COMMUNITY");
+        ArrayList <String> listFilter = getArguments().getStringArrayList(KEY_LIST_FILTER);
+        String current_community = getArguments().getString(KEY_CURRENT_COMMUNITY);
 
-        LoactionListViewModel loactionListViewModel = ViewModelProviders.of(this).get(LoactionListViewModel.class);
+        LocationListViewModel locationListViewModel = ViewModelProviders.of(this).get(LocationListViewModel.class);
 
-        loactionListViewModel.getProperties().observe(this, properties -> {
+        locationListViewModel.getProperties().observe(this, properties -> {
 
             if (properties != null) {
                 final RecyclerView recyclerView = rootView.findViewById(R.id.rv_location_list);
@@ -68,7 +70,7 @@ public class LocationListFragment extends Fragment {
                 }
 
 
-                LocationListAdapter locationListAdapter = new LocationListAdapter(getContext(), properties, current_community, listFilter, mLocationClickListener,loactionListViewModel);
+                LocationListAdapter locationListAdapter = new LocationListAdapter(getContext(), properties, current_community, listFilter, mLocationClickListener, locationListViewModel);
                 recyclerView.setAdapter(locationListAdapter);
             }
         });
