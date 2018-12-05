@@ -26,15 +26,20 @@ public interface LocationDAO {
     @Query("select * from location where is_favorite = 1 and locationId = :locationId")
     LiveData<List<LocationEntity>> loadFavorites(int locationId );
 
-    @Query("select * from location where community_area = :community")
-    LiveData<List<LocationEntity>> loadLocationsByCommunity(String community );
-
     @Query("SELECT * FROM location")
     LiveData<List<LocationEntity>> loadAllLocations();
 
+    @Query("select * from location where community_area = :community")
+    LiveData<List<LocationEntity>> loadLocationsByCommunity(String community );
+
+    @Query("select * from location where property_type in (:property_type_array)")
+    LiveData<List<LocationEntity>> loadLocationsByPropertyType(List<String> property_type_array);
+
+    @Query("select * from location where community_area = :community and property_type in (:property_type_array)")
+    LiveData<List<LocationEntity>> loadLocationsByCommunityAndPropertyType(String community, List<String> property_type_array );
+
     @Query("SELECT * FROM location where property_type = :property_type")
     LiveData<List<LocationEntity>> loadAllLocationsByType(String property_type);
-
 
     @Query("select * from location where locationId= :locationId")
     LiveData<LocationEntity> loadLocation(int locationId);
@@ -44,6 +49,5 @@ public interface LocationDAO {
 
     @Query("select distinct property_type from location order by property_type asc")
     LiveData<List<String>> loadPropertyTypes();
-
 
 }

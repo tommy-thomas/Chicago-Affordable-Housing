@@ -32,6 +32,7 @@ public class LocationListFragment extends Fragment {
     private final String KEY_LIST_FILTER = "list-filter";
     private final String KEY_CURRENT_COMMUNITY = "current-community";
     private String CURRENT_COMMUNITY = "";
+    private List<String> LIST_FILTER;
 
 
     @Nullable
@@ -40,8 +41,10 @@ public class LocationListFragment extends Fragment {
         //final View rootView = inflater.inflate(R.layout.fragment_location_list, container, false);
         mBinding = DataBindingUtil.inflate( inflater , R.layout.fragment_location_list, container, false );
 
-       //ArrayList <String> listFilter = getArguments().getStringArrayList(KEY_LIST_FILTER);
+        LIST_FILTER = getArguments().getStringArrayList(KEY_LIST_FILTER);
         CURRENT_COMMUNITY = getArguments().getString(KEY_CURRENT_COMMUNITY);
+
+        super.onPause();
 
         mLocationAdapter = new LocationAdapter(mLocationListItemCallback);
         mBinding.rvLocationList.setAdapter(mLocationAdapter);
@@ -54,10 +57,14 @@ public class LocationListFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         final LocationListViewModel viewModel =
                 ViewModelProviders.of(this).get(LocationListViewModel.class);
-        if (CURRENT_COMMUNITY == ""|| CURRENT_COMMUNITY == "Community") {
+        if ( (CURRENT_COMMUNITY == ""|| CURRENT_COMMUNITY == "Community") && ( LIST_FILTER == null || LIST_FILTER.size() == 0 ) ) {
             subscribeUi(viewModel.getLocations());
-        } else {
+        } else if((CURRENT_COMMUNITY != "" && CURRENT_COMMUNITY != "Community") && ( LIST_FILTER == null || LIST_FILTER.size() == 0 )) {
             subscribeUi(viewModel.loadLocationsByCommunity(CURRENT_COMMUNITY));
+        } else if((CURRENT_COMMUNITY != "" && CURRENT_COMMUNITY != "Community") && ( LIST_FILTER != null && LIST_FILTER.size() > 0 )) {
+            subscribeUi(viewModel.loadLocationsByCommunityAndPropertyType( CURRENT_COMMUNITY , LIST_FILTER));
+        } else if((CURRENT_COMMUNITY == "" || CURRENT_COMMUNITY == "Community") && ( LIST_FILTER != null && LIST_FILTER.size() > 0 )) {
+            subscribeUi(viewModel.loadLocationsByPropertyType(LIST_FILTER));
         }
     }
 

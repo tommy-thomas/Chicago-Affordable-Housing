@@ -68,8 +68,11 @@ public class LocationRepository {
         return mDatabase.locationDAO().loadLocationsByCommunity(community);
     }
 
+    public LiveData<List<LocationEntity>> loadLocationsByCommunityAndPropertyType(String community, List<String> types) {
+        return mDatabase.locationDAO().loadLocationsByCommunityAndPropertyType(community , types);
+    }
 
-//    public LiveData<List<ProductEntity>> searchProducts(String query) {
-//        return mDatabase.productDao().searchAllProducts(query);
-//    }
+    public LiveData<List<LocationEntity>> loadLocationsByPropertyType(List<String> types) {
+        return mDatabase.locationDAO().loadLocationsByPropertyType(types);
+    }
 }
