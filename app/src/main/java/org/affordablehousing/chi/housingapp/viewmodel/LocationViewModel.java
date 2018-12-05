@@ -6,6 +6,8 @@ import org.affordablehousing.chi.housingapp.App;
 import org.affordablehousing.chi.housingapp.data.LocationRepository;
 import org.affordablehousing.chi.housingapp.model.LocationEntity;
 
+import java.util.List;
+
 import androidx.annotation.NonNull;
 import androidx.databinding.ObservableField;
 import androidx.lifecycle.AndroidViewModel;
@@ -13,9 +15,11 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-public class LoactionViewModel extends AndroidViewModel {
+public class LocationViewModel extends AndroidViewModel {
     
     private final LiveData<LocationEntity> mObservableLocation;
+
+    private final LocationRepository mRepository;
 
     public ObservableField<LocationEntity> location = new ObservableField<>();
 
@@ -23,10 +27,13 @@ public class LoactionViewModel extends AndroidViewModel {
 
     //private final LiveData<List<CommentEntity>> mObservableComments;
 
-    public LoactionViewModel(@NonNull Application application, LocationRepository repository,
+    public LocationViewModel(@NonNull Application application, LocationRepository repository,
                              final int locationId) {
         super(application);
         mLocationId = locationId;
+
+        mRepository = ((App) application).getRepository();
+        LiveData<List<LocationEntity>> locations = mRepository.getLocations();
 
         //mObservableComments = repository.loadComments(mLocationId);
         mObservableLocation = repository.loadLocation(mLocationId);
@@ -43,8 +50,12 @@ public class LoactionViewModel extends AndroidViewModel {
         return mObservableLocation;
     }
 
-    public void setProperty(LocationEntity locationEntity) {
+    public void setLocation(LocationEntity locationEntity) {
         this.location.set(locationEntity);
+    }
+
+    public void setFavorite(int locationId, boolean fav) {
+        mRepository.setFavorite(locationId, fav);
     }
 
 
@@ -72,7 +83,7 @@ public class LoactionViewModel extends AndroidViewModel {
         @Override
         public <T extends ViewModel> T create(Class<T> modelClass) {
             //noinspection unchecked
-            return (T) new LoactionViewModel(mApplication, mRepository, mLocationId);
+            return (T) new LocationViewModel(mApplication, mRepository, mLocationId);
         }
     }
 }

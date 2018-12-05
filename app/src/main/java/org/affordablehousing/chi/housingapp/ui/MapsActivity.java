@@ -131,6 +131,13 @@ public class MapsActivity extends AppCompatActivity implements
 
     }
 
+    public void favorite(Location location){
+
+        LocationListViewModel locationListViewModel = ViewModelProviders.of(this).get(LocationListViewModel.class);
+        locationListViewModel.setFavorite( location.getLocationId() , location.getIs_favorite() );
+
+    }
+
     @Override
     protected void onPause(){
         Toast toast = Toast.makeText(getApplicationContext(),

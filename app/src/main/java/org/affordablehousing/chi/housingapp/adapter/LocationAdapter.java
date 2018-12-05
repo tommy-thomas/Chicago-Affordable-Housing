@@ -23,7 +23,7 @@ public class LocationAdapter extends RecyclerView.Adapter <LocationAdapter.Locat
     @Nullable
     private final LocationListItemCallback mLocationListItemCallback;
 
-    public LocationAdapter(LocationListItemCallback mLocationListItemCallback) {
+    public LocationAdapter(LocationListItemCallback mLocationListItemCallback ) {
         this.mLocationListItemCallback = mLocationListItemCallback;
         setHasStableIds(true);
     }

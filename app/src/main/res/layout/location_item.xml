@@ -8,6 +8,7 @@
         type="org.affordablehousing.chi.housingapp.model.Location"/>
     <variable name="callback"
         type="org.affordablehousing.chi.housingapp.ui.LocationListItemCallback" />
+
 </data>
 
     <androidx.cardview.widget.CardView
@@ -18,7 +19,8 @@
         android:orientation="horizontal"
         android:layout_marginStart="@dimen/dp_8"
         android:layout_marginEnd="@dimen/dp_8"
-        app:cardUseCompatPadding="true">
+        app:cardUseCompatPadding="true"
+        android:background="@color/colorPrimaryLight">
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -30,7 +32,7 @@
                 android:id="@+id/tv_property_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="80dp"
+                android:layout_marginTop="@dimen/dp_8"
                 android:textColor="#000000"
                 android:layout_marginStart="@dimen/dp_8"
                 android:layout_marginEnd="@dimen/dp_8"
@@ -47,6 +49,21 @@
                 android:textSize="@dimen/dp_16"
                 android:layout_below="@+id/tv_property_name"
                 android:text="@{location.address}" />
+
+
+            <ToggleButton
+                android:id="@+id/tb_favorite"
+                android:layout_width="@dimen/dp_24"
+                android:layout_height="@dimen/dp_24"
+                android:layout_alignRight="@+id/tv_property_name"
+                android:layout_alignParentRight="true"
+                android:layout_marginStart="@dimen/dp_8"
+                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginEnd="@dimen/dp_8"
+                android:checked="@{location.is_favorite}"
+                android:textOff=""
+                android:textOn=""
+                android:background="@drawable/ic_round_favorite_border_24px" />
 
 
         </RelativeLayout>

@@ -8,7 +8,7 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import org.affordablehousing.chi.housingapp.R;
-import org.affordablehousing.chi.housingapp.viewmodel.LoactionViewModel;
+import org.affordablehousing.chi.housingapp.viewmodel.LocationViewModel;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -32,11 +32,11 @@ public class LocationDetailFragment extends Fragment {
         mLocationName = rootView.findViewById(R.id.tv_property_name);
         mLocationAddress = rootView.findViewById(R.id.tv_location_address);
 
-        LoactionViewModel.Factory factory = new LoactionViewModel.Factory(
+        LocationViewModel.Factory factory = new LocationViewModel.Factory(
                 getActivity().getApplication(), getArguments().getInt(KEY_LOCATION_ID));
 
-        final LoactionViewModel model = ViewModelProviders.of(this, factory)
-                .get(LoactionViewModel.class);
+        final LocationViewModel model = ViewModelProviders.of(this, factory)
+                .get(LocationViewModel.class);
 
         model.getObservableProperty().observe( this, propertyEntity -> {
 

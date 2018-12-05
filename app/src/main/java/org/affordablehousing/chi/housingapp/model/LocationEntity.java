@@ -277,12 +277,11 @@ public class LocationEntity implements Location {
         this.management_company = management_company;
     }
 
-    public void setFavorite(boolean favorite) {
+    public void setIs_favorite(boolean favorite) {
         is_favorite = favorite;
     }
 
-    public boolean isFavorite() {
-        return is_favorite
-                ;
+    public boolean  getIs_favorite() {
+        return is_favorite;
     }
 }

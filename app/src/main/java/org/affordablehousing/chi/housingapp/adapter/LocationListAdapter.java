@@ -69,7 +69,7 @@ public class LocationListAdapter extends RecyclerView.Adapter <LocationListAdapt
             holder.mAddress.setText(mLocationEntityList.get(position).getAddress());
 
             //holder.mToggleButtonFavorite.setChecked(false);
-            if( mLocationEntityList.get(position).isFavorite() ){
+            if( mLocationEntityList.get(position).getIs_favorite() ){
                 holder.mToggleButtonFavorite.setBackgroundDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_outline_favorite_24px));
                 holder.mToggleButtonFavorite.setChecked(true);
             } else {

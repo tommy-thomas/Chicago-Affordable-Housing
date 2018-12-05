@@ -41,7 +41,6 @@ public class LocationListFragment extends Fragment {
 
         mLocationAdapter = new LocationAdapter(mLocationListItemCallback);
         mBinding.rvLocationList.setAdapter(mLocationAdapter);
-
         return mBinding.getRoot();
     }
 
@@ -50,8 +49,6 @@ public class LocationListFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         final LocationListViewModel viewModel =
                 ViewModelProviders.of(this).get(LocationListViewModel.class);
-
-
         subscribeUi(viewModel.getLocations());
     }
 
@@ -79,6 +76,16 @@ public class LocationListFragment extends Fragment {
 
             if (getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED)) {
                 ((MapsActivity) getActivity()).show(location);
+            }
+        }
+    };
+
+    private final LocationFavoriteSelectCallBack mLocationFavoriteSelectCallBack = new LocationFavoriteSelectCallBack() {
+        @Override
+        public void onClick(Location location) {
+
+            if (getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED)) {
+                ((MapsActivity) getActivity()).favorite(location);
             }
         }
     };

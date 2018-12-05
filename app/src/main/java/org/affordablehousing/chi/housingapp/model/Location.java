@@ -38,4 +38,6 @@ public interface Location {
 
     String getManagement_company();
 
+    boolean getIs_favorite();
+
 }
