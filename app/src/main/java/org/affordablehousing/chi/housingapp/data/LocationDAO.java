@@ -26,6 +26,9 @@ public interface LocationDAO {
     @Query("select * from location where is_favorite = 1 and locationId = :locationId")
     LiveData<List<LocationEntity>> loadFavorites(int locationId );
 
+    @Query("select * from location where community_area = :community")
+    LiveData<List<LocationEntity>> loadLocationsByCommunity(String community );
+
     @Query("SELECT * FROM location")
     LiveData<List<LocationEntity>> loadAllLocations();
 

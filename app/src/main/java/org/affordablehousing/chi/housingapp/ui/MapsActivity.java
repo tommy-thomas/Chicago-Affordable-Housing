@@ -201,6 +201,7 @@ public class MapsActivity extends AppCompatActivity implements
                     for (int i = 0; i < fm.getBackStackEntryCount(); ++i) {
                         fm.popBackStack();
                     }
+                    setIsListDisplay(false);
                     return true;
                 case R.id.navigation_list:
                     showPropertyList();
@@ -244,6 +245,7 @@ public class MapsActivity extends AppCompatActivity implements
 
             }
         });
+
         mLocationListViewModel.getCommunities().observe(this, communites -> {
             if (communites != null) {
                 communites.add(0, "Community");
@@ -303,7 +305,7 @@ public class MapsActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onPropertypeSelected(String propertyType) {
+    public void onPropertyTypeSelected(String propertyType) {
 
         if (!propertyType.isEmpty() && !mPropertyTypeListFilter.contains(propertyType)) {
             mPropertyTypeListFilter.add(propertyType);
@@ -313,13 +315,17 @@ public class MapsActivity extends AppCompatActivity implements
 
     }
 
+    private void setIsListDisplay(boolean isListDisplay){
+        mIsListDisplay =  isListDisplay;
+    }
+
     private boolean isListDisplay(){
         return mIsListDisplay;
     }
 
     private void showPropertyList() {
 
-        mIsListDisplay = true;
+        setIsListDisplay(true);
         LocationListFragment locationListFragment = new LocationListFragment();
 
         Bundle bundle = new Bundle();
@@ -333,7 +339,7 @@ public class MapsActivity extends AppCompatActivity implements
     }
 
     private void showPropertyTypeFilterList() {
-        mIsListDisplay = false;
+        setIsListDisplay(false);
         PropertyTypeListFragment propertyTypeListFragment = new PropertyTypeListFragment();
 
         Bundle bundle = new Bundle();

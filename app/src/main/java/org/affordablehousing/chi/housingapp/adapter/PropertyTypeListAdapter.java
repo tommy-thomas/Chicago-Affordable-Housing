@@ -54,7 +54,7 @@ public class PropertyTypeListAdapter extends RecyclerView.Adapter<PropertyTypeLi
             holder.cbPropertyType.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    propertyTypeClickListener.onPropertypeSelected( mPropertyTypes.get(position) );
+                    propertyTypeClickListener.onPropertyTypeSelected( mPropertyTypes.get(position) );
                 }
             });
 

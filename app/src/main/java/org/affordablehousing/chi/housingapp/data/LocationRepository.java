@@ -62,7 +62,10 @@ public class LocationRepository {
 
     public int setFavorite( int locationId , boolean is_favorite){
         return mDatabase.locationDAO().setFavorite( locationId , is_favorite);
+    }
 
+    public LiveData<List<LocationEntity>> loadLocationsByCommunity(String community) {
+        return mDatabase.locationDAO().loadLocationsByCommunity(community);
     }
 
 

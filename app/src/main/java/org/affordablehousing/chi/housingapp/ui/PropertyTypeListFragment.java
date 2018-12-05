@@ -30,7 +30,7 @@ public class PropertyTypeListFragment extends Fragment {
 
     public interface PropertyTypeClickListener {
 
-        void onPropertypeSelected(String propertyType);
+        void onPropertyTypeSelected(String propertyType);
 
     }
 

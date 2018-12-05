@@ -31,6 +31,7 @@ public class LocationListFragment extends Fragment {
 
     private final String KEY_LIST_FILTER = "list-filter";
     private final String KEY_CURRENT_COMMUNITY = "current-community";
+    private String CURRENT_COMMUNITY = "";
 
 
     @Nullable
@@ -39,8 +40,12 @@ public class LocationListFragment extends Fragment {
         //final View rootView = inflater.inflate(R.layout.fragment_location_list, container, false);
         mBinding = DataBindingUtil.inflate( inflater , R.layout.fragment_location_list, container, false );
 
+       //ArrayList <String> listFilter = getArguments().getStringArrayList(KEY_LIST_FILTER);
+        CURRENT_COMMUNITY = getArguments().getString(KEY_CURRENT_COMMUNITY);
+
         mLocationAdapter = new LocationAdapter(mLocationListItemCallback);
         mBinding.rvLocationList.setAdapter(mLocationAdapter);
+
         return mBinding.getRoot();
     }
 
@@ -49,7 +54,11 @@ public class LocationListFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         final LocationListViewModel viewModel =
                 ViewModelProviders.of(this).get(LocationListViewModel.class);
-        subscribeUi(viewModel.getLocations());
+        if (CURRENT_COMMUNITY == ""|| CURRENT_COMMUNITY == "Community") {
+            subscribeUi(viewModel.getLocations());
+        } else {
+            subscribeUi(viewModel.loadLocationsByCommunity(CURRENT_COMMUNITY));
+        }
     }
 
     private void subscribeUi(LiveData<List<LocationEntity>> liveData) {

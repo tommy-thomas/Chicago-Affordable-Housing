@@ -65,6 +65,10 @@ public class LocationListViewModel extends AndroidViewModel {
 
     public LiveData<List<String>> getPropertyTypes() { return mObservablePropertyTypes; }
 
+    public LiveData<List<LocationEntity>> loadLocationsByCommunity(String community) {
+        return mRepository.loadLocationsByCommunity(community);
+    }
+
     public void setFavorite( int locationId, boolean favorite){
         new AddFavoriteTask( mRepository , locationId , favorite).execute();
     }
@@ -89,8 +93,4 @@ public class LocationListViewModel extends AndroidViewModel {
 
 
     }
-
-//    public LiveData<List<LocationEntity>> searchProducts(String query) {
-//        return mRepository.searchProducts(query);
-//    }
 }
