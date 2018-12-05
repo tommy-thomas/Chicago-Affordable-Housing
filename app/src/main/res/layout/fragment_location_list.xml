@@ -10,12 +10,10 @@
     </data>
 
     <LinearLayout
-    android:id="@+id/fragment_property_list"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#f1f1f1"
-    tools:context=".ui.MapsActivity">
+    android:background="#f1f1f1">
 
         <TextView
             android:id="@+id/loading_tv"
@@ -28,6 +26,7 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_location_list"
+        android:contentDescription="Location List"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="80dp"

@@ -51,7 +51,7 @@ public class LocationDetailFragment extends Fragment {
         return rootView;
     }
 
-    /** Creates product fragment for specific product ID */
+    /** Creates location fragment for specific product ID */
     public static LocationDetailFragment forLocation(int propertyId) {
         LocationDetailFragment fragment = new LocationDetailFragment();
         Bundle args = new Bundle();

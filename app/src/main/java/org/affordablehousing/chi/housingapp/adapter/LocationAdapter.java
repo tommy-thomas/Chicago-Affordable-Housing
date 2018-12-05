@@ -4,7 +4,7 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import org.affordablehousing.chi.housingapp.R;
-import org.affordablehousing.chi.housingapp.databinding.LocationListItemBinding;
+import org.affordablehousing.chi.housingapp.databinding.LocationItemBinding;
 import org.affordablehousing.chi.housingapp.model.Location;
 import org.affordablehousing.chi.housingapp.ui.LocationListItemCallback;
 
@@ -66,8 +66,8 @@ public class LocationAdapter extends RecyclerView.Adapter <LocationAdapter.Locat
 
     @Override
     public LocationViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        LocationListItemBinding binding = DataBindingUtil
-                .inflate(LayoutInflater.from(parent.getContext()), R.layout.location_list_item,
+        LocationItemBinding binding = DataBindingUtil
+                .inflate(LayoutInflater.from(parent.getContext()), R.layout.location_item,
                         parent, false);
         binding.setCallback(mLocationListItemCallback);
         return new LocationViewHolder(binding);
@@ -86,9 +86,9 @@ public class LocationAdapter extends RecyclerView.Adapter <LocationAdapter.Locat
 
     static class LocationViewHolder extends RecyclerView.ViewHolder {
 
-        final LocationListItemBinding binding;
+        final LocationItemBinding binding;
 
-        public LocationViewHolder(LocationListItemBinding binding) {
+        public LocationViewHolder(LocationItemBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
         }

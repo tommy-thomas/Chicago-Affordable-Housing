@@ -11,7 +11,6 @@ import android.widget.ToggleButton;
 
 import org.affordablehousing.chi.housingapp.R;
 import org.affordablehousing.chi.housingapp.model.LocationEntity;
-import org.affordablehousing.chi.housingapp.ui.LocationListFragment;
 import org.affordablehousing.chi.housingapp.viewmodel.LocationListViewModel;
 
 import java.util.ArrayList;
@@ -29,20 +28,7 @@ public class LocationListAdapter extends RecyclerView.Adapter <LocationListAdapt
     List <LocationEntity> mLocationEntityListMaster;
     String mCurrrentCommunity;
     ArrayList <String> mLocationTypeFilter;
-    LocationListFragment.LocationClickListener mLocationClickListener;
     LocationListViewModel mLocationListViewModel;
-
-    public LocationListAdapter(Context context, List <LocationEntity> list, String current_community, ArrayList <String> filter, LocationListFragment.LocationClickListener listener, LocationListViewModel model) {
-        this.mContext = context;
-        this.mLocationEntityListMaster = list;
-        this.mLocationEntityList = new ArrayList <>();
-        this.mCurrrentCommunity = current_community;
-        this.mLocationTypeFilter = filter;
-        this.mLocationClickListener = listener;
-        this.mLocationListViewModel = model;
-        copyMasterList();
-        filterList();
-    }
 
     private void copyMasterList() {
         if (mLocationEntityList != null)
@@ -114,7 +100,7 @@ public class LocationListAdapter extends RecyclerView.Adapter <LocationListAdapt
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mLocationClickListener.onLocationSelected( mLocationEntityList.get(position).getLocationId());
+                   // mLocationClickListener.onLocationSelected( mLocationEntityList.get(position).getLocationId());
                 }
             });
 

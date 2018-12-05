@@ -51,8 +51,7 @@ import androidx.lifecycle.ViewModelProviders;
 public class MapsActivity extends AppCompatActivity implements
         OnMapReadyCallback,
         NavigationView.OnNavigationItemSelectedListener,
-        PropertyTypeListFragment.PropertyTypeClickListener,
-        LocationListFragment.LocationClickListener {
+        PropertyTypeListFragment.PropertyTypeClickListener{
 
     private GoogleMap mMap;
     private final String TAG = MapsActivity.class.getSimpleName() + " -- map acctivity";
@@ -307,16 +306,6 @@ public class MapsActivity extends AppCompatActivity implements
 
     }
 
-    @Override
-    public void onLocationSelected( int id ) {
-        LocationDetailFragment fragment = LocationDetailFragment.forLocation(id);
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.map_fragment_container, fragment);
-        ft.commit();
-        ft.addToBackStack(null);
-
-    }
-
     private boolean isListDisplay(){
         return mIsListDisplay;
     }
@@ -366,7 +355,7 @@ public class MapsActivity extends AppCompatActivity implements
 
         getLocationPermission();
 
-        mLocationListViewModel.getProperties().observe(this, propertyEntities -> {
+        mLocationListViewModel.getLocations().observe(this, propertyEntities -> {
             if (propertyEntities != null) {
                 for (LocationEntity property : propertyEntities) {
                     LatLng latLng = new LatLng(property.getLatitude(), property.getLongitude());

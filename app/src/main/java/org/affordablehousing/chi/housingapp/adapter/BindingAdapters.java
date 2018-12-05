@@ -1,4 +1,4 @@
-package org.affordablehousing.chi.housingapp.ui;
+package org.affordablehousing.chi.housingapp.adapter;
 
 import android.view.View;
 
