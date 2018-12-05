@@ -8,14 +8,19 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.affordablehousing.chi.housingapp.R;
+import org.affordablehousing.chi.housingapp.adapter.LocationAdapter;
 import org.affordablehousing.chi.housingapp.adapter.LocationListAdapter;
+import org.affordablehousing.chi.housingapp.databinding.LocationListItemBinding;
+import org.affordablehousing.chi.housingapp.model.Location;
 import org.affordablehousing.chi.housingapp.viewmodel.LocationListViewModel;
 
 import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -23,6 +28,8 @@ import androidx.recyclerview.widget.RecyclerView;
 public class LocationListFragment extends Fragment {
 
     LocationClickListener mLocationClickListener;
+    LocationAdapter mLocationAdapter;
+    private LocationListItemBinding mBinding;
     private final String KEY_LIST_FILTER = "list-filter";
     private final String KEY_CURRENT_COMMUNITY = "current-community";
 
@@ -50,6 +57,9 @@ public class LocationListFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_location_list, container, false);
+        mBinding = DataBindingUtil.inflate( inflater , R.layout.fragment_location_list, container, false );
+
+        mLocationAdapter = new LocationAdapter(mLocationListItemCallback);
 
         ArrayList <String> listFilter = getArguments().getStringArrayList(KEY_LIST_FILTER);
         String current_community = getArguments().getString(KEY_CURRENT_COMMUNITY);
@@ -76,4 +86,14 @@ public class LocationListFragment extends Fragment {
         });
         return rootView;
     }
+
+    private final LocationListItemCallback mLocationListItemCallback = new LocationListItemCallback() {
+        @Override
+        public void onClick(Location location) {
+
+            if (getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED)) {
+                ((MapsActivity) getActivity()).show(location);
+            }
+        }
+    };
 }

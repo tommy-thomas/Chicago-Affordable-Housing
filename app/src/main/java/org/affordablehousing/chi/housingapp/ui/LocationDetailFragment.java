@@ -52,7 +52,7 @@ public class LocationDetailFragment extends Fragment {
     }
 
     /** Creates product fragment for specific product ID */
-    public static LocationDetailFragment forProperty(int propertyId) {
+    public static LocationDetailFragment forLocation(int propertyId) {
         LocationDetailFragment fragment = new LocationDetailFragment();
         Bundle args = new Bundle();
         args.putInt(KEY_LOCATION_ID, propertyId);

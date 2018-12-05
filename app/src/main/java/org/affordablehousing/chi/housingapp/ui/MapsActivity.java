@@ -27,6 +27,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
 import org.affordablehousing.chi.housingapp.R;
+import org.affordablehousing.chi.housingapp.model.Location;
 import org.affordablehousing.chi.housingapp.model.LocationEntity;
 import org.affordablehousing.chi.housingapp.model.MarkerTag;
 import org.affordablehousing.chi.housingapp.viewmodel.LocationListViewModel;
@@ -116,6 +117,18 @@ public class MapsActivity extends AppCompatActivity implements
                 String.valueOf("Create : " + getCurrentCommunity()),
                 Toast.LENGTH_SHORT);
         toast.show();
+
+    }
+
+    /** Shows the product detail fragment */
+    public void show(Location location) {
+
+        LocationDetailFragment locationDetailFragment = LocationDetailFragment.forLocation(location.getLocationId());
+
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.map_fragment_container, locationDetailFragment);
+        ft.commit();
+        ft.addToBackStack(null);
 
     }
 
@@ -296,7 +309,7 @@ public class MapsActivity extends AppCompatActivity implements
 
     @Override
     public void onLocationSelected( int id ) {
-        LocationDetailFragment fragment = LocationDetailFragment.forProperty(id);
+        LocationDetailFragment fragment = LocationDetailFragment.forLocation(id);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.map_fragment_container, fragment);
         ft.commit();
