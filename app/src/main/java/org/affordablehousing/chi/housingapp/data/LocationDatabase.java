@@ -4,6 +4,7 @@ import android.content.Context;
 
 import org.affordablehousing.chi.housingapp.AppExecutors;
 import org.affordablehousing.chi.housingapp.model.LocationEntity;
+import org.affordablehousing.chi.housingapp.model.NoteEntity;
 import org.affordablehousing.chi.housingapp.service.LocationDataService;
 import org.affordablehousing.chi.housingapp.service.RetrofitClientInstance;
 
@@ -15,17 +16,21 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
+import androidx.room.TypeConverters;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 import retrofit2.Call;
 import retrofit2.Response;
 
 @SuppressWarnings("deprecation")
-@Database(entities = {LocationEntity.class}, version = 3, exportSchema = false)
+@Database(entities = {LocationEntity.class, NoteEntity.class}, version = 4, exportSchema = false)
+@TypeConverters(DateConverter.class)
 public abstract class LocationDatabase extends RoomDatabase {
 
     private static LocationDatabase sInstance;
 
     public abstract LocationDAO locationDAO();
+
+    public abstract NoteDAO noteDAO();
 
     public static final String DATABASE_NAME = "location_data";
 

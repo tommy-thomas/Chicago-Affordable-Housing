@@ -75,4 +75,6 @@ public class LocationRepository {
     public LiveData<List<LocationEntity>> loadLocationsByPropertyType(List<String> types) {
         return mDatabase.locationDAO().loadLocationsByPropertyType(types);
     }
+
+
 }

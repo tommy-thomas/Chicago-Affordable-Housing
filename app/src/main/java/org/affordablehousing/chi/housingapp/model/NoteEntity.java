@@ -11,7 +11,7 @@ import androidx.room.PrimaryKey;
 @Entity(tableName = "notes",
         foreignKeys = {
                 @ForeignKey(entity = LocationEntity.class,
-                        parentColumns = "comendId",
+                        parentColumns = "locationId",
                         childColumns = "locationId",
                         onDelete = ForeignKey.CASCADE)},
         indices = {@Index(value = "locationId")
@@ -34,7 +34,7 @@ public class NoteEntity implements Note {
     public NoteEntity(){}
 
     @Override
-    public int getCommentId() {
+    public int getNoteId() {
         return noteId;
     }
 
@@ -53,7 +53,7 @@ public class NoteEntity implements Note {
         return postedDate;
     }
 
-    public void setCommentId(int noteId) {
+    public void setNoteId(int noteId) {
         this.noteId = noteId;
     }
 
