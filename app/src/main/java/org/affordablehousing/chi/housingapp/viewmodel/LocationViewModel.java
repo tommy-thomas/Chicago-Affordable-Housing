@@ -1,12 +1,11 @@
 package org.affordablehousing.chi.housingapp.viewmodel;
 
 import android.app.Application;
+import android.os.AsyncTask;
 
 import org.affordablehousing.chi.housingapp.App;
 import org.affordablehousing.chi.housingapp.data.LocationRepository;
 import org.affordablehousing.chi.housingapp.model.LocationEntity;
-
-import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.ObservableField;
@@ -33,7 +32,6 @@ public class LocationViewModel extends AndroidViewModel {
         mLocationId = locationId;
 
         mRepository = ((App) application).getRepository();
-        LiveData<List<LocationEntity>> locations = mRepository.getLocations();
 
         //mObservableComments = repository.loadComments(mLocationId);
         mObservableLocation = repository.loadLocation(mLocationId);
@@ -46,7 +44,7 @@ public class LocationViewModel extends AndroidViewModel {
 //        return mObservableComments;
 //    }
 
-    public LiveData<LocationEntity> getObservableProperty() {
+    public LiveData<LocationEntity> getObservableLocation() {
         return mObservableLocation;
     }
 
@@ -54,9 +52,10 @@ public class LocationViewModel extends AndroidViewModel {
         this.location.set(locationEntity);
     }
 
-    public void setFavorite(int locationId, boolean fav) {
-        mRepository.setFavorite(locationId, fav);
+    public void setFavorite( int locationId, boolean favorite){
+        new AddFavoriteTask( mRepository , locationId , favorite).execute();
     }
+
 
 
     /**
@@ -85,5 +84,26 @@ public class LocationViewModel extends AndroidViewModel {
             //noinspection unchecked
             return (T) new LocationViewModel(mApplication, mRepository, mLocationId);
         }
+    }
+
+    private class AddFavoriteTask extends AsyncTask<Void,Void,Void> {
+
+        private int mLocationId;
+        private boolean mIsFavorite;
+        private LocationRepository mRepository;
+
+        public AddFavoriteTask(LocationRepository repository, int id, boolean favorite ){
+            mLocationId = id;
+            mIsFavorite = favorite;
+            mRepository = repository;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            mRepository.setFavorite( mLocationId , mIsFavorite);
+            return null;
+        }
+
+
     }
 }

@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 public class LocationAdapter extends RecyclerView.Adapter <LocationAdapter.LocationViewHolder> {
 
     List<? extends Location> mLocationList;
+
     private Context mContext;
 
     @Nullable
