@@ -18,14 +18,14 @@ import androidx.room.PrimaryKey;
         })
 public class NoteEntity implements Note {
     @PrimaryKey(autoGenerate = true)
-    private int commentId;
+    private int noteId;
     private int locationId;
     private String text;
     private Date postedDate;
 
     @Ignore
-    public NoteEntity(int commentId, int locationId, String text, Date postedDate) {
-        this.commentId = commentId;
+    public NoteEntity(int noteId, int locationId, String text, Date postedDate) {
+        this.noteId = noteId;
         this.locationId = locationId;
         this.text = text;
         this.postedDate = postedDate;
@@ -35,7 +35,7 @@ public class NoteEntity implements Note {
 
     @Override
     public int getCommentId() {
-        return commentId;
+        return noteId;
     }
 
     @Override
@@ -53,8 +53,8 @@ public class NoteEntity implements Note {
         return postedDate;
     }
 
-    public void setCommentId(int commentId) {
-        this.commentId = commentId;
+    public void setCommentId(int noteId) {
+        this.noteId = noteId;
     }
 
     public void setLocationId(int locationId) {

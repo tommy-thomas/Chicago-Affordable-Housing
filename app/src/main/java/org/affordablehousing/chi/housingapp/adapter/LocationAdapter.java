@@ -1,17 +1,22 @@
 package org.affordablehousing.chi.housingapp.adapter;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
+import android.widget.Toast;
 
 import org.affordablehousing.chi.housingapp.R;
 import org.affordablehousing.chi.housingapp.databinding.LocationItemBinding;
 import org.affordablehousing.chi.housingapp.model.Location;
 import org.affordablehousing.chi.housingapp.ui.LocationListItemCallback;
+import org.affordablehousing.chi.housingapp.viewmodel.LocationListViewModel;
 
 import java.util.List;
 import java.util.Objects;
 
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,12 +24,17 @@ import androidx.recyclerview.widget.RecyclerView;
 public class LocationAdapter extends RecyclerView.Adapter <LocationAdapter.LocationViewHolder> {
 
     List<? extends Location> mLocationList;
+    private Context mContext;
+    private LocationListViewModel mLocationListViewModel;
 
     @Nullable
     private final LocationListItemCallback mLocationListItemCallback;
 
-    public LocationAdapter(LocationListItemCallback mLocationListItemCallback ) {
+    public LocationAdapter(LocationListItemCallback mLocationListItemCallback, LocationListViewModel locationListViewModel, Context context) {
         this.mLocationListItemCallback = mLocationListItemCallback;
+        mLocationListViewModel = locationListViewModel;
+        mContext = context;
+
         setHasStableIds(true);
     }
 
@@ -75,8 +85,38 @@ public class LocationAdapter extends RecyclerView.Adapter <LocationAdapter.Locat
 
     @Override
     public void onBindViewHolder(LocationViewHolder holder, int position) {
+
         holder.binding.setLocation(mLocationList.get(position));
         holder.binding.executePendingBindings();
+
+
+        //holder.binding.tbFavorite.setChecked(false);
+        if( mLocationList.get(position).getIs_favorite() ){
+            holder.binding.tbFavorite.setBackground(ContextCompat.getDrawable(mContext, R.drawable.ic_outline_favorite_24px));
+        } else {
+            holder.binding.tbFavorite.setBackground(ContextCompat.getDrawable(mContext, R.drawable.ic_round_favorite_border_24px));
+        }
+
+        holder.binding.tbFavorite.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if ( isChecked ) {
+                    holder.binding.tbFavorite.setBackground(ContextCompat.getDrawable(mContext, R.drawable.ic_outline_favorite_24px));
+                    Toast toast = Toast.makeText(mContext,
+                            mLocationList.get(position).getProperty_name() + " added to favorites.",
+                            Toast.LENGTH_SHORT);
+                    toast.show();
+                } else {
+                    holder.binding.tbFavorite.setBackground(ContextCompat.getDrawable(mContext, R.drawable.ic_round_favorite_border_24px));
+                    Toast toast = Toast.makeText(mContext,
+                            mLocationList.get(position).getProperty_name() + " removed from favorites.",
+                            Toast.LENGTH_SHORT);
+                    toast.show();
+                }
+                mLocationListViewModel.setFavorite( mLocationList.get(position).getLocationId() , isChecked);
+
+            }
+        });
     }
 
     @Override

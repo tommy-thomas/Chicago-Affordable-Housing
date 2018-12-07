@@ -46,7 +46,10 @@ public class LocationListFragment extends Fragment {
 
         super.onPause();
 
-        mLocationAdapter = new LocationAdapter(mLocationListItemCallback);
+        LocationListViewModel locationListViewModel = ViewModelProviders.of(this).get(LocationListViewModel.class);
+
+
+        mLocationAdapter = new LocationAdapter(mLocationListItemCallback , locationListViewModel, getContext());
         mBinding.rvLocationList.setAdapter(mLocationAdapter);
 
         return mBinding.getRoot();
