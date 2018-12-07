@@ -90,6 +90,7 @@ public class LocationListFragment extends Fragment {
     }
 
     private final LocationListItemCallback mLocationListItemCallback = new LocationListItemCallback() {
+
         @Override
         public void onClick(Location location) {
 
@@ -97,15 +98,15 @@ public class LocationListFragment extends Fragment {
                 ((MapsActivity) getActivity()).show(location);
             }
         }
-    };
 
-    private final LocationFavoriteSelectCallBack mLocationFavoriteSelectCallBack = new LocationFavoriteSelectCallBack() {
         @Override
-        public void onClick(Location location) {
-
+        public void onFavoriteChecked(Location location) {
             if (getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED)) {
-                ((MapsActivity) getActivity()).favorite(location);
+                boolean isFavorite = location.getIs_favorite() ? false : true;
+                ((MapsActivity) getActivity()).favorite(location, isFavorite);
             }
         }
+
+
     };
 }

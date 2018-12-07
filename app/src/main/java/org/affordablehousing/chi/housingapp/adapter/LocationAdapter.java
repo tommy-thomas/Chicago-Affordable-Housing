@@ -113,8 +113,6 @@ public class LocationAdapter extends RecyclerView.Adapter <LocationAdapter.Locat
                             Toast.LENGTH_SHORT);
                     toast.show();
                 }
-                mLocationListViewModel.setFavorite( mLocationList.get(position).getLocationId() , isChecked);
-
             }
         });
     }

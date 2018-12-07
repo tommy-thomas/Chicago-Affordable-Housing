@@ -131,10 +131,9 @@ public class MapsActivity extends AppCompatActivity implements
 
     }
 
-    public void favorite(Location location){
+    public void favorite(Location location, boolean isFavorite){
 
-        LocationListViewModel locationListViewModel = ViewModelProviders.of(this).get(LocationListViewModel.class);
-        locationListViewModel.setFavorite( location.getLocationId() , location.getIs_favorite() );
+        mLocationListViewModel.setFavorite( location.getLocationId() , isFavorite );
 
     }
 

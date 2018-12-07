@@ -63,6 +63,7 @@
                 android:layout_marginTop="@dimen/dp_8"
                 android:layout_marginEnd="@dimen/dp_8"
                 android:checked="@{location.is_favorite}"
+                android:onClick="@{() ->  callback.onFavoriteChecked(location)}"
                 android:textOff=""
                 android:textOn=""
                 android:background="@drawable/ic_round_favorite_border_24px" />
