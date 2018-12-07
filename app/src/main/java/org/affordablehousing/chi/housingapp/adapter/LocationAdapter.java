@@ -9,8 +9,7 @@ import android.widget.Toast;
 import org.affordablehousing.chi.housingapp.R;
 import org.affordablehousing.chi.housingapp.databinding.LocationItemBinding;
 import org.affordablehousing.chi.housingapp.model.Location;
-import org.affordablehousing.chi.housingapp.ui.LocationListItemCallback;
-import org.affordablehousing.chi.housingapp.viewmodel.LocationListViewModel;
+import org.affordablehousing.chi.housingapp.ui.LocationClickCallback;
 
 import java.util.List;
 import java.util.Objects;
@@ -25,14 +24,12 @@ public class LocationAdapter extends RecyclerView.Adapter <LocationAdapter.Locat
 
     List<? extends Location> mLocationList;
     private Context mContext;
-    private LocationListViewModel mLocationListViewModel;
 
     @Nullable
-    private final LocationListItemCallback mLocationListItemCallback;
+    private final LocationClickCallback mLocationClickCallback;
 
-    public LocationAdapter(LocationListItemCallback mLocationListItemCallback, LocationListViewModel locationListViewModel, Context context) {
-        this.mLocationListItemCallback = mLocationListItemCallback;
-        mLocationListViewModel = locationListViewModel;
+    public LocationAdapter(LocationClickCallback mLocationClickCallback, Context context) {
+        this.mLocationClickCallback = mLocationClickCallback;
         mContext = context;
 
         setHasStableIds(true);
@@ -79,7 +76,7 @@ public class LocationAdapter extends RecyclerView.Adapter <LocationAdapter.Locat
         LocationItemBinding binding = DataBindingUtil
                 .inflate(LayoutInflater.from(parent.getContext()), R.layout.location_item,
                         parent, false);
-        binding.setCallback(mLocationListItemCallback);
+        binding.setCallback(mLocationClickCallback);
         return new LocationViewHolder(binding);
     }
 

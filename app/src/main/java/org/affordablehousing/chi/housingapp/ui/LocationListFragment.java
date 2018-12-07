@@ -44,12 +44,9 @@ public class LocationListFragment extends Fragment {
         LIST_FILTER = getArguments().getStringArrayList(KEY_LIST_FILTER);
         CURRENT_COMMUNITY = getArguments().getString(KEY_CURRENT_COMMUNITY);
 
-        super.onPause();
+        //super.onPause();
 
-        LocationListViewModel locationListViewModel = ViewModelProviders.of(this).get(LocationListViewModel.class);
-
-
-        mLocationAdapter = new LocationAdapter(mLocationListItemCallback , locationListViewModel, getContext());
+        mLocationAdapter = new LocationAdapter(mLocationClickCallback, getContext());
         mBinding.rvLocationList.setAdapter(mLocationAdapter);
 
         return mBinding.getRoot();
@@ -89,7 +86,7 @@ public class LocationListFragment extends Fragment {
         });
     }
 
-    private final LocationListItemCallback mLocationListItemCallback = new LocationListItemCallback() {
+    private final LocationClickCallback mLocationClickCallback = new LocationClickCallback() {
 
         @Override
         public void onClick(Location location) {
