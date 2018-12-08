@@ -20,4 +20,8 @@
         <item>Uranus</item>
         <item>Neptune</item>
     </string-array>
+
+    <string name="title_activity_edit_note">EditNoteActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 </resources>

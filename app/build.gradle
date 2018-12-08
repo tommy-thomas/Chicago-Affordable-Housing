@@ -53,6 +53,8 @@ dependencies {
 
     // ROOM
     implementation "androidx.room:room-runtime:$room_version"
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0-alpha1'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0-alpha1'
     annotationProcessor "androidx.room:room-compiler:$room_version"
 
     // ViewModel and LiveData

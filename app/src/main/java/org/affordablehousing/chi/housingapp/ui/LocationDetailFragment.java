@@ -4,7 +4,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.RelativeLayout;
 import android.widget.ToggleButton;
 
 import org.affordablehousing.chi.housingapp.R;
@@ -15,6 +17,7 @@ import org.affordablehousing.chi.housingapp.viewmodel.LocationViewModel;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Lifecycle;
@@ -33,8 +36,27 @@ public class LocationDetailFragment extends Fragment {
 
         mBinding = DataBindingUtil.inflate( inflater , R.layout.fragment_location_detail, container, false );
 
+        Button btnAddNote = mBinding.getRoot().findViewById(R.id.btn_add_note);
+        btnAddNote.setVisibility(View.VISIBLE);
+        btnAddNote.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                RelativeLayout parentView = mBinding.getRoot().findViewById(R.id.rl_location_detail);
+                final View rowView = inflater.inflate(R.layout.edit_note_item, null);
+                // Add the new row before the add field button.
+                //parentView.addView(rowView, parentView.getChildCount() -1 );
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
+                alertDialog.setCancelable(true);
+                alertDialog.setView( rowView );
+                alertDialog.show();
+
+            }
+        });
+
         return mBinding.getRoot();
     }
+
+
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -57,8 +79,6 @@ public class LocationDetailFragment extends Fragment {
                 locationViewModel.setFavorite( locationId , isChecked);
             }
         });
-
-        (mBinding.getRoot().findViewById(R.id.btn_add_note)).setVisibility(View.VISIBLE);
 
         mBinding.setLocationViewModel(locationViewModel);
 
