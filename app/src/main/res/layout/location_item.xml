@@ -68,10 +68,22 @@
                 android:onClick="@{() ->  callback.onFavoriteChecked(location)}"
                 android:textOff=""
                 android:textOn=""
-                android:background="@drawable/ic_round_favorite_border_24px" />
+                android:background="@{location.is_favorite ? @drawable/ic_outline_favorite_24px: @drawable/ic_round_favorite_border_24px}" />
+
+                <Button
+                    android:id="@+id/btn_add_note"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:text="Add Note"
+                    android:layout_marginBottom="@dimen/dp_8"
+                    android:layout_below="@+id/tv_location_address"/>
+
 
         </RelativeLayout>
 
+
     </androidx.cardview.widget.CardView>
+
+
 
 </layout>

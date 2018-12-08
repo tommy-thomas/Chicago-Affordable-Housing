@@ -130,16 +130,11 @@ public class MapsActivity extends AppCompatActivity implements
 
         LocationDetailFragment locationDetailFragment = LocationDetailFragment.forLocation(location.getLocationId());
 
-        Bundle bundle = new Bundle();
-        bundle.putStringArrayList(KEY_LIST_FILTER, mPropertyTypeListFilter);
-        bundle.putString(KEY_CURRENT_COMMUNITY, getCurrentCommunity());
-        locationDetailFragment.setArguments(bundle);
-
         getSupportFragmentManager()
                 .beginTransaction()
                 .addToBackStack("location")
-                .replace(R.id.map_fragment_container, locationDetailFragment)
-                .commit();
+                .replace(R.id.map_fragment_container,
+                        locationDetailFragment, null).commit();
 
 //        setIsListDisplay(true);
 //        LocationListFragment locationListFragment = new LocationListFragment();

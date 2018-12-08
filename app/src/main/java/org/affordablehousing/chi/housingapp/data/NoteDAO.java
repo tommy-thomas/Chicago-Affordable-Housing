@@ -17,11 +17,11 @@ public interface NoteDAO {
     @Insert(onConflict = REPLACE)
     void save(NoteEntity note);
 
-    @Query("SELECT * FROM notes where locationId = :locationId")
+    @Query("SELECT * FROM notes where locationId = :locationId order by postedDate desc")
     LiveData<List<NoteEntity>> loadNotes(int locationId);
 
-    @Query("SELECT * FROM notes where locationId = :locationId")
-    List<NoteEntity> loadNote(int locationId);
+    @Query("SELECT * FROM notes where noteId = :noteId")
+    List<NoteEntity> loadNote(int noteId);
 
 
 }

@@ -56,8 +56,8 @@ public class LocationRepository {
     }
 
 
-    public LiveData<LocationEntity> loadLocation(final int propertyId) {
-        return mDatabase.locationDAO().loadLocation(propertyId);
+    public LiveData<LocationEntity> loadLocation(final int locationId) {
+        return mDatabase.locationDAO().loadLocation(locationId);
     }
 
     public int setFavorite( int locationId , boolean is_favorite){

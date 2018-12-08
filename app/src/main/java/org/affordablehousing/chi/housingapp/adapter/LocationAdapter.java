@@ -2,6 +2,7 @@ package org.affordablehousing.chi.housingapp.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.Toast;
@@ -87,14 +88,6 @@ public class LocationAdapter extends RecyclerView.Adapter <LocationAdapter.Locat
         holder.binding.setLocation(mLocationList.get(position));
         holder.binding.executePendingBindings();
 
-
-        //holder.binding.tbFavorite.setChecked(false);
-        if( mLocationList.get(position).getIs_favorite() ){
-            holder.binding.tbFavorite.setBackground(ContextCompat.getDrawable(mContext, R.drawable.ic_outline_favorite_24px));
-        } else {
-            holder.binding.tbFavorite.setBackground(ContextCompat.getDrawable(mContext, R.drawable.ic_round_favorite_border_24px));
-        }
-
         holder.binding.tbFavorite.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -113,6 +106,8 @@ public class LocationAdapter extends RecyclerView.Adapter <LocationAdapter.Locat
                 }
             }
         });
+
+        holder.binding.btnAddNote.setVisibility(View.GONE);
     }
 
     @Override
