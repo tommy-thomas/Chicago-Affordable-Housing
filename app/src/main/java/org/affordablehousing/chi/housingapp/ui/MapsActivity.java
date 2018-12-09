@@ -123,11 +123,6 @@ public class MapsActivity extends AppCompatActivity implements
     /** Shows the product detail fragment */
     public void show(Location location) {
 
-        Toast toast = Toast.makeText(getApplicationContext(),
-                String.valueOf("Show ID : " + location.getLocationId()),
-                Toast.LENGTH_SHORT);
-        toast.show();
-
         LocationDetailFragment locationDetailFragment = LocationDetailFragment.forLocation(location.getLocationId());
 
         getSupportFragmentManager()
@@ -135,19 +130,6 @@ public class MapsActivity extends AppCompatActivity implements
                 .addToBackStack("location")
                 .replace(R.id.map_fragment_container,
                         locationDetailFragment, null).commit();
-
-//        setIsListDisplay(true);
-//        LocationListFragment locationListFragment = new LocationListFragment();
-//
-//        Bundle bundle = new Bundle();
-//        bundle.putStringArrayList(KEY_LIST_FILTER, mPropertyTypeListFilter);
-//        bundle.putString(KEY_CURRENT_COMMUNITY, getCurrentCommunity());
-//        locationListFragment.setArguments(bundle);
-//        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-//        ft.replace(R.id.map_fragment_container, locationListFragment);
-//        ft.commit();
-//        ft.addToBackStack(null);
-
     }
 
     public void favorite(Location location, boolean isFavorite){

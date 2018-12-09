@@ -1,19 +1,23 @@
 package org.affordablehousing.chi.housingapp.ui;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.RelativeLayout;
 import android.widget.ToggleButton;
 
 import org.affordablehousing.chi.housingapp.R;
+import org.affordablehousing.chi.housingapp.adapter.NoteAdapter;
 import org.affordablehousing.chi.housingapp.databinding.FragmentLocationDetailBinding;
 import org.affordablehousing.chi.housingapp.model.Location;
 import org.affordablehousing.chi.housingapp.model.LocationEntity;
+import org.affordablehousing.chi.housingapp.model.NoteEntity;
 import org.affordablehousing.chi.housingapp.viewmodel.LocationViewModel;
+
+import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -28,7 +32,10 @@ import androidx.lifecycle.ViewModelProviders;
 public class LocationDetailFragment extends Fragment {
 
     private static final String KEY_LOCATION_ID = "location-id";
+    private int LOCATION_ID;
     private FragmentLocationDetailBinding mBinding;
+    private LocationViewModel mLocationViewModel;
+    private NoteAdapter mNoteAdapter;
 
     @Nullable
     @Override
@@ -41,22 +48,55 @@ public class LocationDetailFragment extends Fragment {
         btnAddNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                RelativeLayout parentView = mBinding.getRoot().findViewById(R.id.rl_location_detail);
-                final View rowView = inflater.inflate(R.layout.edit_note_item, null);
-                // Add the new row before the add field button.
-                //parentView.addView(rowView, parentView.getChildCount() -1 );
-                AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
-                alertDialog.setCancelable(true);
-                alertDialog.setView( rowView );
-                alertDialog.show();
-
+               showAddNoteDialogButtonClicked( inflater );
             }
         });
+
+        LOCATION_ID = getArguments().getInt(KEY_LOCATION_ID);
+
+        LocationViewModel.Factory factory = new LocationViewModel.Factory(
+                getActivity().getApplication(), LOCATION_ID);
+
+        mLocationViewModel =
+                ViewModelProviders.of(this, factory)
+                        .get(LocationViewModel.class);
+
+        mNoteAdapter = new NoteAdapter();
+        mBinding.noteList.setAdapter(mNoteAdapter);
 
         return mBinding.getRoot();
     }
 
 
+    public void showAddNoteDialogButtonClicked(LayoutInflater inflater) {
+
+        // setup the alert builder
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Add Note");
+
+        // add the buttons
+        builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+               // EditText noteView = builder.getApplicationContext().findViewById(R.id.et_note_edit);
+                //String noteText = noteView.getText().toString();
+                NoteEntity newNote = new NoteEntity();
+               newNote.setLocationId( LOCATION_ID );
+               newNote.setText( "New note." );
+               mLocationViewModel.addNote(newNote);
+            }
+        });
+        builder.setNegativeButton("Cancel", null);
+
+        final View rowView = inflater.inflate(R.layout.edit_note_item, null);
+
+        builder.setView( rowView );
+
+        // create and show the alert dialog
+        AlertDialog dialog = builder.create();
+
+        dialog.show();
+    }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -101,18 +141,18 @@ public class LocationDetailFragment extends Fragment {
         });
 
 
-//        // Observe comments
-//        model.getComments().observe(this, new Observer<List<CommentEntity>>() {
-//            @Override
-//            public void onChanged(@Nullable List<CommentEntity> commentEntities) {
-//                if (commentEntities != null) {
-//                    mBinding.setIsLoading(false);
-//                    mCommentAdapter.setCommentList(commentEntities);
-//                } else {
-//                    mBinding.setIsLoading(true);
-//                }
-//            }
-//        });
+        // Observe notes
+        model.getNotes().observe(this, new Observer<List<NoteEntity>>() {
+            @Override
+            public void onChanged(@Nullable List<NoteEntity> noteEntities) {
+                if (noteEntities != null) {
+                    mBinding.setIsLoading(false);
+                    mNoteAdapter.setNoteList(noteEntities);
+                } else {
+                    mBinding.setIsLoading(true);
+                }
+            }
+        });
     }
 
     private final LocationClickCallback mLocationClickCallback = new LocationClickCallback() {

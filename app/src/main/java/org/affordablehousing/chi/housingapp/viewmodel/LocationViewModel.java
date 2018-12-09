@@ -6,6 +6,9 @@ import android.os.AsyncTask;
 import org.affordablehousing.chi.housingapp.App;
 import org.affordablehousing.chi.housingapp.data.LocationRepository;
 import org.affordablehousing.chi.housingapp.model.LocationEntity;
+import org.affordablehousing.chi.housingapp.model.NoteEntity;
+
+import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.ObservableField;
@@ -24,7 +27,7 @@ public class LocationViewModel extends AndroidViewModel {
 
     private final int mLocationId;
 
-    //private final LiveData<List<CommentEntity>> mObservableComments;
+    private final LiveData<List<NoteEntity>> mObservableNotes;
 
     public LocationViewModel(@NonNull Application application, LocationRepository repository,
                              final int locationId) {
@@ -33,16 +36,16 @@ public class LocationViewModel extends AndroidViewModel {
 
         mRepository = ((App) application).getRepository();
 
-        //mObservableComments = repository.loadComments(mLocationId);
+        mObservableNotes = repository.loadNotes(mLocationId);
         mObservableLocation = repository.loadLocation(mLocationId);
     }
 
     /**
-     * Expose the LiveData Comments query so the UI can observe it.
+     * Expose the LiveData Notes query so the UI can observe it.
      */
-//    public LiveData<List<CommentEntity>> getComments() {
-//        return mObservableComments;
-//    }
+    public LiveData<List<NoteEntity>> getNotes() {
+        return mObservableNotes;
+    }
 
     public LiveData<LocationEntity> getObservableLocation() {
         return mObservableLocation;
@@ -56,7 +59,13 @@ public class LocationViewModel extends AndroidViewModel {
         new AddFavoriteTask( mRepository , locationId , favorite).execute();
     }
 
+    public void addNote(NoteEntity noteEntity){
+        new AddNoteTask(mRepository,noteEntity).execute();
+    }
 
+    public void setLocation(ObservableField <LocationEntity> location) {
+        this.location = location;
+    }
 
     /**
      * A creator is used to inject the product ID into the ViewModel
@@ -104,6 +113,22 @@ public class LocationViewModel extends AndroidViewModel {
             return null;
         }
 
+    }
 
+    private class AddNoteTask extends AsyncTask<Void,Void,Void> {
+
+        private LocationRepository mRepository;
+        private NoteEntity mNoteEntity;
+
+        public AddNoteTask(LocationRepository repository, NoteEntity noteEntity){
+           mRepository = repository;
+           mNoteEntity = noteEntity;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            mRepository.addNote(mNoteEntity);
+            return null;
+        }
     }
 }

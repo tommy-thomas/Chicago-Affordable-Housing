@@ -24,8 +24,7 @@ public class NoteEntity implements Note {
     private Date postedDate;
 
     @Ignore
-    public NoteEntity(int noteId, int locationId, String text, Date postedDate) {
-        this.noteId = noteId;
+    public NoteEntity(int locationId, String text, Date postedDate) {
         this.locationId = locationId;
         this.text = text;
         this.postedDate = postedDate;

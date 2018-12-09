@@ -1,6 +1,7 @@
 package org.affordablehousing.chi.housingapp.data;
 
 import org.affordablehousing.chi.housingapp.model.LocationEntity;
+import org.affordablehousing.chi.housingapp.model.NoteEntity;
 
 import java.util.List;
 
@@ -74,6 +75,14 @@ public class LocationRepository {
 
     public LiveData<List<LocationEntity>> loadLocationsByPropertyType(List<String> types) {
         return mDatabase.locationDAO().loadLocationsByPropertyType(types);
+    }
+
+    public LiveData<List<NoteEntity>> loadNotes(final int locationId){
+        return mDatabase.noteDAO().loadNotes(locationId);
+    }
+
+    public void addNote(NoteEntity note){
+        mDatabase.noteDAO().save(note);
     }
 
 
