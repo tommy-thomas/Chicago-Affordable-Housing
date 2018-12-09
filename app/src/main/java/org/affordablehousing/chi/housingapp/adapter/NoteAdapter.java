@@ -19,6 +19,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
 
     private List<? extends Note> mNoteList;
 
+
     public void setNoteList(final List<? extends Note> notes) {
         if (mNoteList == null) {
             mNoteList = notes;
@@ -68,6 +69,35 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
     @Override
     public void onBindViewHolder(@NonNull NoteViewHolder holder, int position) {
         holder.binding.setNote(mNoteList.get(position));
+
+
+//        holder.popmemu.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                final Movies movies = moviesList.get(position);
+//                PopupMenu popupMenu = new PopupMenu(context, holder.popmemu);
+//                popupMenu.inflate(R.menu.card_menu);
+//                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+//                    @Override
+//                    public boolean onMenuItemClick(MenuItem item) {
+//                        switch (item.getItemId()) {
+//                            case R.id.watch_later:
+//                                Toast.makeText(context, movies.getMovieName() + " added to watch later", Toast.LENGTH_LONG).show();
+//                                break;
+//                            case R.id.favourite:
+//                                Toast.makeText(context, movies.getMovieName() + " added to favourites", Toast.LENGTH_LONG).show();
+//                                break;
+//                            case R.id.download:
+//                                Toast.makeText(context, movies.getMovieName() + " started downloading", Toast.LENGTH_LONG).show();
+//                                break;
+//                        }
+//                        return false;
+//                    }
+//                });
+//                popupMenu.show();
+//            }
+//        });
+
         holder.binding.executePendingBindings();
     }
 

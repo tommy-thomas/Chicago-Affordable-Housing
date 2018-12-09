@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ToggleButton;
 
 import org.affordablehousing.chi.housingapp.R;
@@ -70,25 +71,26 @@ public class LocationDetailFragment extends Fragment {
 
     public void showAddNoteDialogButtonClicked(LayoutInflater inflater) {
 
+        final View rowView = inflater.inflate(R.layout.edit_note_item, null);
+
         // setup the alert builder
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Add Note");
+        builder.setTitle("Add a Note");
 
         // add the buttons
         builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                // EditText noteView = builder.getApplicationContext().findViewById(R.id.et_note_edit);
-                //String noteText = noteView.getText().toString();
+                EditText noteView = rowView.findViewById(R.id.et_note_edit);
+                String noteText = noteView.getText().toString();
                 NoteEntity newNote = new NoteEntity();
                newNote.setLocationId( LOCATION_ID );
-               newNote.setText( "New note." );
+               newNote.setText( noteText );
                mLocationViewModel.addNote(newNote);
             }
         });
         builder.setNegativeButton("Cancel", null);
-
-        final View rowView = inflater.inflate(R.layout.edit_note_item, null);
 
         builder.setView( rowView );
 

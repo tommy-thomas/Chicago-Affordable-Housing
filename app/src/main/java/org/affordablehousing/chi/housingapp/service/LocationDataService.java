@@ -9,5 +9,5 @@ import retrofit2.http.GET;
 
 public interface LocationDataService {
     @GET("/resource/uahe-iimk.json")
-    Call <List <LocationEntity>> getAllProperties();
+    Call <List <LocationEntity>> getAllLocations();
 }
