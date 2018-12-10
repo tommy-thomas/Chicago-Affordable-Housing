@@ -85,5 +85,13 @@ public class LocationRepository {
         mDatabase.noteDAO().save(note);
     }
 
+    public void editNote(int noteId, String noteText){
+        mDatabase.noteDAO().editNote(noteId, noteText);
+    }
+
+    public void deleteNote(int noteId){
+        mDatabase.noteDAO().deleteNote(noteId);
+    }
+
 
 }

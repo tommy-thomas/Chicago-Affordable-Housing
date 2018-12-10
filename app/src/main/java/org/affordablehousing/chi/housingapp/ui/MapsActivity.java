@@ -51,7 +51,7 @@ import androidx.lifecycle.ViewModelProviders;
 public class MapsActivity extends AppCompatActivity implements
         OnMapReadyCallback,
         NavigationView.OnNavigationItemSelectedListener,
-        PropertyTypeListFragment.PropertyTypeClickListener{
+        PropertyTypeListFragment.PropertyTypeClickListener {
 
     private GoogleMap mMap;
     private final String TAG = MapsActivity.class.getSimpleName() + " -- map acctivity";
@@ -84,7 +84,7 @@ public class MapsActivity extends AppCompatActivity implements
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map_fragment_container);
-        if( mapFragment == null ){
+        if (mapFragment == null) {
             mapFragment = SupportMapFragment.newInstance();
             getSupportFragmentManager().beginTransaction().replace(R.id.map_fragment_container, mapFragment).commit();
         }
@@ -120,7 +120,9 @@ public class MapsActivity extends AppCompatActivity implements
 
     }
 
-    /** Shows the product detail fragment */
+    /**
+     * Shows the product detail fragment
+     */
     public void show(Location location) {
 
         LocationDetailFragment locationDetailFragment = LocationDetailFragment.forLocation(location.getLocationId());
@@ -132,14 +134,18 @@ public class MapsActivity extends AppCompatActivity implements
                         locationDetailFragment, null).commit();
     }
 
-    public void favorite(Location location, boolean isFavorite){
+    public void favorite(Location location, boolean isFavorite) {
 
-        mLocationListViewModel.setFavorite( location.getLocationId() , isFavorite );
+        mLocationListViewModel.setFavorite(location.getLocationId(), isFavorite);
 
     }
 
+    public void deleteNote(int noteId){
+        //
+    }
+
     @Override
-    protected void onPause(){
+    protected void onPause() {
         Toast toast = Toast.makeText(getApplicationContext(),
                 String.valueOf("Pause: " + getCurrentCommunity()),
                 Toast.LENGTH_SHORT);
@@ -204,7 +210,7 @@ public class MapsActivity extends AppCompatActivity implements
                     setIsListDisplay(false);
                     return true;
                 case R.id.navigation_list:
-                    showPropertyList();
+                    showLocationList();
                     return true;
                 case R.id.navigation_filter:
                     showPropertyTypeFilterList();
@@ -217,10 +223,14 @@ public class MapsActivity extends AppCompatActivity implements
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
+
+        /* top nav */
         inflater.inflate(R.menu.actions_map, menu);
 
+        /* community list spinner */
         inflater.inflate(R.menu.community_list, menu);
 
+        /* handle community list */
         MenuItem community = menu.findItem(R.id.action_community);
         Spinner spinner = (Spinner) community.getActionView();
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -228,15 +238,15 @@ public class MapsActivity extends AppCompatActivity implements
             public void onItemSelected(AdapterView <?> parent, View view, int position, long id) {
                 String selectedCommunityText = (String) parent.getItemAtPosition(position);
                 // Notify the selected item text
-                setCurrentCommunity( selectedCommunityText );
+                setCurrentCommunity(selectedCommunityText);
                 if (position != 0) {
                     // Move camera to new selected community
-                    if( isListDisplay() ){
-                        showPropertyList();
+                    if (isListDisplay()) {
+                        showLocationList();
                     }
                     moveCameraToCommunity(selectedCommunityText);
                 } else {
-                   moveCameraToDefaultLocation();
+                    moveCameraToDefaultLocation();
                 }
             }
 
@@ -260,7 +270,6 @@ public class MapsActivity extends AppCompatActivity implements
             }
         });
 
-
         return true;
     }
 
@@ -271,6 +280,12 @@ public class MapsActivity extends AppCompatActivity implements
         switch (item.getItemId()) {
             case R.id.action_reset:
                 resetMarkers();
+            case R.id.action_note_edit:
+                Toast toast = Toast.makeText(getApplicationContext(),
+                        "Edit Node",
+                        Toast.LENGTH_SHORT);
+                toast.show();
+                super.onResume();
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -315,15 +330,15 @@ public class MapsActivity extends AppCompatActivity implements
 
     }
 
-    private void setIsListDisplay(boolean isListDisplay){
-        mIsListDisplay =  isListDisplay;
+    private void setIsListDisplay(boolean isListDisplay) {
+        mIsListDisplay = isListDisplay;
     }
 
-    private boolean isListDisplay(){
+    private boolean isListDisplay() {
         return mIsListDisplay;
     }
 
-    private void showPropertyList() {
+    private void showLocationList() {
 
         setIsListDisplay(true);
         LocationListFragment locationListFragment = new LocationListFragment();
@@ -400,11 +415,11 @@ public class MapsActivity extends AppCompatActivity implements
 
     }
 
-    private void setCurrentCommunity( String currentCommunity ){
+    private void setCurrentCommunity(String currentCommunity) {
         CURRENT_COMMUNITY = currentCommunity;
     }
 
-    private String getCurrentCommunity(){
+    private String getCurrentCommunity() {
         return CURRENT_COMMUNITY;
     }
 

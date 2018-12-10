@@ -63,6 +63,14 @@ public class LocationViewModel extends AndroidViewModel {
         new AddNoteTask(mRepository,noteEntity).execute();
     }
 
+    public void editNote(int noteId , String noteText){
+         new EditNoteTask(mRepository, noteId, noteText).execute();
+    }
+
+    public void deleteNote(int noteId){
+        new DeleteNoteTask(mRepository, noteId).execute();
+    }
+
     public void setLocation(ObservableField <LocationEntity> location) {
         this.location = location;
     }
@@ -128,6 +136,42 @@ public class LocationViewModel extends AndroidViewModel {
         @Override
         protected Void doInBackground(Void... voids) {
             mRepository.addNote(mNoteEntity);
+            return null;
+        }
+    }
+
+    private class EditNoteTask extends AsyncTask<Void,Void,Void> {
+
+        private LocationRepository mRepository;
+        private int mNoteId;
+        private String mNoteText;
+
+        public EditNoteTask(LocationRepository repository, int noteId, String noteText){
+            mRepository = repository;
+            mNoteId = noteId;
+            mNoteText = noteText;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            mRepository.editNote(mNoteId , mNoteText);
+            return null;
+        }
+    }
+
+    private class DeleteNoteTask extends AsyncTask<Void,Void,Void> {
+
+        private LocationRepository mRepository;
+        private int mNoteId;
+
+        public DeleteNoteTask(LocationRepository repository, int noteId){
+            mRepository = repository;
+            mNoteId = noteId;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            mRepository.deleteNote(mNoteId);
             return null;
         }
     }

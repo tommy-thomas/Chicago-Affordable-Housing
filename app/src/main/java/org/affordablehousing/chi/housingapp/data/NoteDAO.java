@@ -23,5 +23,11 @@ public interface NoteDAO {
     @Query("SELECT * FROM notes where noteId = :noteId")
     List<NoteEntity> loadNote(int noteId);
 
+    @Query("update notes set text = :text where noteId = :noteId")
+    void editNote(int noteId, String text);
+
+    @Query("delete from notes where noteId = :noteId")
+    void deleteNote(int noteId);
+
 
 }

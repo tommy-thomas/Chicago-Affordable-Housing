@@ -13,8 +13,8 @@ import android.widget.ToggleButton;
 import org.affordablehousing.chi.housingapp.R;
 import org.affordablehousing.chi.housingapp.adapter.NoteAdapter;
 import org.affordablehousing.chi.housingapp.databinding.FragmentLocationDetailBinding;
-import org.affordablehousing.chi.housingapp.model.Location;
 import org.affordablehousing.chi.housingapp.model.LocationEntity;
+import org.affordablehousing.chi.housingapp.model.Note;
 import org.affordablehousing.chi.housingapp.model.NoteEntity;
 import org.affordablehousing.chi.housingapp.viewmodel.LocationViewModel;
 
@@ -25,7 +25,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -42,14 +41,14 @@ public class LocationDetailFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        mBinding = DataBindingUtil.inflate( inflater , R.layout.fragment_location_detail, container, false );
+        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_location_detail, container, false);
 
         Button btnAddNote = mBinding.getRoot().findViewById(R.id.btn_add_note);
         btnAddNote.setVisibility(View.VISIBLE);
         btnAddNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               showAddNoteDialogButtonClicked( inflater );
+                showAddNoteDialogButtonClicked(inflater);
             }
         });
 
@@ -62,12 +61,11 @@ public class LocationDetailFragment extends Fragment {
                 ViewModelProviders.of(this, factory)
                         .get(LocationViewModel.class);
 
-        mNoteAdapter = new NoteAdapter();
+        mNoteAdapter = new NoteAdapter(mNoteClickCallback, mEditNoteHandler, getContext());
         mBinding.noteList.setAdapter(mNoteAdapter);
 
         return mBinding.getRoot();
     }
-
 
     public void showAddNoteDialogButtonClicked(LayoutInflater inflater) {
 
@@ -81,18 +79,18 @@ public class LocationDetailFragment extends Fragment {
         builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-               // EditText noteView = builder.getApplicationContext().findViewById(R.id.et_note_edit);
+                // EditText noteView = builder.getApplicationContext().findViewById(R.id.et_note_edit);
                 EditText noteView = rowView.findViewById(R.id.et_note_edit);
                 String noteText = noteView.getText().toString();
                 NoteEntity newNote = new NoteEntity();
-               newNote.setLocationId( LOCATION_ID );
-               newNote.setText( noteText );
-               mLocationViewModel.addNote(newNote);
+                newNote.setLocationId(LOCATION_ID);
+                newNote.setText(noteText);
+                mLocationViewModel.addNote(newNote);
             }
         });
         builder.setNegativeButton("Cancel", null);
 
-        builder.setView( rowView );
+        builder.setView(rowView);
 
         // create and show the alert dialog
         AlertDialog dialog = builder.create();
@@ -118,24 +116,21 @@ public class LocationDetailFragment extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 int locationId = locationViewModel.getObservableLocation().getValue().getLocationId();
-                locationViewModel.setFavorite( locationId , isChecked);
+                locationViewModel.setFavorite(locationId, isChecked);
             }
         });
 
+
         mBinding.setLocationViewModel(locationViewModel);
 
-
-       // mBinding.setCallback(mLocationClickCallback);
-
         subscribeToModel(locationViewModel);
-
 
     }
 
     private void subscribeToModel(final LocationViewModel model) {
 
         // Observe product data
-        model.getObservableLocation().observe(this, new Observer<LocationEntity>() {
+        model.getObservableLocation().observe(this, new Observer <LocationEntity>() {
             @Override
             public void onChanged(@Nullable LocationEntity locationEntity) {
                 model.setLocation(locationEntity);
@@ -144,9 +139,9 @@ public class LocationDetailFragment extends Fragment {
 
 
         // Observe notes
-        model.getNotes().observe(this, new Observer<List<NoteEntity>>() {
+        model.getNotes().observe(this, new Observer <List <NoteEntity>>() {
             @Override
-            public void onChanged(@Nullable List<NoteEntity> noteEntities) {
+            public void onChanged(@Nullable List <NoteEntity> noteEntities) {
                 if (noteEntities != null) {
                     mBinding.setIsLoading(false);
                     mNoteAdapter.setNoteList(noteEntities);
@@ -157,33 +152,43 @@ public class LocationDetailFragment extends Fragment {
         });
     }
 
-    private final LocationClickCallback mLocationClickCallback = new LocationClickCallback() {
+    private final NoteClickCallback mNoteClickCallback = new NoteClickCallback() {
 
         @Override
-        public void onClick(Location location) {
-
-            if (getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED)) {
-                ((MapsActivity) getActivity()).show(location);
-            }
+        public void onClick(Note note) {
+//            if (getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED)) {
+//               ((MapsActivity) getActivity()).showEditNoteMenu(note);
+//            }
         }
-
-        @Override
-        public void onFavoriteChecked(Location location) {
-            if (getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED)) {
-                boolean isFavorite = location.getIs_favorite() ? false : true;
-                ((MapsActivity) getActivity()).favorite(location, isFavorite);
-            }
-        }
-
 
     };
 
-    /** Creates location fragment for specific product ID */
-    public static LocationDetailFragment forLocation(int propertyId) {
+    private final EditNoteHandler mEditNoteHandler = new EditNoteHandler() {
+        @Override
+        public void editNote(int noteId, String noteText) {
+            mLocationViewModel.editNote(noteId, noteText);
+        }
+
+        @Override
+        public void deleteNote(int noteId) {
+            mLocationViewModel.deleteNote(noteId);
+        }
+    };
+
+    /**
+     * Creates location fragment for specific product ID
+     */
+    public static LocationDetailFragment forLocation(int locationId) {
         LocationDetailFragment fragment = new LocationDetailFragment();
         Bundle args = new Bundle();
-        args.putInt(KEY_LOCATION_ID, propertyId);
+        args.putInt(KEY_LOCATION_ID, locationId);
         fragment.setArguments(args);
         return fragment;
+    }
+
+
+    public interface EditNoteHandler{
+        void editNote(int noteId, String text);
+        void deleteNote(int noteId);
     }
 }

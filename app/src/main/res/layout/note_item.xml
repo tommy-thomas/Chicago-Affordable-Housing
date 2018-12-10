@@ -15,7 +15,6 @@
         android:layout_marginStart="@dimen/dp_8"
         android:layout_marginEnd="@dimen/dp_8"
         android:minHeight="@dimen/note_minHeight"
-        android:onClick="@{() ->  callback.onClick(note)}"
         android:orientation="horizontal"
         android:padding="8dp"
         app:cardUseCompatPadding="true">

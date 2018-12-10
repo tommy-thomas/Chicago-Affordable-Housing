@@ -1,26 +1,45 @@
 package org.affordablehousing.chi.housingapp.adapter;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import org.affordablehousing.chi.housingapp.R;
 import org.affordablehousing.chi.housingapp.databinding.NoteItemBinding;
 import org.affordablehousing.chi.housingapp.model.Note;
+import org.affordablehousing.chi.housingapp.ui.LocationDetailFragment;
+import org.affordablehousing.chi.housingapp.ui.NoteClickCallback;
 
 import java.util.List;
 import java.util.Objects;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder> {
+public class NoteAdapter extends RecyclerView.Adapter <NoteAdapter.NoteViewHolder> {
 
-    private List<? extends Note> mNoteList;
+    private List <? extends Note> mNoteList;
+    private NoteClickCallback mNoteClickCallback;
+    private LocationDetailFragment.EditNoteHandler mEditNoteHandler;
+    private Context mContext;
+
+    public NoteAdapter(NoteClickCallback noteClickCallback, LocationDetailFragment.EditNoteHandler editNoteHandler, Context context) {
+        this.mNoteClickCallback = noteClickCallback;
+        this.mEditNoteHandler = editNoteHandler;
+        this.mContext = context;
+    }
 
 
-    public void setNoteList(final List<? extends Note> notes) {
+    public void setNoteList(final List <? extends Note> notes) {
         if (mNoteList == null) {
             mNoteList = notes;
             notifyItemRangeInserted(0, notes.size());
@@ -63,42 +82,69 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
         NoteItemBinding binding = DataBindingUtil
                 .inflate(LayoutInflater.from(parent.getContext()), R.layout.note_item,
                         parent, false);
+        binding.setCallback(mNoteClickCallback);
         return new NoteViewHolder(binding);
     }
 
     @Override
     public void onBindViewHolder(@NonNull NoteViewHolder holder, int position) {
+
         holder.binding.setNote(mNoteList.get(position));
 
+        int noteId = mNoteList.get(position).getNoteId();
+        String noteText = mNoteList.get(position).getText();
 
-//        holder.popmemu.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                final Movies movies = moviesList.get(position);
-//                PopupMenu popupMenu = new PopupMenu(context, holder.popmemu);
-//                popupMenu.inflate(R.menu.card_menu);
-//                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-//                    @Override
-//                    public boolean onMenuItemClick(MenuItem item) {
-//                        switch (item.getItemId()) {
-//                            case R.id.watch_later:
-//                                Toast.makeText(context, movies.getMovieName() + " added to watch later", Toast.LENGTH_LONG).show();
-//                                break;
-//                            case R.id.favourite:
-//                                Toast.makeText(context, movies.getMovieName() + " added to favourites", Toast.LENGTH_LONG).show();
-//                                break;
-//                            case R.id.download:
-//                                Toast.makeText(context, movies.getMovieName() + " started downloading", Toast.LENGTH_LONG).show();
-//                                break;
-//                        }
-//                        return false;
-//                    }
-//                });
-//                popupMenu.show();
-//            }
-//        });
+        holder.binding.tvMenuNoteEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PopupMenu popupMenu = new PopupMenu(mContext, view);
+                popupMenu.inflate(R.menu.note_edit);
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.action_note_edit:
+                                showEditNoteDialog(noteId , noteText);
+                                return true;
+                            case R.id.action_note_delete:
+                                    mEditNoteHandler.deleteNote( noteId );
+                                return true;
+                            default:
+                                return true;
+                        }
+                    }
+                });
+                popupMenu.show();
+            }
+        });
 
         holder.binding.executePendingBindings();
+    }
+
+    private void showEditNoteDialog(int noteId, String noteText){
+        LayoutInflater inflater = LayoutInflater.from(mContext);
+
+        final View rowView = inflater.inflate(R.layout.edit_note_item, null);
+
+        EditText noteTextView = rowView.findViewById(R.id.et_note_edit);
+
+        noteTextView.setText( noteText , TextView.BufferType.EDITABLE);
+        // setup the alert builder
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        builder.setTitle("Edit Note");
+        // add the buttons
+        builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                mEditNoteHandler.editNote( noteId , noteTextView.getText().toString());
+            }
+        });
+        builder.setNegativeButton("Cancel", null);
+        builder.setView(rowView);
+        // create and show the alert dialog
+        AlertDialog dialog = builder.create();
+
+        dialog.show();
     }
 
     @Override
