@@ -6,11 +6,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="org.affordablehousing.chi.housingapp.SplashScreenActivity"
-    android:background="@color/colorPrimaryLight">
+    android:background="@color/colorPrimary">
 
     <ImageView
         android:id="@+id/logo"
-        android:src="@drawable/ic_round_location_city_24px"
+        android:src="@drawable/ic_baseline_domain_48px"
         android:layout_width="150dp"
         android:layout_height="150dp"
         app:layout_constraintBottom_toBottomOf="parent"

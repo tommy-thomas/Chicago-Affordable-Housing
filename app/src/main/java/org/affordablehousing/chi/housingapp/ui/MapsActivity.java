@@ -285,6 +285,7 @@ public class MapsActivity extends AppCompatActivity implements
         /* handle community list */
         MenuItem community = menu.findItem(R.id.action_community);
         mSpinner = (Spinner) community.getActionView();
+
         mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView <?> parent, View view, int position, long id) {

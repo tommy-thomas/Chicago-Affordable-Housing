@@ -2,7 +2,6 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-
     <data>
     <variable name="location"
         type="org.affordablehousing.chi.housingapp.model.Location"/>
@@ -11,25 +10,19 @@
 
 </data>
 
-
-
     <androidx.cardview.widget.CardView
         android:id="@+id/cv_location_detail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="100dp"
         android:onClick="@{() ->  callback.onClick(location)}"
         android:orientation="horizontal"
-        android:layout_marginStart="@dimen/dp_8"
-        android:layout_marginEnd="@dimen/dp_8"
         app:cardUseCompatPadding="true"
-        android:background="@color/colorPrimaryLight">
+        android:background="@color/colorWhite">
         <RelativeLayout
             android:id="@+id/rl_location_detail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginEnd="@dimen/dp_8">
+            android:background="@color/colorWhite">
 
             <TextView
                 android:id="@+id/tv_property_name"
@@ -67,7 +60,7 @@
                 android:onClick="@{() ->  callback.onFavoriteChecked(location)}"
                 android:textOff=""
                 android:textOn=""
-                android:background="@{location.is_favorite ? @drawable/ic_outline_favorite_24px: @drawable/ic_round_favorite_border_24px}" />
+                android:background="@{location.is_favorite ? @drawable/ic_baseline_star_24px : @drawable/ic_baseline_star_border_24px}" />
 
                 <Button
                     android:id="@+id/btn_add_note"

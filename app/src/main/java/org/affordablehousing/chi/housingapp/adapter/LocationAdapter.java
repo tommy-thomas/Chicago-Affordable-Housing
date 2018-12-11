@@ -92,13 +92,13 @@ public class LocationAdapter extends RecyclerView.Adapter <LocationAdapter.Locat
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if ( isChecked ) {
-                    holder.binding.tbFavorite.setBackground(ContextCompat.getDrawable(mContext, R.drawable.ic_outline_favorite_24px));
+                    holder.binding.tbFavorite.setBackground(ContextCompat.getDrawable(mContext, R.drawable.ic_baseline_star_24px));
                     Toast toast = Toast.makeText(mContext,
                             mLocationList.get(position).getProperty_name() + " added to favorites.",
                             Toast.LENGTH_SHORT);
                     toast.show();
                 } else {
-                    holder.binding.tbFavorite.setBackground(ContextCompat.getDrawable(mContext, R.drawable.ic_round_favorite_border_24px));
+                    holder.binding.tbFavorite.setBackground(ContextCompat.getDrawable(mContext, R.drawable.ic_baseline_star_border_24px));
                     Toast toast = Toast.makeText(mContext,
                             mLocationList.get(position).getProperty_name() + " removed from favorites.",
                             Toast.LENGTH_SHORT);

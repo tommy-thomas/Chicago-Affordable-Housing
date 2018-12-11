@@ -14,7 +14,6 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:textSize="30sp"
-        android:layout_marginBottom="@dimen/dp_8"
         android:layout_marginStart="@dimen/dp_8"
         android:layout_marginEnd="@dimen/dp_8"
         android:text="@string/community_types"
@@ -23,7 +22,6 @@
         />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:layout_marginBottom="40dp"
         android:id="@+id/rv_property_type"
         android:scrollbars="vertical"
         android:layout_width="match_parent"
