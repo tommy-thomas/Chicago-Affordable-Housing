@@ -3,7 +3,7 @@ package org.affordablehousing.chi.housingapp.service;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class RetrofitClientInstance {
+public class RetrofitClient {
 
     //https://data.cityofchicago.org/resource/uahe-iimk.json
 

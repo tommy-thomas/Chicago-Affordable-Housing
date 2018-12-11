@@ -6,7 +6,7 @@ import org.affordablehousing.chi.housingapp.AppExecutors;
 import org.affordablehousing.chi.housingapp.model.LocationEntity;
 import org.affordablehousing.chi.housingapp.model.NoteEntity;
 import org.affordablehousing.chi.housingapp.service.LocationDataService;
-import org.affordablehousing.chi.housingapp.service.RetrofitClientInstance;
+import org.affordablehousing.chi.housingapp.service.RetrofitClient;
 
 import java.util.List;
 
@@ -81,20 +81,23 @@ public abstract class LocationDatabase extends RoomDatabase {
 
     }
 
-
-    private void setPropertyEntityList() {
-        LocationDataService locationDataService = RetrofitClientInstance.getRetrofitInstance().create(LocationDataService.class);
+    private void setPropertyEntityList( ) {
+        LocationDataService locationDataService = RetrofitClient.getRetrofitInstance().create(LocationDataService.class);
         Call <List <LocationEntity>> call = locationDataService.getAllLocations();
         call.enqueue(new retrofit2.Callback <List <LocationEntity>>() {
             @Override
             public void onResponse(Call <List <LocationEntity>> call, Response <List <LocationEntity>> response) {
+                if( response.isSuccessful()){
                 mLocationEntityList = response.body();
+                }
             }
 
             @Override
             public void onFailure(Call <List <LocationEntity>> call, Throwable t) {
 
             }
+
+
 
         });
     }
@@ -124,7 +127,7 @@ public abstract class LocationDatabase extends RoomDatabase {
 
     private static void addDelay() {
         try {
-            Thread.sleep(5000);
+            Thread.sleep(8000);
         } catch (InterruptedException ignored) {
         }
     }

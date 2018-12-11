@@ -44,7 +44,6 @@ public class LocationDetailFragment extends Fragment {
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_location_detail, container, false);
 
         Button btnAddNote = mBinding.getRoot().findViewById(R.id.btn_add_note);
-        btnAddNote.setVisibility(View.VISIBLE);
         btnAddNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
