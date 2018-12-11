@@ -44,7 +44,8 @@
         <!-- Maps Activity // -->
         <activity
             android:name=".ui.MapsActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar">
+            android:theme="@style/Theme.AppCompat.NoActionBar"
+            android:configChanges="orientation|screenSize|keyboardHidden">
             android:label="@string/title_activity_maps">
         </activity>
     </application>

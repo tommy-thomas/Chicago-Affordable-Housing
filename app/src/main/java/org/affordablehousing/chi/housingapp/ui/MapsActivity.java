@@ -1,6 +1,7 @@
 package org.affordablehousing.chi.housingapp.ui;
 
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
@@ -25,6 +26,8 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.affordablehousing.chi.housingapp.R;
 import org.affordablehousing.chi.housingapp.model.Location;
@@ -33,6 +36,7 @@ import org.affordablehousing.chi.housingapp.model.MarkerTag;
 import org.affordablehousing.chi.housingapp.viewmodel.LocationListViewModel;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,16 +67,30 @@ public class MapsActivity extends AppCompatActivity implements
     private LatLng CURRENT_LOCATION = new LatLng(41.8087574, -87.677451);
     private LatLng DEFAULT_LOCATION = new LatLng(41.8087574, -87.677451);
     private String CURRENT_COMMUNITY = "Community";
+    private int SELECTED_COMMUNITY_INDEX = 0;
     private ArrayList <String> mPropertyTypeListFilter;
     private boolean mIsListDisplay = false;
     private final String KEY_LIST_FILTER = "list-filter";
     private final String KEY_CURRENT_COMMUNITY = "current-community";
+    private final String KEY_CURRENT_LOCATION = "current-location";
+    private final String KEY_SELECTED_COMMUNITY = "selected-community";
+    private final String KEY_PROPERTY_FILTER = "property-filter-list";
     private final String KEY_SHOW_LOCATION = "show-location";
+    private Spinner mSpinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
+
+        if (savedInstanceState != null) {
+            setCurrentCommunity(savedInstanceState.getString(KEY_CURRENT_COMMUNITY, "Community"));
+            setCurrentLocation(savedInstanceState.getString(KEY_CURRENT_LOCATION, ""));
+            setPropertyTypeListFilter(savedInstanceState.getString(KEY_LIST_FILTER, ""));
+
+        }
+
+        /* map */
         setContentView(R.layout.activity_maps);
 
         mMapMarkers = new ArrayList <>();
@@ -88,8 +106,9 @@ public class MapsActivity extends AppCompatActivity implements
             mapFragment = SupportMapFragment.newInstance();
             getSupportFragmentManager().beginTransaction().replace(R.id.map_fragment_container, mapFragment).commit();
         }
+        mapFragment.setRetainInstance(true);
         mapFragment.getMapAsync(this);
-
+        /* end map */
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -120,6 +139,18 @@ public class MapsActivity extends AppCompatActivity implements
 
     }
 
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+        // Checks the orientation of the screen
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            Toast.makeText(this, "landscape", Toast.LENGTH_SHORT).show();
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
+            Toast.makeText(this, "portrait", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     /**
      * Shows the product detail fragment
      */
@@ -140,37 +171,45 @@ public class MapsActivity extends AppCompatActivity implements
 
     }
 
-    public void deleteNote(int noteId){
-        //
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        /* current community (String) */
+        outState.putString(KEY_CURRENT_COMMUNITY, mSpinner.getSelectedItem().toString());
+        /* current community (int) */
+        outState.putInt(KEY_SELECTED_COMMUNITY, mSpinner.getSelectedItemPosition());
+        /* current location (LatLng) */
+        Gson gson = new Gson();
+        Type latlng = new TypeToken <LatLng>() {
+        }.getType();
+        String currentLocation = gson.toJson(CURRENT_LOCATION, latlng);
+        outState.putString(KEY_CURRENT_LOCATION, currentLocation);
+        Type list = new TypeToken <ArrayList <String>>() {
+        }.getType();
+        String listFilter = gson.toJson(mPropertyTypeListFilter, list);
+        outState.putString(KEY_PROPERTY_FILTER, listFilter);
+        outState.putInt(KEY_SELECTED_COMMUNITY, SELECTED_COMMUNITY_INDEX);
+        super.onSaveInstanceState(outState);
     }
 
     @Override
-    protected void onPause() {
-        Toast toast = Toast.makeText(getApplicationContext(),
-                String.valueOf("Pause: " + getCurrentCommunity()),
-                Toast.LENGTH_SHORT);
-        toast.show();
-        super.onPause();
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            setCurrentCommunity(savedInstanceState.getString(KEY_CURRENT_COMMUNITY, "Community"));
+            setCurrentLocation(savedInstanceState.getString(KEY_CURRENT_LOCATION, ""));
+            setSelectedCommunity(savedInstanceState.getInt(KEY_SELECTED_COMMUNITY));
+            setPropertyTypeListFilter(savedInstanceState.getString(KEY_LIST_FILTER));
+
+            Toast toast = Toast.makeText(getApplicationContext(),
+                    "Restore Instance: " + savedInstanceState.getString(KEY_CURRENT_LOCATION),
+                    Toast.LENGTH_SHORT);
+            toast.show();
+        }
+        super.onRestoreInstanceState(savedInstanceState);
     }
 
-    @Override
-    protected void onResume() {
-        Toast toast = Toast.makeText(getApplicationContext(),
-                String.valueOf("Resume: " + getCurrentCommunity()),
-                Toast.LENGTH_SHORT);
-        toast.show();
-        super.onResume();
-
-    }
 
     @Override
     protected void onStart() {
-
-        Toast toast = Toast.makeText(getApplicationContext(),
-                String.valueOf("Start : " + getCurrentCommunity()),
-                Toast.LENGTH_SHORT);
-        toast.show();
-        super.onResume();
 
         if (mPropertyTypeListFilter.size() > 0 && mMapMarkers.size() > 0) {
 
@@ -179,20 +218,33 @@ public class MapsActivity extends AppCompatActivity implements
         super.onStart();
     }
 
+
     private void filterMarkers() {
 
-        if (mPropertyTypeListFilter.isEmpty()) {
+        if (mPropertyTypeListFilter.size() == 0 && CURRENT_COMMUNITY.equals( "Community")) {
             resetMarkers();
-            return;
         }
 
-        for (int i = 0; i < mMapMarkers.size(); i++) {
-            Marker marker = mMapMarkers.get(i);
-            MarkerTag markerTag = (MarkerTag) marker.getTag();
-            if (!mPropertyTypeListFilter.contains(markerTag.getPropertyType())) {
-                mMapMarkers.get(i).setVisible(false);
+        if (mPropertyTypeListFilter.size() == 0 && !CURRENT_COMMUNITY.equals("Comunity")) {
+            for (int i = 0; i < mMapMarkers.size(); i++) {
+                Marker marker = mMapMarkers.get(i);
+                MarkerTag markerTag = (MarkerTag) marker.getTag();
+                if (!mPropertyTypeListFilter.contains(markerTag.getPropertyType())) {
+                    mMapMarkers.get(i).setVisible(true);
+                }
             }
         }
+
+        if (mPropertyTypeListFilter.size() > 0) {
+            for (int i = 0; i < mMapMarkers.size(); i++) {
+                Marker marker = mMapMarkers.get(i);
+                MarkerTag markerTag = (MarkerTag) marker.getTag();
+                if (!mPropertyTypeListFilter.contains(markerTag.getPropertyType())) {
+                    mMapMarkers.get(i).setVisible(false);
+                }
+            }
+        }
+
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -232,13 +284,14 @@ public class MapsActivity extends AppCompatActivity implements
 
         /* handle community list */
         MenuItem community = menu.findItem(R.id.action_community);
-        Spinner spinner = (Spinner) community.getActionView();
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        mSpinner = (Spinner) community.getActionView();
+        mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView <?> parent, View view, int position, long id) {
                 String selectedCommunityText = (String) parent.getItemAtPosition(position);
                 // Notify the selected item text
                 setCurrentCommunity(selectedCommunityText);
+                setSelectedCommunity(position);
                 if (position != 0) {
                     // Move camera to new selected community
                     if (isListDisplay()) {
@@ -258,7 +311,9 @@ public class MapsActivity extends AppCompatActivity implements
 
         mLocationListViewModel.getCommunities().observe(this, communites -> {
             if (communites != null) {
-                communites.add(0, "Community");
+                if (!communites.get(0).equals("Community")) {
+                    communites.add(0, "Community");
+                }
                 ArrayAdapter <String> adapter = new ArrayAdapter <String>(
                         this,
                         android.R.layout.simple_spinner_item,
@@ -266,9 +321,10 @@ public class MapsActivity extends AppCompatActivity implements
                 );
 
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                spinner.setAdapter(adapter);
+                mSpinner.setAdapter(adapter);
             }
         });
+        mSpinner.setSelection(SELECTED_COMMUNITY_INDEX);
 
         return true;
     }
@@ -421,6 +477,27 @@ public class MapsActivity extends AppCompatActivity implements
 
     private String getCurrentCommunity() {
         return CURRENT_COMMUNITY;
+    }
+
+    private void setSelectedCommunity(int selectedCommunity) {
+        SELECTED_COMMUNITY_INDEX = selectedCommunity;
+    }
+
+    private void setCurrentLocation(String currentLocation) {
+        Gson gson = new Gson();
+        Type type = new TypeToken <LatLng>() {
+        }.getType();
+        CURRENT_LOCATION = gson.fromJson(currentLocation, type);
+    }
+
+    private void setPropertyTypeListFilter(String listFilter) {
+        if (mPropertyTypeListFilter != null && listFilter != null) {
+            Gson gson = new Gson();
+            Type type = new TypeToken <ArrayList <String>>() {
+            }.getType();
+            mPropertyTypeListFilter = gson.fromJson(listFilter, type);
+
+        }
     }
 
     private void resetMarkers() {
