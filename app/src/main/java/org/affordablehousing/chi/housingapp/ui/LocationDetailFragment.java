@@ -61,7 +61,7 @@ public class LocationDetailFragment extends Fragment {
                 ViewModelProviders.of(this, factory)
                         .get(LocationViewModel.class);
 
-        mNoteAdapter = new NoteAdapter(mNoteClickCallback, mEditNoteHandler, getContext());
+        mNoteAdapter = new NoteAdapter(mNoteClickCallback, mEditNoteMenuClickListener, getContext());
         mBinding.noteList.setAdapter(mNoteAdapter);
 
         return mBinding.getRoot();
@@ -163,7 +163,7 @@ public class LocationDetailFragment extends Fragment {
 
     };
 
-    private final EditNoteHandler mEditNoteHandler = new EditNoteHandler() {
+    private final EditNoteMenuClickListener mEditNoteMenuClickListener = new EditNoteMenuClickListener() {
         @Override
         public void editNote(int noteId, String noteText) {
             mLocationViewModel.editNote(noteId, noteText);
@@ -184,11 +184,5 @@ public class LocationDetailFragment extends Fragment {
         args.putInt(KEY_LOCATION_ID, locationId);
         fragment.setArguments(args);
         return fragment;
-    }
-
-
-    public interface EditNoteHandler{
-        void editNote(int noteId, String text);
-        void deleteNote(int noteId);
     }
 }

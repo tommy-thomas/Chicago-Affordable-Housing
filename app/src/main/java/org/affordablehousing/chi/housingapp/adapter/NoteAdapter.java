@@ -12,7 +12,7 @@ import android.widget.TextView;
 import org.affordablehousing.chi.housingapp.R;
 import org.affordablehousing.chi.housingapp.databinding.NoteItemBinding;
 import org.affordablehousing.chi.housingapp.model.Note;
-import org.affordablehousing.chi.housingapp.ui.LocationDetailFragment;
+import org.affordablehousing.chi.housingapp.ui.EditNoteMenuClickListener;
 import org.affordablehousing.chi.housingapp.ui.NoteClickCallback;
 
 import java.util.List;
@@ -29,12 +29,12 @@ public class NoteAdapter extends RecyclerView.Adapter <NoteAdapter.NoteViewHolde
 
     private List <? extends Note> mNoteList;
     private NoteClickCallback mNoteClickCallback;
-    private LocationDetailFragment.EditNoteHandler mEditNoteHandler;
+    private EditNoteMenuClickListener mEditNoteMenuClickListener;
     private Context mContext;
 
-    public NoteAdapter(NoteClickCallback noteClickCallback, LocationDetailFragment.EditNoteHandler editNoteHandler, Context context) {
+    public NoteAdapter(NoteClickCallback noteClickCallback, EditNoteMenuClickListener editNoteMenuClickListener, Context context) {
         this.mNoteClickCallback = noteClickCallback;
-        this.mEditNoteHandler = editNoteHandler;
+        this.mEditNoteMenuClickListener = editNoteMenuClickListener;
         this.mContext = context;
     }
 
@@ -104,10 +104,10 @@ public class NoteAdapter extends RecyclerView.Adapter <NoteAdapter.NoteViewHolde
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.action_note_edit:
-                                showEditNoteDialog(noteId , noteText);
+                                showEditNoteDialog(noteId, noteText);
                                 return true;
                             case R.id.action_note_delete:
-                                    mEditNoteHandler.deleteNote( noteId );
+                                mEditNoteMenuClickListener.deleteNote(noteId);
                                 return true;
                             default:
                                 return true;
@@ -121,14 +121,14 @@ public class NoteAdapter extends RecyclerView.Adapter <NoteAdapter.NoteViewHolde
         holder.binding.executePendingBindings();
     }
 
-    private void showEditNoteDialog(int noteId, String noteText){
+    private void showEditNoteDialog(int noteId, String noteText) {
         LayoutInflater inflater = LayoutInflater.from(mContext);
 
         final View rowView = inflater.inflate(R.layout.edit_note_item, null);
 
         EditText noteTextView = rowView.findViewById(R.id.et_note_edit);
 
-        noteTextView.setText( noteText , TextView.BufferType.EDITABLE);
+        noteTextView.setText(noteText, TextView.BufferType.EDITABLE);
         // setup the alert builder
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         builder.setTitle("Edit Note");
@@ -136,7 +136,7 @@ public class NoteAdapter extends RecyclerView.Adapter <NoteAdapter.NoteViewHolde
         builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                mEditNoteHandler.editNote( noteId , noteTextView.getText().toString());
+                mEditNoteMenuClickListener.editNote(noteId, noteTextView.getText().toString());
             }
         });
         builder.setNegativeButton("Cancel", null);
