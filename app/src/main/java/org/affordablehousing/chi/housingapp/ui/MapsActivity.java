@@ -286,13 +286,18 @@ public class MapsActivity extends AppCompatActivity implements
         MenuItem community = menu.findItem(R.id.action_community);
         mSpinner = (Spinner) community.getActionView();
 
+
         mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView <?> parent, View view, int position, long id) {
                 String selectedCommunityText = (String) parent.getItemAtPosition(position);
                 // Notify the selected item text
                 setCurrentCommunity(selectedCommunityText);
-                view.setBackgroundColor(getResources().getColor(R.color.colorSecondary));
+                view.setBackground(getResources().getDrawable(R.drawable.rounded_red_bg));
+                view.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                view.setPadding(4,2,4,2);
+                view.setMinimumWidth(300);
+
                 setSelectedCommunity(position);
                 if (position != 0) {
                     // Move camera to new selected community
