@@ -292,6 +292,7 @@ public class MapsActivity extends AppCompatActivity implements
                 String selectedCommunityText = (String) parent.getItemAtPosition(position);
                 // Notify the selected item text
                 setCurrentCommunity(selectedCommunityText);
+                view.setBackgroundColor(getResources().getColor(R.color.colorSecondary));
                 setSelectedCommunity(position);
                 if (position != 0) {
                     // Move camera to new selected community
@@ -310,21 +311,22 @@ public class MapsActivity extends AppCompatActivity implements
             }
         });
 
-        mLocationListViewModel.getCommunities().observe(this, communites -> {
-            if (communites != null && communites.size() > 0) {
-                if (!communites.get(0).equals("Community")) {
-                    communites.add(0, "Community");
+        mLocationListViewModel.getCommunities().observe(this, communities -> {
+            if (communities != null && communities.size() > 0) {
+                if (!communities.get(0).equals("Community")) {
+                    communities.add(0, "Community");
                 }
                 ArrayAdapter <String> adapter = new ArrayAdapter <String>(
                         this,
                         android.R.layout.simple_spinner_item,
-                        communites
+                        communities
                 );
 
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 mSpinner.setAdapter(adapter);
             }
         });
+
         mSpinner.setSelection(SELECTED_COMMUNITY_INDEX);
 
         return true;

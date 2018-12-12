@@ -16,8 +16,10 @@
         android:textSize="30sp"
         android:layout_marginStart="@dimen/dp_8"
         android:layout_marginEnd="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginLeft="@dimen/dp_32"
         android:text="@string/community_types"
-        android:textColor="#000000"
+        android:textColor="@color/colorCharcoal"
         android:textStyle="bold"
         />
 
