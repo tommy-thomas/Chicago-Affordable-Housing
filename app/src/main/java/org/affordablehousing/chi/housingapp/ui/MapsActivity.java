@@ -77,6 +77,8 @@ public class MapsActivity extends AppCompatActivity implements
     private final String KEY_PROPERTY_FILTER = "property-filter-list";
     private final String KEY_SHOW_LOCATION = "show-location";
     private Spinner mSpinner;
+    private boolean mTwoPane;
+    private int mContentFrameLayoutId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +94,9 @@ public class MapsActivity extends AppCompatActivity implements
 
         /* map */
         setContentView(R.layout.activity_maps);
+
+        /* Two panes */
+        setTwoPane();
 
         mMapMarkers = new ArrayList <>();
 
@@ -132,11 +137,26 @@ public class MapsActivity extends AppCompatActivity implements
 
         updateLocationUI();
 
-        Toast toast = Toast.makeText(getApplicationContext(),
-                String.valueOf("Create : " + getCurrentCommunity()),
-                Toast.LENGTH_SHORT);
-        toast.show();
+        if( isTwoPane() ){
+            showLocationList();
+        }
 
+    }
+
+    private void setTwoPane(){
+        if (findViewById(R.id.fr_content_fragment_container) != null) {
+            mTwoPane = true;
+            mContentFrameLayoutId = R.id.fr_content_fragment_container;
+
+        } else {
+            mTwoPane = true;
+            mContentFrameLayoutId = R.id.map_fragment_container;
+        }
+    }
+
+    private boolean isTwoPane()
+    {
+        return mTwoPane;
     }
 
     @Override
@@ -161,7 +181,7 @@ public class MapsActivity extends AppCompatActivity implements
         getSupportFragmentManager()
                 .beginTransaction()
                 .addToBackStack("location")
-                .replace(R.id.map_fragment_container,
+                .replace(mContentFrameLayoutId,
                         locationDetailFragment, null).commit();
     }
 
@@ -174,7 +194,7 @@ public class MapsActivity extends AppCompatActivity implements
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         /* current community (String) */
-        outState.putString(KEY_CURRENT_COMMUNITY, mSpinner.getSelectedItem().toString());
+        outState.putString(KEY_CURRENT_COMMUNITY, getCurrentCommunity());
         /* current community (int) */
         outState.putInt(KEY_SELECTED_COMMUNITY, mSpinner.getSelectedItemPosition());
         /* current location (LatLng) */
@@ -188,6 +208,13 @@ public class MapsActivity extends AppCompatActivity implements
         String listFilter = gson.toJson(mPropertyTypeListFilter, list);
         outState.putString(KEY_PROPERTY_FILTER, listFilter);
         outState.putInt(KEY_SELECTED_COMMUNITY, SELECTED_COMMUNITY_INDEX);
+
+
+        Toast toast = Toast.makeText(getApplicationContext(),
+                "Restore Instance: " + getCurrentCommunity(),
+                Toast.LENGTH_SHORT);
+        toast.show();
+
         super.onSaveInstanceState(outState);
     }
 
@@ -255,11 +282,13 @@ public class MapsActivity extends AppCompatActivity implements
             switch (item.getItemId()) {
                 case R.id.navigation_home:
                     filterMarkers();
+                    if( !isTwoPane() ){
                     FragmentManager fm = getSupportFragmentManager();
                     for (int i = 0; i < fm.getBackStackEntryCount(); ++i) {
                         fm.popBackStack();
                     }
                     setIsListDisplay(false);
+                    }
                     return true;
                 case R.id.navigation_list:
                     showLocationList();
@@ -344,12 +373,6 @@ public class MapsActivity extends AppCompatActivity implements
         switch (item.getItemId()) {
             case R.id.action_reset:
                 resetMarkers();
-            case R.id.action_note_edit:
-                Toast toast = Toast.makeText(getApplicationContext(),
-                        "Edit Node",
-                        Toast.LENGTH_SHORT);
-                toast.show();
-                super.onResume();
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -397,10 +420,13 @@ public class MapsActivity extends AppCompatActivity implements
         bundle.putStringArrayList(KEY_LIST_FILTER, mPropertyTypeListFilter);
         bundle.putString(KEY_CURRENT_COMMUNITY, getCurrentCommunity());
         locationListFragment.setArguments(bundle);
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.map_fragment_container, locationListFragment);
-        ft.commit();
-        ft.addToBackStack(null);
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
+        fragmentManager.beginTransaction()
+                .replace(mContentFrameLayoutId, locationListFragment)
+                .addToBackStack(null)
+                .commit();
     }
 
     private void showPropertyTypeFilterList() {
@@ -411,7 +437,7 @@ public class MapsActivity extends AppCompatActivity implements
         bundle.putStringArrayList(KEY_LIST_FILTER, mPropertyTypeListFilter);
         propertyTypeListFragment.setArguments(bundle);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.map_fragment_container, propertyTypeListFragment);
+        ft.replace(mContentFrameLayoutId, propertyTypeListFragment);
         ft.commit();
         ft.addToBackStack(null);
     }

@@ -3,6 +3,7 @@ package org.affordablehousing.chi.housingapp.ui;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -72,9 +73,10 @@ public class PropertyTypeListFragment extends Fragment {
                 recyclerView.setHasFixedSize(true);
                 RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getContext(), 2);
                 recyclerView.setLayoutManager(layoutManager);
+                DisplayMetrics metrics = new DisplayMetrics();
                 if (getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
                     recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
-                } else {
+                } else if  (getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT && metrics.widthPixels < 600 ){
                     recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 4));
                 }
 
