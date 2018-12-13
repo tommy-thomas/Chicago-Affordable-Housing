@@ -400,6 +400,9 @@ public class MapsActivity extends AppCompatActivity implements
         } else {
             mPropertyTypeListFilter.remove(propertyType);
         }
+        if( isTwoPane() ){
+            filterMarkers();
+        }
 
     }
 
@@ -571,6 +574,9 @@ public class MapsActivity extends AppCompatActivity implements
                             .build();
 
                     mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                    if( isTwoPane() ){
+                        filterMarkers();
+                    }
                 } else {
 
                 }
