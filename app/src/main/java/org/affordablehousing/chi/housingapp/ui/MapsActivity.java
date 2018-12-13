@@ -63,6 +63,11 @@ public class MapsActivity extends AppCompatActivity implements
     private UiSettings mUiSettings;
     private ArrayList <Marker> mMapMarkers;
     private boolean mLocationPermissionGranted;
+    private Spinner mSpinner;
+    private boolean mTwoPane;
+    private int mContentFrameLayoutId;
+    private SupportMapFragment mSupportMapFragment;
+    private CameraPosition mCameraPosition;
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private LatLng CURRENT_LOCATION = new LatLng(41.8087574, -87.677451);
     private LatLng DEFAULT_LOCATION = new LatLng(41.8087574, -87.677451);
@@ -76,9 +81,6 @@ public class MapsActivity extends AppCompatActivity implements
     private final String KEY_SELECTED_COMMUNITY = "selected-community";
     private final String KEY_PROPERTY_FILTER = "property-filter-list";
     private final String KEY_SHOW_LOCATION = "show-location";
-    private Spinner mSpinner;
-    private boolean mTwoPane;
-    private int mContentFrameLayoutId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,13 +108,13 @@ public class MapsActivity extends AppCompatActivity implements
                 ViewModelProviders.of(this).get(LocationListViewModel.class);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map_fragment_container);
-        if (mapFragment == null) {
-            mapFragment = SupportMapFragment.newInstance();
-            getSupportFragmentManager().beginTransaction().replace(R.id.map_fragment_container, mapFragment).commit();
+        mSupportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map_fragment);
+        if (mSupportMapFragment == null) {
+            mSupportMapFragment = SupportMapFragment.newInstance();
+            getSupportFragmentManager().beginTransaction().replace(R.id.map_fragment_container, mSupportMapFragment).commit();
         }
-        mapFragment.setRetainInstance(true);
-        mapFragment.getMapAsync(this);
+        mSupportMapFragment.setRetainInstance(true);
+        mSupportMapFragment.getMapAsync(this);
         /* end map */
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -137,38 +139,44 @@ public class MapsActivity extends AppCompatActivity implements
 
         updateLocationUI();
 
-        if( isTwoPane() ){
+        if (isTwoPane()) {
             showLocationList();
         }
 
+        Toast.makeText(this, "CREATE", Toast.LENGTH_SHORT).show();
+
+
     }
 
-    private void setTwoPane(){
+    private void setTwoPane() {
         if (findViewById(R.id.fr_content_fragment_container) != null) {
             mTwoPane = true;
             mContentFrameLayoutId = R.id.fr_content_fragment_container;
-
-        } else {
-            mTwoPane = true;
+                   } else {
+            mTwoPane = false;
             mContentFrameLayoutId = R.id.map_fragment_container;
         }
     }
 
-    private boolean isTwoPane()
-    {
+    private boolean isTwoPane() {
         return mTwoPane;
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-
         // Checks the orientation of the screen
-        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE && isTwoPane() ) {
             Toast.makeText(this, "landscape", Toast.LENGTH_SHORT).show();
-        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
             Toast.makeText(this, "portrait", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public void onResume() {
+        setTwoPane();
+        super.onResume();
     }
 
     /**
@@ -248,7 +256,7 @@ public class MapsActivity extends AppCompatActivity implements
 
     private void filterMarkers() {
 
-        if (mPropertyTypeListFilter.size() == 0 && CURRENT_COMMUNITY.equals( "Community")) {
+        if (mPropertyTypeListFilter.size() == 0 && CURRENT_COMMUNITY.equals("Community")) {
             resetMarkers();
         }
 
@@ -282,12 +290,12 @@ public class MapsActivity extends AppCompatActivity implements
             switch (item.getItemId()) {
                 case R.id.navigation_home:
                     filterMarkers();
-                    if( !isTwoPane() ){
-                    FragmentManager fm = getSupportFragmentManager();
-                    for (int i = 0; i < fm.getBackStackEntryCount(); ++i) {
-                        fm.popBackStack();
-                    }
-                    setIsListDisplay(false);
+                    if (!isTwoPane()) {
+                        FragmentManager fm = getSupportFragmentManager();
+                        for (int i = 0; i < fm.getBackStackEntryCount(); ++i) {
+                            fm.popBackStack();
+                        }
+                        setIsListDisplay(false);
                     }
                     return true;
                 case R.id.navigation_list:
@@ -324,7 +332,7 @@ public class MapsActivity extends AppCompatActivity implements
                 setCurrentCommunity(selectedCommunityText);
                 view.setBackground(getResources().getDrawable(R.drawable.rounded_red_bg));
                 view.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-                view.setPadding(4,2,4,2);
+                view.setPadding(4, 2, 4, 2);
                 view.setMinimumWidth(300);
 
                 setSelectedCommunity(position);
@@ -400,7 +408,7 @@ public class MapsActivity extends AppCompatActivity implements
         } else {
             mPropertyTypeListFilter.remove(propertyType);
         }
-        if( isTwoPane() ){
+        if (isTwoPane()) {
             filterMarkers();
         }
 
@@ -574,7 +582,7 @@ public class MapsActivity extends AppCompatActivity implements
                             .build();
 
                     mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-                    if( isTwoPane() ){
+                    if (isTwoPane()) {
                         filterMarkers();
                     }
                 } else {
