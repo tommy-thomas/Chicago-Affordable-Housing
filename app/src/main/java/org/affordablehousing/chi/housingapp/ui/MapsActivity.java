@@ -2,9 +2,12 @@ package org.affordablehousing.chi.housingapp.ui;
 
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -12,7 +15,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -20,12 +25,14 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.navigation.NavigationView.OnNavigationItemSelectedListener;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -52,10 +59,14 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProviders;
 
+import static com.google.android.gms.maps.GoogleMap.InfoWindowAdapter;
+import static com.google.android.gms.maps.GoogleMap.MAP_TYPE_NORMAL;
+import static org.affordablehousing.chi.housingapp.ui.PropertyTypeListFragment.*;
+
 public class MapsActivity extends AppCompatActivity implements
         OnMapReadyCallback,
-        NavigationView.OnNavigationItemSelectedListener,
-        PropertyTypeListFragment.PropertyTypeClickListener {
+        OnNavigationItemSelectedListener,
+        PropertyTypeClickListener {
 
     private GoogleMap mMap;
     private final String TAG = MapsActivity.class.getSimpleName() + " -- map acctivity";
@@ -75,11 +86,10 @@ public class MapsActivity extends AppCompatActivity implements
     private int SELECTED_COMMUNITY_INDEX = 0;
     private ArrayList <String> mPropertyTypeListFilter;
     private boolean mIsListDisplay = false;
-    private final String KEY_LIST_FILTER = "list-filter";
     private final String KEY_CURRENT_COMMUNITY = "current-community";
     private final String KEY_CURRENT_LOCATION = "current-location";
-    private final String KEY_SELECTED_COMMUNITY = "selected-community";
-    private final String KEY_PROPERTY_FILTER = "property-filter-list";
+    private final String KEY_SELECTED_COMMUNITY_INDEX = "selected-community";
+    private final String KEY_PROPERTY_LIST_FILTER = "property-filter-list";
     private final String KEY_SHOW_LOCATION = "show-location";
 
     @Override
@@ -90,7 +100,7 @@ public class MapsActivity extends AppCompatActivity implements
         if (savedInstanceState != null) {
             setCurrentCommunity(savedInstanceState.getString(KEY_CURRENT_COMMUNITY, "Community"));
             setCurrentLocation(savedInstanceState.getString(KEY_CURRENT_LOCATION, ""));
-            setPropertyTypeListFilter(savedInstanceState.getString(KEY_LIST_FILTER, ""));
+            setPropertyTypeListFilter(savedInstanceState.getString(KEY_PROPERTY_LIST_FILTER, ""));
 
         }
 
@@ -203,19 +213,20 @@ public class MapsActivity extends AppCompatActivity implements
     protected void onSaveInstanceState(Bundle outState) {
         /* current community (String) */
         outState.putString(KEY_CURRENT_COMMUNITY, getCurrentCommunity());
-        /* current community (int) */
-        outState.putInt(KEY_SELECTED_COMMUNITY, mSpinner.getSelectedItemPosition());
         /* current location (LatLng) */
         Gson gson = new Gson();
         Type latlng = new TypeToken <LatLng>() {
         }.getType();
         String currentLocation = gson.toJson(CURRENT_LOCATION, latlng);
+        /* current LatLng gson object */
         outState.putString(KEY_CURRENT_LOCATION, currentLocation);
         Type list = new TypeToken <ArrayList <String>>() {
         }.getType();
         String listFilter = gson.toJson(mPropertyTypeListFilter, list);
-        outState.putString(KEY_PROPERTY_FILTER, listFilter);
-        outState.putInt(KEY_SELECTED_COMMUNITY, SELECTED_COMMUNITY_INDEX);
+        /* property types gson object */
+        outState.putString(KEY_PROPERTY_LIST_FILTER, listFilter);
+        /* selected community index int */
+        outState.putInt(KEY_SELECTED_COMMUNITY_INDEX, SELECTED_COMMUNITY_INDEX);
 
 
         Toast toast = Toast.makeText(getApplicationContext(),
@@ -231,8 +242,8 @@ public class MapsActivity extends AppCompatActivity implements
         if (savedInstanceState != null) {
             setCurrentCommunity(savedInstanceState.getString(KEY_CURRENT_COMMUNITY, "Community"));
             setCurrentLocation(savedInstanceState.getString(KEY_CURRENT_LOCATION, ""));
-            setSelectedCommunity(savedInstanceState.getInt(KEY_SELECTED_COMMUNITY));
-            setPropertyTypeListFilter(savedInstanceState.getString(KEY_LIST_FILTER));
+            setSelectedCommunity(savedInstanceState.getInt(KEY_SELECTED_COMMUNITY_INDEX));
+            setPropertyTypeListFilter(savedInstanceState.getString(KEY_PROPERTY_LIST_FILTER));
 
             Toast toast = Toast.makeText(getApplicationContext(),
                     "Restore Instance: " + savedInstanceState.getString(KEY_CURRENT_LOCATION),
@@ -256,8 +267,13 @@ public class MapsActivity extends AppCompatActivity implements
 
     private void filterMarkers() {
 
+        for (int i = 0; i < mMapMarkers.size(); i++) {
+            mMapMarkers.get(i).setVisible(true);
+        }
+
         if (mPropertyTypeListFilter.size() == 0 && CURRENT_COMMUNITY.equals("Community")) {
             resetMarkers();
+            return;
         }
 
         if (mPropertyTypeListFilter.size() == 0 && !CURRENT_COMMUNITY.equals("Comunity")) {
@@ -268,6 +284,7 @@ public class MapsActivity extends AppCompatActivity implements
                     mMapMarkers.get(i).setVisible(true);
                 }
             }
+            return;
         }
 
         if (mPropertyTypeListFilter.size() > 0) {
@@ -278,6 +295,7 @@ public class MapsActivity extends AppCompatActivity implements
                     mMapMarkers.get(i).setVisible(false);
                 }
             }
+            return;
         }
 
     }
@@ -428,7 +446,7 @@ public class MapsActivity extends AppCompatActivity implements
         LocationListFragment locationListFragment = new LocationListFragment();
 
         Bundle bundle = new Bundle();
-        bundle.putStringArrayList(KEY_LIST_FILTER, mPropertyTypeListFilter);
+        bundle.putStringArrayList(KEY_PROPERTY_LIST_FILTER, mPropertyTypeListFilter);
         bundle.putString(KEY_CURRENT_COMMUNITY, getCurrentCommunity());
         locationListFragment.setArguments(bundle);
 
@@ -445,7 +463,7 @@ public class MapsActivity extends AppCompatActivity implements
         PropertyTypeListFragment propertyTypeListFragment = new PropertyTypeListFragment();
 
         Bundle bundle = new Bundle();
-        bundle.putStringArrayList(KEY_LIST_FILTER, mPropertyTypeListFilter);
+        bundle.putStringArrayList(KEY_PROPERTY_LIST_FILTER, mPropertyTypeListFilter);
         propertyTypeListFragment.setArguments(bundle);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(mContentFrameLayoutId, propertyTypeListFragment);
@@ -466,16 +484,32 @@ public class MapsActivity extends AppCompatActivity implements
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        mMap.setMapType(MAP_TYPE_NORMAL);
 
+        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+            @Override
+            public void onInfoWindowClick(Marker marker) {
+                if( marker != null){
+                     MarkerTag tag = (MarkerTag) marker.getTag();
+                     LocationEntity locationEntity = tag.getLocationEntity();
+                     show( locationEntity );
+                }
+            }
+        });
+
+        mMap.setInfoWindowAdapter( new LocationInfoWindowAdapter() );
         getLocationPermission();
 
-        mLocationListViewModel.getLocations().observe(this, propertyEntities -> {
-            if (propertyEntities != null) {
-                for (LocationEntity property : propertyEntities) {
-                    LatLng latLng = new LatLng(property.getLatitude(), property.getLongitude());
-                    Marker marker = mMap.addMarker(new MarkerOptions().position(latLng).title(property.getProperty_name()));
-                    marker.setTag(new MarkerTag(property.getProperty_type()));
+        mLocationListViewModel.getLocations().observe(this, locationEntities -> {
+            if (locationEntities != null) {
+                for (LocationEntity locationEntity : locationEntities) {
+                    LatLng latLng = new LatLng(locationEntity.getLatitude(), locationEntity.getLongitude());
+                    Marker marker = mMap.addMarker(new MarkerOptions()
+                            .position(latLng).title(locationEntity.getProperty_name())
+                            .snippet(locationEntity.getAddress() + " Type: " + locationEntity.getProperty_type())
+                            .icon(BitmapDescriptorFactory
+                            .defaultMarker(206)));
+                    marker.setTag(new MarkerTag(locationEntity));
                     mMapMarkers.add(marker);
                 }
             }
@@ -501,6 +535,8 @@ public class MapsActivity extends AppCompatActivity implements
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
     }
+
+
 
     private void setCurrentCommunity(String currentCommunity) {
         CURRENT_COMMUNITY = currentCommunity;
@@ -637,6 +673,59 @@ public class MapsActivity extends AppCompatActivity implements
         } catch (SecurityException e) {
             Log.e("Exception: %s", e.getMessage());
         }
+    }
+    class LocationInfoWindowAdapter implements InfoWindowAdapter {
+
+        private final View mWindow;
+
+        private final View mContents;
+
+        LocationInfoWindowAdapter() {
+            mWindow = getLayoutInflater().inflate(R.layout.custom_info_window, null);
+            mContents = getLayoutInflater().inflate(R.layout.custom_info_contents, null);
+        }
+
+
+        @Override
+        public View getInfoWindow(Marker marker) {
+//            render(marker, mWindow);
+//            return mWindow;
+            return null;
+        }
+
+        @Override
+        public View getInfoContents(Marker marker) {
+            render(marker, mContents);
+            return mContents;
+        }
+
+        private void render(Marker marker, View view) {
+
+            ((ImageView) view.findViewById(R.id.badge)).setImageResource(R.drawable.ic_baseline_star_24px);
+
+            String title = marker.getTitle();
+            TextView titleUi = view.findViewById(R.id.title);
+            if (title != null) {
+                // Spannable string allows us to edit the formatting of the text.
+                SpannableString titleText = new SpannableString(title);
+                titleText.setSpan(new ForegroundColorSpan(Color.BLACK), 0, titleText.length(), 0);
+                titleUi.setText(titleText);
+            } else {
+                titleUi.setText("");
+            }
+
+            String snippet = marker.getSnippet();
+            TextView snippetUi = ((TextView) view.findViewById(R.id.snippet));
+            if (snippet != null && snippet.length() > 12) {
+                SpannableString snippetText = new SpannableString(snippet);
+//                snippetText.setSpan(new ForegroundColorSpan(Color.MAGENTA), 0, 10, 0);
+//                snippetText.setSpan(new ForegroundColorSpan(Color.BLUE), 12, snippet.length(), 0);
+                snippetUi.setText(snippetText);
+            } else {
+                snippetUi.setText("");
+            }
+        }
+
     }
 
 

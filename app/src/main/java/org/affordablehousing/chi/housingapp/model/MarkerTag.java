@@ -2,32 +2,21 @@ package org.affordablehousing.chi.housingapp.model;
 
 public class MarkerTag {
 
-    private String mPropertyType;
-    private String mCommunityName;
+    private LocationEntity mLocationEntity;
 
-    public MarkerTag(String mPropertyType, String mCommunityName) {
-        this.mPropertyType = mPropertyType;
-        this.mCommunityName = mCommunityName;
+    public MarkerTag(LocationEntity mLocationEntity) {
+        this.mLocationEntity = mLocationEntity;
     }
 
-    public MarkerTag(String mPropertyType) {
-        this.mPropertyType = mPropertyType;
+    public LocationEntity getLocationEntity() {
+        return mLocationEntity;
     }
 
-
-    public String getPropertyType() {
-        return mPropertyType;
+    public void setLocationEntity(LocationEntity mLocationEntity) {
+        this.mLocationEntity = mLocationEntity;
     }
 
-    public String getCommunityName() {
-        return mCommunityName;
-    }
-
-    public void setPropertyType(String mPropertyType) {
-        this.mPropertyType = mPropertyType;
-    }
-
-    public void setCommunityName(String mCommunityName) {
-        this.mCommunityName = mCommunityName;
+    public String getPropertyType(){
+        return this.mLocationEntity.getProperty_type();
     }
 }

@@ -27,7 +27,7 @@ public class PropertyTypeListFragment extends Fragment {
 
     PropertyTypeListAdapter mPropertyTypeListAdapter;
 
-    private final String LIST_FILTER ="list-filter";
+    private final String KEY_PROPERTY_LIST_FILTER = "property-filter-list";
 
     public interface PropertyTypeClickListener {
 
@@ -60,7 +60,7 @@ public class PropertyTypeListFragment extends Fragment {
         final View rootView = inflater.inflate(R.layout.fragment_property_type_list, container, false);
 
 
-        ArrayList <String> listFilter = getArguments().getStringArrayList(LIST_FILTER);
+        ArrayList <String> listFilter = getArguments().getStringArrayList(KEY_PROPERTY_LIST_FILTER);
 
 
         LocationListViewModel locationListViewModel = ViewModelProviders.of(this).get(LocationListViewModel.class);
