@@ -15,7 +15,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -61,7 +60,7 @@ import androidx.lifecycle.ViewModelProviders;
 
 import static com.google.android.gms.maps.GoogleMap.InfoWindowAdapter;
 import static com.google.android.gms.maps.GoogleMap.MAP_TYPE_NORMAL;
-import static org.affordablehousing.chi.housingapp.ui.PropertyTypeListFragment.*;
+import static org.affordablehousing.chi.housingapp.ui.PropertyTypeListFragment.PropertyTypeClickListener;
 
 public class MapsActivity extends AppCompatActivity implements
         OnMapReadyCallback,
@@ -674,6 +673,7 @@ public class MapsActivity extends AppCompatActivity implements
             Log.e("Exception: %s", e.getMessage());
         }
     }
+
     class LocationInfoWindowAdapter implements InfoWindowAdapter {
 
         private final View mWindow;
@@ -701,8 +701,6 @@ public class MapsActivity extends AppCompatActivity implements
 
         private void render(Marker marker, View view) {
 
-            ((ImageView) view.findViewById(R.id.badge)).setImageResource(R.drawable.ic_baseline_star_24px);
-
             String title = marker.getTitle();
             TextView titleUi = view.findViewById(R.id.title);
             if (title != null) {
@@ -718,8 +716,10 @@ public class MapsActivity extends AppCompatActivity implements
             TextView snippetUi = ((TextView) view.findViewById(R.id.snippet));
             if (snippet != null && snippet.length() > 12) {
                 SpannableString snippetText = new SpannableString(snippet);
-//                snippetText.setSpan(new ForegroundColorSpan(Color.MAGENTA), 0, 10, 0);
-//                snippetText.setSpan(new ForegroundColorSpan(Color.BLUE), 12, snippet.length(), 0);
+                int typeStartIndex = snippetText.toString().indexOf("Type:");
+                int typeEndIndex = snippetText.toString().length();
+                int typeColor = getResources().getColor(R.color.colorSecondaryDark);
+                snippetText.setSpan(new ForegroundColorSpan(typeColor), typeStartIndex, typeEndIndex, 0);
                 snippetUi.setText(snippetText);
             } else {
                 snippetUi.setText("");
