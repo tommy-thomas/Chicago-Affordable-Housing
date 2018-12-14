@@ -34,7 +34,7 @@ public class SplashScreenActivity extends AppCompatActivity {
             }
         },splashTimeOut);
 
-        Animation myanim = AnimationUtils.loadAnimation(this,R.anim.splashanimation);
-        logo.startAnimation(myanim);
+        Animation splash_anim = AnimationUtils.loadAnimation(this,R.anim.splashanimation);
+        logo.startAnimation(splash_anim);
     }
 }

@@ -81,14 +81,14 @@ public abstract class LocationDatabase extends RoomDatabase {
 
     }
 
-    private void setPropertyEntityList( ) {
+    private void setPropertyEntityList() {
         LocationDataService locationDataService = RetrofitClient.getRetrofitInstance().create(LocationDataService.class);
         Call <List <LocationEntity>> call = locationDataService.getAllLocations();
         call.enqueue(new retrofit2.Callback <List <LocationEntity>>() {
             @Override
             public void onResponse(Call <List <LocationEntity>> call, Response <List <LocationEntity>> response) {
-                if( response.isSuccessful()){
-                mLocationEntityList = response.body();
+                if (response.isSuccessful()) {
+                    mLocationEntityList = response.body();
                 }
             }
 
@@ -96,7 +96,6 @@ public abstract class LocationDatabase extends RoomDatabase {
             public void onFailure(Call <List <LocationEntity>> call, Throwable t) {
 
             }
-
 
 
         });
@@ -136,8 +135,6 @@ public abstract class LocationDatabase extends RoomDatabase {
     public static void destroyInstance() {
         sInstance = null;
     }
-
-
 
 
 }

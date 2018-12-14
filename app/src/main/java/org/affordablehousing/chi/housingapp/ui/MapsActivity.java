@@ -19,6 +19,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -71,6 +72,7 @@ public class MapsActivity extends AppCompatActivity implements
     private final String TAG = MapsActivity.class.getSimpleName() + " -- map acctivity";
     private LocationListViewModel mLocationListViewModel;
     private UiSettings mUiSettings;
+    private GoogleApiClient mGoogleApiClient;
     private ArrayList <Marker> mMapMarkers;
     private boolean mLocationPermissionGranted;
     private Spinner mSpinner;
@@ -110,6 +112,13 @@ public class MapsActivity extends AppCompatActivity implements
         setTwoPane();
 
         mMapMarkers = new ArrayList <>();
+//
+//        mGoogleApiClient =
+//                new GoogleApiClient.Builder(getApplicationContext())
+//                        .addApi(LocationServices.API)
+//                        .addConnectionCallbacks(this)
+//                        .addOnConnectionFailedListener(this)
+//                        .build();
 
         mPropertyTypeListFilter = new ArrayList <>();
 
@@ -161,7 +170,7 @@ public class MapsActivity extends AppCompatActivity implements
         if (findViewById(R.id.fr_content_fragment_container) != null) {
             mTwoPane = true;
             mContentFrameLayoutId = R.id.fr_content_fragment_container;
-                   } else {
+        } else {
             mTwoPane = false;
             mContentFrameLayoutId = R.id.map_fragment_container;
         }
@@ -175,7 +184,7 @@ public class MapsActivity extends AppCompatActivity implements
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         // Checks the orientation of the screen
-        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE && isTwoPane() ) {
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE && isTwoPane()) {
             Toast.makeText(this, "landscape", Toast.LENGTH_SHORT).show();
         } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
             Toast.makeText(this, "portrait", Toast.LENGTH_SHORT).show();
@@ -488,15 +497,15 @@ public class MapsActivity extends AppCompatActivity implements
         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker marker) {
-                if( marker != null){
-                     MarkerTag tag = (MarkerTag) marker.getTag();
-                     LocationEntity locationEntity = tag.getLocationEntity();
-                     show( locationEntity );
+                if (marker != null) {
+                    MarkerTag tag = (MarkerTag) marker.getTag();
+                    LocationEntity locationEntity = tag.getLocationEntity();
+                    show(locationEntity);
                 }
             }
         });
 
-        mMap.setInfoWindowAdapter( new LocationInfoWindowAdapter() );
+        mMap.setInfoWindowAdapter(new LocationInfoWindowAdapter());
         getLocationPermission();
 
         mLocationListViewModel.getLocations().observe(this, locationEntities -> {
@@ -507,7 +516,7 @@ public class MapsActivity extends AppCompatActivity implements
                             .position(latLng).title(locationEntity.getProperty_name())
                             .snippet(locationEntity.getAddress() + " Type: " + locationEntity.getProperty_type())
                             .icon(BitmapDescriptorFactory
-                            .defaultMarker(206)));
+                                    .defaultMarker(206)));
                     marker.setTag(new MarkerTag(locationEntity));
                     mMapMarkers.add(marker);
                 }
@@ -534,7 +543,6 @@ public class MapsActivity extends AppCompatActivity implements
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
     }
-
 
 
     private void setCurrentCommunity(String currentCommunity) {
@@ -573,6 +581,7 @@ public class MapsActivity extends AppCompatActivity implements
         mPropertyTypeListFilter = new ArrayList <>();
         moveCameraToDefaultLocation();
     }
+
 
     private void moveCameraToDefaultLocation() {
         if (Geocoder.isPresent()) {

@@ -3,6 +3,8 @@ package org.affordablehousing.chi.housingapp.ui;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -38,6 +40,20 @@ public class LocationDetailFragment extends Fragment {
     private FragmentLocationDetailBinding mBinding;
     private LocationViewModel mLocationViewModel;
     private NoteAdapter mNoteAdapter;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+// You can hide the state of the menu item here if you call getActivity().supportInvalidateOptionsMenu(); somewhere in your code
+        MenuItem menuItem = menu.findItem(R.id.action_community);
+        menuItem.setVisible(false);
+    }
 
     @Nullable
     @Override
@@ -102,7 +118,6 @@ public class LocationDetailFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
 
         LocationViewModel.Factory factory = new LocationViewModel.Factory(
                 getActivity().getApplication(), getArguments().getInt(KEY_LOCATION_ID));
