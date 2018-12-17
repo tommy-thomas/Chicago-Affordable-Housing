@@ -1,6 +1,7 @@
 package org.affordablehousing.chi.housingapp.widget;
 
 import android.annotation.TargetApi;
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
@@ -11,6 +12,7 @@ import android.widget.RemoteViews;
 
 import org.affordablehousing.chi.housingapp.R;
 import org.affordablehousing.chi.housingapp.service.LocationWidgetService;
+import org.affordablehousing.chi.housingapp.ui.MapsActivity;
 
 /**
  * Implementation of App Widget functionality.
@@ -25,6 +27,11 @@ public class CAHAppWidgetProvider extends AppWidgetProvider {
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName() , R.layout.cahapp_widget_provider);
         views.setTextViewText(R.id.tv_widget_title, widgetText);
+
+        Intent mainIntent = new Intent(context, MapsActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, mainIntent, 0);
+        views.setOnClickPendingIntent(R.id.tv_widget_title, pendingIntent);
+
 
         Intent intent = new Intent(context, CAHRemoteViewsService.class);
         views.setRemoteAdapter(R.id.lv_location_list, intent);

@@ -105,6 +105,9 @@ public class MapsActivity extends AppCompatActivity implements
 
         }
 
+        String currentDBPath = getDatabasePath("location").getAbsolutePath();
+        Log.d(TAG , currentDBPath);
+
         /* map */
         setContentView(R.layout.activity_maps);
 

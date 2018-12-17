@@ -1,5 +1,6 @@
 package org.affordablehousing.chi.housingapp.widget;
 
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +14,7 @@ import com.google.gson.reflect.TypeToken;
 import org.affordablehousing.chi.housingapp.R;
 import org.affordablehousing.chi.housingapp.model.LocationEntity;
 import org.affordablehousing.chi.housingapp.service.LocationWidgetService;
+import org.affordablehousing.chi.housingapp.ui.MapsActivity;
 
 import java.lang.reflect.Type;
 import java.util.List;
@@ -62,6 +64,11 @@ public class CAHRemoteViewsFactory implements RemoteViewsFactory {
         RemoteViews remoteViews = new RemoteViews(mContext.getPackageName(), R.layout.widget_item);
         if (getCount() > 0) {
             remoteViews.setTextViewText(R.id.tv_widget_property_name, mLocationEntityList.get(position).getProperty_name());
+            remoteViews.setTextViewText(R.id.tv_widget_location_id, String.valueOf(mLocationEntityList.get(position).getLocationId()));
+
+            Intent mainIntent = new Intent(mContext, MapsActivity.class);
+            PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 0, mainIntent, 0);
+            remoteViews.setOnClickPendingIntent(R.id.tv_widget_property_name, pendingIntent);
         }
 
         return remoteViews;

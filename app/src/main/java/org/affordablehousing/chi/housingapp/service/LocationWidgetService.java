@@ -93,7 +93,6 @@ public class LocationWidgetService extends IntentService {
         Intent intent = new Intent();
         intent.setAction(ACTION_GET_LOCATION_LIST);
         intent.putExtra(KEY_LOCATION_LIST_DATA, json);
-        Log.d(TAG , "SEND DATA BACK TO CLIENT: " + mLocationList.get(0).getProperty_name());
         sendBroadcast(intent);
     }
 }
