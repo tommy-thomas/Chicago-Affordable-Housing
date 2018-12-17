@@ -22,6 +22,32 @@ android {
             }
         }
     }
+
+    signingConfigs {
+        debug {
+            keyAlias 'cah-alias'
+            keyPassword '$adanna2009$'
+            storeFile file('../cah-keystore.jks')
+            storePassword '$adanna2009$'
+        }
+    }
+    compileSdkVersion build_versions.target_sdk
+    buildToolsVersion build_versions.build_tools
+
+    defaultConfig {
+        minSdkVersion build_versions.min_sdk
+        targetSdkVersion build_versions.target_sdk
+    }
+
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+        }
+        release {
+            signingConfig signingConfigs.debug
+        }
+    }
+
     buildTypes {
         debug {
             buildConfigField 'String', "MapsApiKey", MapsAPIKey

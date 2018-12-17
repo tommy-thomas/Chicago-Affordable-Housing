@@ -29,7 +29,7 @@ public interface LocationDAO {
     @Query("select * from location where is_favorite = 1 order by property_name asc limit 10")
     List<LocationEntity> loadFavoritesforWidget();
 
-    @Query("SELECT * FROM location")
+    @Query("SELECT * FROM location order by locationId asc")
     LiveData<List<LocationEntity>> loadAllLocations();
 
     @Query("select * from location where community_area = :community")

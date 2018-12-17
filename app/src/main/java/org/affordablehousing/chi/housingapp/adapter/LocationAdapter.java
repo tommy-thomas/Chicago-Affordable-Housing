@@ -23,7 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class LocationAdapter extends RecyclerView.Adapter <LocationAdapter.LocationViewHolder> {
 
-    List<? extends Location> mLocationList;
+    List <? extends Location> mLocationList;
 
     private Context mContext;
 
@@ -37,9 +37,9 @@ public class LocationAdapter extends RecyclerView.Adapter <LocationAdapter.Locat
         setHasStableIds(true);
     }
 
-    public void setLocationList(final List<? extends Location> locationList) {
+    public void setLocationList(final List <? extends Location> locationList) {
         if (mLocationList == null) {
-           mLocationList = locationList;
+            mLocationList = locationList;
             notifyItemRangeInserted(0, locationList.size());
         } else {
             DiffUtil.DiffResult result = DiffUtil.calculateDiff(new DiffUtil.Callback() {
@@ -55,7 +55,7 @@ public class LocationAdapter extends RecyclerView.Adapter <LocationAdapter.Locat
 
                 @Override
                 public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-                    if( newItemPosition < locationList.size() ){
+                    if (newItemPosition < locationList.size()) {
                         return mLocationList.get(oldItemPosition).getLocationId() ==
                                 locationList.get(newItemPosition).getLocationId();
                     }
@@ -64,7 +64,7 @@ public class LocationAdapter extends RecyclerView.Adapter <LocationAdapter.Locat
 
                 @Override
                 public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-                    if( newItemPosition < locationList.size()  ){
+                    if (newItemPosition < locationList.size()) {
                         Location newLocation = locationList.get(newItemPosition);
                         Location oldLocation = mLocationList.get(oldItemPosition);
                         return newLocation.getLocationId() == oldLocation.getLocationId()
@@ -91,34 +91,47 @@ public class LocationAdapter extends RecyclerView.Adapter <LocationAdapter.Locat
     @Override
     public void onBindViewHolder(LocationViewHolder holder, int position) {
 
-        holder.binding.setLocation(mLocationList.get(position));
-        holder.binding.executePendingBindings();
+        if (mLocationList.get(position) != null)
+        {
+            holder.binding.setLocation(mLocationList.get(position));
+            holder.binding.executePendingBindings();
 
-        holder.binding.tbFavorite.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if ( isChecked ) {
-                    holder.binding.tbFavorite.setBackground(ContextCompat.getDrawable(mContext, R.drawable.ic_baseline_star_24px));
-                    if( position < mLocationList.size() ){
-                        Toast toast = Toast.makeText(mContext,
-                                mLocationList.get(position).getProperty_name() + " added to favorites.",
-                                Toast.LENGTH_SHORT);
-                        toast.show();
-                    }
-                } else {
-                    holder.binding.tbFavorite.setBackground(ContextCompat.getDrawable(mContext, R.drawable.ic_baseline_star_border_24px));
-                    if( position < mLocationList.size() ){
-                        Toast toast = Toast.makeText(mContext,
-                                mLocationList.get(position).getProperty_name() + " removed from favorites.",
-                                Toast.LENGTH_SHORT);
-                        toast.show();
-                    }
+            holder.binding.tbFavorite.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (isChecked) {
+                        holder.binding.tbFavorite.setBackground(ContextCompat.getDrawable(mContext, R.drawable.ic_baseline_star_24px));
+                        if (position < mLocationList.size()) {
+                            Toast toast = Toast.makeText(mContext,
+                                    mLocationList.get(position).getProperty_name() + " added to favorites.",
+                                    Toast.LENGTH_SHORT);
+                            toast.show();
+                        }
+                    } else {
+                        holder.binding.tbFavorite.setBackground(ContextCompat.getDrawable(mContext, R.drawable.ic_baseline_star_border_24px));
+                        if (position < mLocationList.size()) {
+                            Toast toast = Toast.makeText(mContext,
+                                    mLocationList.get(position).getProperty_name() + " removed from favorites.",
+                                    Toast.LENGTH_SHORT);
+                            toast.show();
+                        }
 
+                    }
                 }
-            }
-        });
+            });
 
-        holder.binding.btnAddNote.setVisibility(View.GONE);
+            holder.binding.btnAddNote.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
     }
 
     @Override

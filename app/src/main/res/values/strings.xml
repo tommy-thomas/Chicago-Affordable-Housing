@@ -21,4 +21,5 @@
     <string name="nav_favorites">Favorites</string>
     <string name="nav_gallery">Gallery</string>
     <string name="nav_refresh">Refresh</string>
+    <string name="no_results">No results</string>
 </resources>

@@ -30,18 +30,18 @@ public class LocationListFragment extends Fragment {
 
     private FragmentLocationListBinding mBinding;
 
-    private final String KEY_LIST_FILTER = "list-filter";
+    private final String KEY_PROPERTY_LIST_FILTER = "property-filter-list";
     private final String KEY_CURRENT_COMMUNITY = "current-community";
     private String CURRENT_COMMUNITY = "";
-    private List<String> LIST_FILTER;
+    private List <String> LIST_FILTER;
 
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mBinding = DataBindingUtil.inflate( inflater , R.layout.fragment_location_list, container, false );
+        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_location_list, container, false);
 
-        LIST_FILTER = getArguments().getStringArrayList(KEY_LIST_FILTER);
+        LIST_FILTER = getArguments().getStringArrayList(KEY_PROPERTY_LIST_FILTER);
         CURRENT_COMMUNITY = getArguments().getString(KEY_CURRENT_COMMUNITY);
 
 
@@ -56,33 +56,42 @@ public class LocationListFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         final LocationListViewModel viewModel =
                 ViewModelProviders.of(this).get(LocationListViewModel.class);
-        if ( (CURRENT_COMMUNITY.equals("") || CURRENT_COMMUNITY.equals("Community")) && ( LIST_FILTER == null || LIST_FILTER.size() == 0 ) ) {
+
+
+        if ((CURRENT_COMMUNITY.equals("") || CURRENT_COMMUNITY.equals("Community")) && (LIST_FILTER == null || LIST_FILTER.size() == 0)) {
             subscribeUi(viewModel.getLocations());
-        } else if((!CURRENT_COMMUNITY.equals("") && !CURRENT_COMMUNITY.matches("Community|showFavorites")) && ( LIST_FILTER == null || LIST_FILTER.size() == 0 )) {
+        } else if ((!CURRENT_COMMUNITY.equals("") && !CURRENT_COMMUNITY.matches("Community|showFavorites")) && (LIST_FILTER == null || LIST_FILTER.size() == 0)) {
             subscribeUi(viewModel.loadLocationsByCommunity(CURRENT_COMMUNITY));
-        } else if((!CURRENT_COMMUNITY.equals("") && !CURRENT_COMMUNITY.matches("Community|showFavorites")) && ( LIST_FILTER != null && LIST_FILTER.size() > 0 )) {
-            subscribeUi(viewModel.loadLocationsByCommunityAndPropertyType( CURRENT_COMMUNITY , LIST_FILTER));
-        } else if((CURRENT_COMMUNITY.equals("") || CURRENT_COMMUNITY.equals("Community")) && ( LIST_FILTER != null && LIST_FILTER.size() > 0 )) {
+        } else if ((!CURRENT_COMMUNITY.equals("") && !CURRENT_COMMUNITY.matches("Community|showFavorites")) && (LIST_FILTER != null && LIST_FILTER.size() > 0)) {
+            subscribeUi(viewModel.loadLocationsByCommunityAndPropertyType(CURRENT_COMMUNITY, LIST_FILTER));
+        } else if ((CURRENT_COMMUNITY.equals("") || CURRENT_COMMUNITY.equals("Community")) && (LIST_FILTER != null && LIST_FILTER.size() > 0)) {
             subscribeUi(viewModel.loadLocationsByPropertyType(LIST_FILTER));
-        } else if( CURRENT_COMMUNITY.equals("showFavorites") ){
+        } else if (CURRENT_COMMUNITY.equals("showFavorites")) {
             subscribeUi(viewModel.getFavorites());
         }
     }
 
-    private void subscribeUi(LiveData<List<LocationEntity>> liveData) {
+    private void subscribeUi(LiveData <List <LocationEntity>> liveData) {
         // Update the list when the data changes
-        liveData.observe(this, new Observer<List<LocationEntity>>() {
+        liveData.observe(this, new Observer <List <LocationEntity>>() {
             @Override
-            public void onChanged(@Nullable List<LocationEntity> locationEntities) {
+            public void onChanged(@Nullable List <LocationEntity> locationEntities) {
                 if (locationEntities != null) {
                     mBinding.setIsLoading(false);
                     mLocationAdapter.setLocationList(locationEntities);
                 } else {
-                   mBinding.setIsLoading(true);
+                    mBinding.setIsLoading(true);
                 }
                 // espresso does not know how to wait for data binding's loop so we execute changes
                 // sync.
-               mBinding.executePendingBindings();
+
+                /* hide no results view */
+                if (locationEntities == null || locationEntities.size() == 0) {
+                    mBinding.tvNoResults.setVisibility(View.VISIBLE);
+                } else {
+                    mBinding.tvNoResults.setVisibility(View.GONE);
+                }
+                mBinding.executePendingBindings();
             }
         });
     }
