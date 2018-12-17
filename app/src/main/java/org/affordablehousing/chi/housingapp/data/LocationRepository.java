@@ -56,6 +56,10 @@ public class LocationRepository {
         return mDatabase.locationDAO().loadPropertyTypes();
     }
 
+    public List<LocationEntity> getWidgetLocations(){
+        return mDatabase.locationDAO().loadFavoritesforWidget();
+    }
+
 
     public LiveData<LocationEntity> loadLocation(final int locationId) {
         return mDatabase.locationDAO().loadLocation(locationId);
@@ -63,6 +67,10 @@ public class LocationRepository {
 
     public int setFavorite( int locationId , boolean is_favorite){
         return mDatabase.locationDAO().setFavorite( locationId , is_favorite);
+    }
+
+    public LiveData<List<LocationEntity>> loadFavorites() {
+        return mDatabase.locationDAO().loadFavorites();
     }
 
     public LiveData<List<LocationEntity>> loadLocationsByCommunity(String community) {

@@ -23,6 +23,8 @@ public class LocationListViewModel extends AndroidViewModel {
     // MediatorLiveData can observe other LiveData objects and react on their emissions.
     private final MediatorLiveData<List<LocationEntity>> mObservableLocations;
 
+    private final MediatorLiveData<List<LocationEntity>> mObservableFavorites;
+
     private final MediatorLiveData<List<String>> mObservableCommunities;
 
     private final MediatorLiveData<List<String>> mObservablePropertyTypes;
@@ -33,6 +35,9 @@ public class LocationListViewModel extends AndroidViewModel {
         mObservableLocations = new MediatorLiveData<>();
         // set by default null, until we get data from the database.
         mObservableLocations.setValue(null);
+
+        mObservableFavorites = new MediatorLiveData <>();
+        mObservableFavorites.setValue(null);
 
         mObservableCommunities = new MediatorLiveData <>();
         mObservableCommunities.setValue(null);
@@ -45,6 +50,9 @@ public class LocationListViewModel extends AndroidViewModel {
 
         // observe the changes of the properties from the database and forward them
         mObservableLocations.addSource(locations, mObservableLocations::setValue);
+
+        LiveData<List<LocationEntity>> favorites = mRepository.loadFavorites();
+        mObservableFavorites.addSource(favorites, mObservableFavorites::setValue);
 
         LiveData<List<String>> communities = mRepository.getCommunities();
         mObservableCommunities.addSource( communities , mObservableCommunities::setValue);
@@ -60,6 +68,8 @@ public class LocationListViewModel extends AndroidViewModel {
     public LiveData<List<LocationEntity>> getLocations() {
         return mObservableLocations;
     }
+
+    public LiveData<List<LocationEntity>> getFavorites() { return mObservableFavorites; }
 
     public LiveData<List<String>> getCommunities() { return mObservableCommunities; }
 

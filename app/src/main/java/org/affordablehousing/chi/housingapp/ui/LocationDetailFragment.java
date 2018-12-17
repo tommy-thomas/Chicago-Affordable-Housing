@@ -19,6 +19,7 @@ import org.affordablehousing.chi.housingapp.databinding.FragmentLocationDetailBi
 import org.affordablehousing.chi.housingapp.model.LocationEntity;
 import org.affordablehousing.chi.housingapp.model.Note;
 import org.affordablehousing.chi.housingapp.model.NoteEntity;
+import org.affordablehousing.chi.housingapp.service.LocationWidgetService;
 import org.affordablehousing.chi.housingapp.viewmodel.LocationViewModel;
 
 import java.util.List;
@@ -146,6 +147,7 @@ public class LocationDetailFragment extends Fragment {
                 }
                 int locationId = locationViewModel.getObservableLocation().getValue().getLocationId();
                 locationViewModel.setFavorite(locationId, isChecked);
+                LocationWidgetService.notifyServiceUpdateLocationWidget(getContext());
             }
         });
 

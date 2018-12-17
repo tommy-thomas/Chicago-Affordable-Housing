@@ -23,8 +23,11 @@ public interface LocationDAO {
     @Query("Update location set is_favorite = :is_favorite where locationId = :locationId")
     int setFavorite(int locationId , boolean is_favorite);
 
-    @Query("select * from location where is_favorite = 1 and locationId = :locationId")
-    LiveData<List<LocationEntity>> loadFavorites(int locationId );
+    @Query("select * from location where is_favorite = 1 order by locationId asc")
+    LiveData<List<LocationEntity>> loadFavorites();
+
+    @Query("select * from location where is_favorite = 1 order by property_name asc limit 10")
+    List<LocationEntity> loadFavoritesforWidget();
 
     @Query("SELECT * FROM location")
     LiveData<List<LocationEntity>> loadAllLocations();

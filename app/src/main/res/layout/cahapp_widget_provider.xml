@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="220dp"
+    android:layout_height="match_parent"
+    android:background="@color/colorSecondary"
+    android:padding="@dimen/widget_margin"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_widget_title"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_margin="8dp"
+        android:layout_marginBottom="@dimen/dp_8"
+        android:background="@color/colorSecondary"
+        android:contentDescription="@string/location_favorites_text"
+        android:text="@string/location_favorites_text"
+        android:textColor="@color/colorWhite"
+        android:textSize="24sp"
+        android:textStyle="bold|italic" />
+
+    <ListView
+        android:id="@+id/lv_location_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical"
+        tools:listitem="@layout/widget_item" />
+
+
+</LinearLayout>

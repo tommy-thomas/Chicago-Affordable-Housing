@@ -417,8 +417,9 @@ public class MapsActivity extends AppCompatActivity implements
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         switch (item.getItemId()) {
-            case R.id.navigation_home:
-                return true;
+            case R.id.nav_favorite:
+                showFavorites();
+                break;
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -466,6 +467,24 @@ public class MapsActivity extends AppCompatActivity implements
                 .commit();
     }
 
+    private void showFavorites() {
+
+        setIsListDisplay(true);
+        LocationListFragment locationListFragment = new LocationListFragment();
+
+        Bundle bundle = new Bundle();
+        bundle.putStringArrayList(KEY_PROPERTY_LIST_FILTER,  new ArrayList <>());
+        bundle.putString(KEY_CURRENT_COMMUNITY, "showFavorites");
+        locationListFragment.setArguments(bundle);
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
+        fragmentManager.beginTransaction()
+                .replace(mContentFrameLayoutId, locationListFragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
     private void showPropertyTypeFilterList() {
         setIsListDisplay(false);
         PropertyTypeListFragment propertyTypeListFragment = new PropertyTypeListFragment();
@@ -477,6 +496,10 @@ public class MapsActivity extends AppCompatActivity implements
         ft.replace(mContentFrameLayoutId, propertyTypeListFragment);
         ft.commit();
         ft.addToBackStack(null);
+    }
+
+    public static void test(){
+
     }
 
 
@@ -723,7 +746,7 @@ public class MapsActivity extends AppCompatActivity implements
 
             String snippet = marker.getSnippet();
             TextView snippetUi = ((TextView) view.findViewById(R.id.snippet));
-            if (snippet != null && snippet.length() > 12) {
+            if (snippet != null && snippet.length() > 0 ) {
                 SpannableString snippetText = new SpannableString(snippet);
                 int typeStartIndex = snippetText.toString().indexOf("Type:");
                 int typeEndIndex = snippetText.toString().length();

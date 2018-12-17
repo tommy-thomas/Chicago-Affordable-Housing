@@ -10,6 +10,7 @@ import org.affordablehousing.chi.housingapp.adapter.LocationAdapter;
 import org.affordablehousing.chi.housingapp.databinding.FragmentLocationListBinding;
 import org.affordablehousing.chi.housingapp.model.Location;
 import org.affordablehousing.chi.housingapp.model.LocationEntity;
+import org.affordablehousing.chi.housingapp.service.LocationWidgetService;
 import org.affordablehousing.chi.housingapp.viewmodel.LocationListViewModel;
 
 import java.util.List;
@@ -38,13 +39,11 @@ public class LocationListFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        //final View rootView = inflater.inflate(R.layout.fragment_location_list, container, false);
         mBinding = DataBindingUtil.inflate( inflater , R.layout.fragment_location_list, container, false );
 
         LIST_FILTER = getArguments().getStringArrayList(KEY_LIST_FILTER);
         CURRENT_COMMUNITY = getArguments().getString(KEY_CURRENT_COMMUNITY);
 
-        //super.onPause();
 
         mLocationAdapter = new LocationAdapter(mLocationClickCallback, getContext());
         mBinding.rvLocationList.setAdapter(mLocationAdapter);
@@ -57,14 +56,16 @@ public class LocationListFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         final LocationListViewModel viewModel =
                 ViewModelProviders.of(this).get(LocationListViewModel.class);
-        if ( (CURRENT_COMMUNITY == ""|| CURRENT_COMMUNITY == "Community") && ( LIST_FILTER == null || LIST_FILTER.size() == 0 ) ) {
+        if ( (CURRENT_COMMUNITY.equals("") || CURRENT_COMMUNITY.equals("Community")) && ( LIST_FILTER == null || LIST_FILTER.size() == 0 ) ) {
             subscribeUi(viewModel.getLocations());
-        } else if((CURRENT_COMMUNITY != "" && CURRENT_COMMUNITY != "Community") && ( LIST_FILTER == null || LIST_FILTER.size() == 0 )) {
+        } else if((!CURRENT_COMMUNITY.equals("") && !CURRENT_COMMUNITY.matches("Community|showFavorites")) && ( LIST_FILTER == null || LIST_FILTER.size() == 0 )) {
             subscribeUi(viewModel.loadLocationsByCommunity(CURRENT_COMMUNITY));
-        } else if((CURRENT_COMMUNITY != "" && CURRENT_COMMUNITY != "Community") && ( LIST_FILTER != null && LIST_FILTER.size() > 0 )) {
+        } else if((!CURRENT_COMMUNITY.equals("") && !CURRENT_COMMUNITY.matches("Community|showFavorites")) && ( LIST_FILTER != null && LIST_FILTER.size() > 0 )) {
             subscribeUi(viewModel.loadLocationsByCommunityAndPropertyType( CURRENT_COMMUNITY , LIST_FILTER));
-        } else if((CURRENT_COMMUNITY == "" || CURRENT_COMMUNITY == "Community") && ( LIST_FILTER != null && LIST_FILTER.size() > 0 )) {
+        } else if((CURRENT_COMMUNITY.equals("") || CURRENT_COMMUNITY.equals("Community")) && ( LIST_FILTER != null && LIST_FILTER.size() > 0 )) {
             subscribeUi(viewModel.loadLocationsByPropertyType(LIST_FILTER));
+        } else if( CURRENT_COMMUNITY.equals("showFavorites") ){
+            subscribeUi(viewModel.getFavorites());
         }
     }
 
@@ -100,6 +101,7 @@ public class LocationListFragment extends Fragment {
         public void onFavoriteChecked(Location location) {
             if (getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED)) {
                 boolean isFavorite = location.getIs_favorite() ? false : true;
+                LocationWidgetService.notifyServiceUpdateLocationWidget(getContext());
                 ((MapsActivity) getActivity()).favorite(location, isFavorite);
             }
         }
