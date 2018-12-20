@@ -37,16 +37,6 @@
         android:textColor="#aaaaaa"
         android:textSize="@dimen/dp_16" />
 
-    <!--<ImageView-->
-        <!--android:layout_width="@dimen/dp_24"-->
-        <!--android:layout_height="@dimen/dp_24"-->
-        <!--android:layout_alignRight="@+id/tv_location_list_header"-->
-        <!--android:layout_alignParentRight="true"-->
-        <!--android:layout_marginStart="@dimen/dp_8"-->
-        <!--android:layout_marginTop="@dimen/dp_8"-->
-        <!--android:layout_marginEnd="@dimen/dp_8"-->
-        <!--android:src="@drawable/ic_round_favorite_border_24px" />-->
-
     <ToggleButton
         android:id="@+id/tb_favorite"
         android:layout_width="@dimen/dp_24"
@@ -56,7 +46,7 @@
         android:layout_marginStart="@dimen/dp_8"
         android:layout_marginTop="@dimen/dp_8"
         android:layout_marginEnd="@dimen/dp_8"
-        android:background="@{location.is_favorite ? @drawable/ic_baseline_star_24px : @drawable/ic_baseline_star_border_24px}" /> />
+        android:background="@{location.is_favorite ? @drawable/ic_baseline_star_24px : @drawable/ic_baseline_star_border_24px}" />
 
 
     <View

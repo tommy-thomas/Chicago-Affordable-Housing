@@ -36,7 +36,7 @@ public class CAHRemoteViewsFactory implements RemoteViewsFactory {
 
         registerLocationListReceiver();
 
-      LocationWidgetService.startActionGetLocationList(mContext);
+      //LocationWidgetService.startActionGetLocationList(mContext);
     }
 
     @Override
@@ -56,7 +56,7 @@ public class CAHRemoteViewsFactory implements RemoteViewsFactory {
 
     @Override
     public int getCount() {
-        return (mLocationEntityList != null) ? mLocationEntityList.size() : 0;
+        return (mLocationEntityList != null &&  mLocationEntityList.size() > 0 ) ? mLocationEntityList.size() : 0;
     }
 
     @Override

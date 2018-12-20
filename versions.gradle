@@ -52,50 +52,6 @@ versions.navigation = "1.0.0-alpha07"
 versions.work = "1.0.0-alpha11"
 def deps = [:]
 
-def support = [:]
-support.annotations = "androidx.annotation:annotation:$versions.support"
-support.app_compat = "androidx.appcompat:appcompat:$versions.support"
-support.recyclerview = "androidx.recyclerview:recyclerview:$versions.support"
-support.cardview = "androidx.cardview:cardview:$versions.support"
-support.design = "com.google.android.material:material:$versions.support"
-support.v4 = "androidx.legacy:legacy-support-v4:$versions.support"
-support.core_utils = "androidx.legacy:legacy-support-core-utils:$versions.support"
-deps.support = support
-
-def room = [:]
-room.runtime = "androidx.room:room-runtime:$versions.room"
-room.compiler = "androidx.room:room-compiler:$versions.room"
-room.rxjava2 = "androidx.room:room-rxjava2:$versions.room"
-room.testing = "androidx.room:room-testing:$versions.room"
-deps.room = room
-
-def lifecycle = [:]
-lifecycle.runtime = "androidx.lifecycle:lifecycle-runtime:$versions.lifecycle"
-lifecycle.extensions = "androidx.lifecycle:lifecycle-extensions:$versions.lifecycle"
-lifecycle.java8 = "androidx.lifecycle:lifecycle-common-java8:$versions.lifecycle"
-lifecycle.compiler = "androidx.lifecycle:lifecycle-compiler:$versions.lifecycle"
-deps.lifecycle = lifecycle
-
-def arch_core = [:]
-arch_core.testing = "androidx.arch.core:core-testing:$versions.arch_core"
-deps.arch_core = arch_core
-
-def retrofit = [:]
-retrofit.runtime = "com.squareup.retrofit2:retrofit:$versions.retrofit"
-retrofit.gson = "com.squareup.retrofit2:converter-gson:$versions.retrofit"
-retrofit.mock = "com.squareup.retrofit2:retrofit-mock:$versions.retrofit"
-deps.retrofit = retrofit
-deps.okhttp_logging_interceptor = "com.squareup.okhttp3:logging-interceptor:${versions.okhttp_logging_interceptor}"
-
-def dagger = [:]
-dagger.runtime = "com.google.dagger:dagger:$versions.dagger"
-dagger.android = "com.google.dagger:dagger-android:$versions.dagger"
-dagger.android_support = "com.google.dagger:dagger-android-support:$versions.dagger"
-dagger.compiler = "com.google.dagger:dagger-compiler:$versions.dagger"
-dagger.android_support_compiler = "com.google.dagger:dagger-android-processor:$versions.dagger"
-
-deps.dagger = dagger
-
 def espresso = [:]
 espresso.core = "androidx.test.espresso:espresso-core:$versions.espresso"
 espresso.contrib = "androidx.test.espresso:espresso-contrib:$versions.espresso"
@@ -139,28 +95,10 @@ deps.android_gradle_plugin = "com.android.tools.build:gradle:$versions.android_g
 ext.deps = deps
 
 def build_versions = [:]
-build_versions.min_sdk = 21
+build_versions.min_sdk = 23
 build_versions.target_sdk = 28
 build_versions.build_tools = "28.0.3"
 ext.build_versions = build_versions
-
-def work = [:]
-work.runtime = "android.arch.work:work-runtime:$versions.work"
-work.testing = "android.arch.work:work-testing:$versions.work"
-work.firebase = "android.arch.work:work-firebase:$versions.work"
-work.runtime_ktx = "android.arch.work:work-runtime-ktx:$versions.work"
-deps.work = work
-
-def navigation = [:]
-navigation.runtime = "android.arch.navigation:navigation-runtime:$versions.navigation"
-navigation.runtime_ktx = "android.arch.navigation:navigation-runtime-ktx:$versions.navigation"
-navigation.fragment = "android.arch.navigation:navigation-fragment:$versions.navigation"
-navigation.fragment_ktx = "android.arch.navigation:navigation-fragment-ktx:$versions.navigation"
-navigation.safe_args_plugin = "android.arch.navigation:navigation-safe-args-gradle-plugin:$versions.navigation"
-navigation.testing = "android.arch.navigation:navigation-testing:$versions.navigation"
-deps.navigation = navigation
-
-ext.deps = deps
 
 def addRepos(RepositoryHandler handler) {
     handler.google()

@@ -44,7 +44,6 @@ public class LocationListFragment extends Fragment {
         LIST_FILTER = getArguments().getStringArrayList(KEY_PROPERTY_LIST_FILTER);
         CURRENT_COMMUNITY = getArguments().getString(KEY_CURRENT_COMMUNITY);
 
-
         mLocationAdapter = new LocationAdapter(mLocationClickCallback, getContext());
         mBinding.rvLocationList.setAdapter(mLocationAdapter);
 
@@ -110,8 +109,8 @@ public class LocationListFragment extends Fragment {
         public void onFavoriteChecked(Location location) {
             if (getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED)) {
                 boolean isFavorite = location.getIs_favorite() ? false : true;
-                LocationWidgetService.notifyServiceUpdateLocationWidget(getContext());
                 ((MapsActivity) getActivity()).favorite(location, isFavorite);
+                LocationWidgetService.notifyServiceUpdateLocationWidget(getContext());
             }
         }
 

@@ -2,7 +2,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="220dp"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorSecondary"
     android:padding="@dimen/widget_margin"
@@ -10,10 +10,11 @@
 
     <TextView
         android:id="@+id/tv_widget_title"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_margin="8dp"
-        android:layout_marginBottom="@dimen/dp_8"
+        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginEnd="@dimen/dp_8"
         android:background="@color/colorSecondary"
         android:contentDescription="@string/location_favorites_text"
         android:text="@string/location_favorites_text"

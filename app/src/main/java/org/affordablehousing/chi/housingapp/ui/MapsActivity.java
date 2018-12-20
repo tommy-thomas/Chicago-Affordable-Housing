@@ -1,5 +1,7 @@
 package org.affordablehousing.chi.housingapp.ui;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -20,6 +22,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -30,6 +34,8 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.navigation.NavigationView.OnNavigationItemSelectedListener;
@@ -64,7 +70,6 @@ import static com.google.android.gms.maps.GoogleMap.MAP_TYPE_NORMAL;
 import static org.affordablehousing.chi.housingapp.ui.PropertyTypeListFragment.PropertyTypeClickListener;
 
 public class MapsActivity extends AppCompatActivity implements
-        OnMapReadyCallback,
         OnNavigationItemSelectedListener,
         PropertyTypeClickListener {
 
@@ -73,15 +78,17 @@ public class MapsActivity extends AppCompatActivity implements
     private LocationListViewModel mLocationListViewModel;
     private UiSettings mUiSettings;
     private GoogleApiClient mGoogleApiClient;
-    private ArrayList <Marker> mMapMarkers;
+    private FusedLocationProviderClient mFusedLocationClient;
+    private SupportMapFragment mSupportMapFragment;
+    private CameraPosition mCameraPosition;
     private boolean mLocationPermissionGranted;
+    private ArrayList <Marker> mMapMarkers;
     private Spinner mSpinner;
     private boolean mTwoPane;
     private int mContentFrameLayoutId;
-    private SupportMapFragment mSupportMapFragment;
-    private CameraPosition mCameraPosition;
+    private int DEFAULT_ZOOM = 13;
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
-    private LatLng CURRENT_LOCATION = new LatLng(41.8087574, -87.677451);
+    private LatLng CURRENT_LOCATION; //= new LatLng(41.8087574, -87.677451);
     private LatLng DEFAULT_LOCATION = new LatLng(41.8087574, -87.677451);
     private String CURRENT_COMMUNITY = "Community";
     private int SELECTED_COMMUNITY_INDEX = 0;
@@ -89,7 +96,7 @@ public class MapsActivity extends AppCompatActivity implements
     private boolean mIsListDisplay = false;
     private final String KEY_CURRENT_COMMUNITY = "current-community";
     private final String KEY_CURRENT_LOCATION = "current-location";
-    private final String KEY_SELECTED_COMMUNITY_INDEX = "selected-community";
+    private final String KEY_SELECTED_COMMUNITY_INDEX = "selected-community-index";
     private final String KEY_PROPERTY_LIST_FILTER = "property-filter-list";
     private final String KEY_SHOW_LOCATION = "show-location";
 
@@ -102,26 +109,19 @@ public class MapsActivity extends AppCompatActivity implements
             setCurrentCommunity(savedInstanceState.getString(KEY_CURRENT_COMMUNITY, "Community"));
             setCurrentLocation(savedInstanceState.getString(KEY_CURRENT_LOCATION, ""));
             setPropertyTypeListFilter(savedInstanceState.getString(KEY_PROPERTY_LIST_FILTER, ""));
-
+            setSelectedCommunity(savedInstanceState.getInt(KEY_SELECTED_COMMUNITY_INDEX, 0));
         }
 
-        String currentDBPath = getDatabasePath("location").getAbsolutePath();
-        Log.d(TAG , currentDBPath);
-
-        /* map */
+        /* map view */
         setContentView(R.layout.activity_maps);
 
         /* Two panes */
         setTwoPane();
 
+        /* set up the map */
+        setMapLocation();
+
         mMapMarkers = new ArrayList <>();
-//
-//        mGoogleApiClient =
-//                new GoogleApiClient.Builder(getApplicationContext())
-//                        .addApi(LocationServices.API)
-//                        .addConnectionCallbacks(this)
-//                        .addOnConnectionFailedListener(this)
-//                        .build();
 
         mPropertyTypeListFilter = new ArrayList <>();
 
@@ -129,13 +129,7 @@ public class MapsActivity extends AppCompatActivity implements
                 ViewModelProviders.of(this).get(LocationListViewModel.class);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        mSupportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map_fragment);
-        if (mSupportMapFragment == null) {
-            mSupportMapFragment = SupportMapFragment.newInstance();
-            getSupportFragmentManager().beginTransaction().replace(R.id.map_fragment_container, mSupportMapFragment).commit();
-        }
-        mSupportMapFragment.setRetainInstance(true);
-        mSupportMapFragment.getMapAsync(this);
+        //setMapLocation();
         /* end map */
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -158,14 +152,11 @@ public class MapsActivity extends AppCompatActivity implements
 
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        updateLocationUI();
+        // updateLocationUI();
 
         if (isTwoPane()) {
             showLocationList();
         }
-
-        Toast.makeText(this, "CREATE", Toast.LENGTH_SHORT).show();
-
 
     }
 
@@ -239,9 +230,8 @@ public class MapsActivity extends AppCompatActivity implements
         /* selected community index int */
         outState.putInt(KEY_SELECTED_COMMUNITY_INDEX, SELECTED_COMMUNITY_INDEX);
 
-
         Toast toast = Toast.makeText(getApplicationContext(),
-                "Restore Instance: " + getCurrentCommunity(),
+                "Save Instance: " + getCurrentCommunity(),
                 Toast.LENGTH_SHORT);
         toast.show();
 
@@ -340,6 +330,7 @@ public class MapsActivity extends AppCompatActivity implements
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+
         MenuInflater inflater = getMenuInflater();
 
         /* top nav */
@@ -351,7 +342,6 @@ public class MapsActivity extends AppCompatActivity implements
         /* handle community list */
         MenuItem community = menu.findItem(R.id.action_community);
         mSpinner = (Spinner) community.getActionView();
-
 
         mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -371,14 +361,12 @@ public class MapsActivity extends AppCompatActivity implements
                         showLocationList();
                     }
                     moveCameraToCommunity(selectedCommunityText);
-                } else {
-                    moveCameraToDefaultLocation();
                 }
             }
 
             @Override
             public void onNothingSelected(AdapterView <?> parent) {
-
+                mSpinner.setSelection(SELECTED_COMMUNITY_INDEX);
             }
         });
 
@@ -395,10 +383,9 @@ public class MapsActivity extends AppCompatActivity implements
 
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 mSpinner.setAdapter(adapter);
+                mSpinner.setSelection(SELECTED_COMMUNITY_INDEX);
             }
         });
-
-        mSpinner.setSelection(SELECTED_COMMUNITY_INDEX);
 
         return true;
     }
@@ -406,7 +393,7 @@ public class MapsActivity extends AppCompatActivity implements
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
+        //on Handle item selection
         switch (item.getItemId()) {
             case R.id.action_reset:
                 resetMarkers();
@@ -476,7 +463,7 @@ public class MapsActivity extends AppCompatActivity implements
         LocationListFragment locationListFragment = new LocationListFragment();
 
         Bundle bundle = new Bundle();
-        bundle.putStringArrayList(KEY_PROPERTY_LIST_FILTER,  new ArrayList <>());
+        bundle.putStringArrayList(KEY_PROPERTY_LIST_FILTER, new ArrayList <>());
         bundle.putString(KEY_CURRENT_COMMUNITY, "showFavorites");
         locationListFragment.setArguments(bundle);
 
@@ -501,23 +488,51 @@ public class MapsActivity extends AppCompatActivity implements
         ft.addToBackStack(null);
     }
 
-    public static void test(){
-
+    public void setMapLocation() {
+        mSupportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map_fragment);
+        if (mSupportMapFragment == null) {
+            mSupportMapFragment = SupportMapFragment.newInstance();
+            getSupportFragmentManager().beginTransaction().replace(R.id.map_fragment_container, mSupportMapFragment).commit();
+        }
+        mSupportMapFragment.setRetainInstance(true);
+        mSupportMapFragment.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(GoogleMap googleMap) {
+                if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                        && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    loadMap(googleMap, DEFAULT_LOCATION);
+                } else {
+                    mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getApplicationContext());
+                    mFusedLocationClient.getLastLocation()
+                            .addOnSuccessListener(new OnSuccessListener <android.location.Location>() {
+                                @Override
+                                public void onSuccess(android.location.Location location) {
+                                    //Toast.makeText(getApplicationContext(), "CURRENT LOCATION: " + String.valueOf(location.getLatitude()) + " , " + String.valueOf(location.getLongitude()), Toast.LENGTH_LONG).show();
+                                    // Log.d(TAG, "CURRENT LOCATION: " + String.valueOf(location.getLatitude()) + " , " + String.valueOf(location.getLongitude()));
+                                    CURRENT_LOCATION =
+                                            (location != null && CURRENT_LOCATION == null) ? new LatLng(location.getLatitude(), location.getLongitude()) : CURRENT_LOCATION;
+                                    //Toast.makeText(getApplicationContext(), "HAVE PERMISSION: " + String.valueOf(CURRENT_LOCATION), Toast.LENGTH_SHORT).show();
+                                    loadMap(googleMap, CURRENT_LOCATION);
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.d(TAG, "Error trying to get last GPS location");
+                                    e.printStackTrace();
+                                }
+                            });
+                }
+            }
+        });
     }
 
+    @SuppressLint("MissingPermission")
+    public void loadMap(GoogleMap googleMap, LatLng currentLocation) {
+        getLocationPermission();
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+
         mMap.setMapType(MAP_TYPE_NORMAL);
 
         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
@@ -532,7 +547,6 @@ public class MapsActivity extends AppCompatActivity implements
         });
 
         mMap.setInfoWindowAdapter(new LocationInfoWindowAdapter());
-        getLocationPermission();
 
         mLocationListViewModel.getLocations().observe(this, locationEntities -> {
             if (locationEntities != null) {
@@ -556,20 +570,23 @@ public class MapsActivity extends AppCompatActivity implements
         mUiSettings.setZoomControlsEnabled(true);
         mUiSettings.setZoomGesturesEnabled(true);
 
+        Log.d(TAG, "CURRENT LOCATION FOR MAP: " + String.valueOf(currentLocation.latitude) + " , " + String.valueOf(currentLocation.longitude));
+
+
         CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(CURRENT_LOCATION)
-                .bearing(112)
-                .tilt(45)
+                .target(currentLocation)
                 .zoom(13)
+                .bearing(90)
+                .tilt(30)
                 .build();
 
         // mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(CHICAGO.getCenter() , 13));
-        // mMap.moveCamera(CameraUpdateFactory.newLatLng(CURRENT_LOCATION));
+        //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(CURRENT_LOCATION, 13));
+
 
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
     }
-
 
     private void setCurrentCommunity(String currentCommunity) {
         CURRENT_COMMUNITY = currentCommunity;
@@ -686,6 +703,21 @@ public class MapsActivity extends AppCompatActivity implements
         }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        mLocationPermissionGranted = false;
+        switch (requestCode) {
+            case PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    mLocationPermissionGranted = true;
+
+                }
+            }
+        }
+
+    }
 
     /**
      * Updates the map's UI settings based on whether the user has granted location permission.
@@ -709,6 +741,9 @@ public class MapsActivity extends AppCompatActivity implements
         }
     }
 
+    /**
+     * Marker window presentation.
+     */
     class LocationInfoWindowAdapter implements InfoWindowAdapter {
 
         private final View mWindow;
@@ -749,7 +784,7 @@ public class MapsActivity extends AppCompatActivity implements
 
             String snippet = marker.getSnippet();
             TextView snippetUi = ((TextView) view.findViewById(R.id.snippet));
-            if (snippet != null && snippet.length() > 0 ) {
+            if (snippet != null && snippet.length() > 0) {
                 SpannableString snippetText = new SpannableString(snippet);
                 int typeStartIndex = snippetText.toString().indexOf("Type:");
                 int typeEndIndex = snippetText.toString().length();

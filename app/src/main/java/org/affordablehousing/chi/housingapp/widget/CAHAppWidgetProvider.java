@@ -65,7 +65,7 @@ public class CAHAppWidgetProvider extends AppWidgetProvider {
     public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
        LocationWidgetService.startActionUpdateLocationList(context);
-       LocationWidgetService.startActionGetLocationList(context);
+      // LocationWidgetService.startActionGetLocationList(context);
     }
 
     @Override

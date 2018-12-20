@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Objects;
 
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
@@ -50,12 +49,14 @@ public class LocationAdapter extends RecyclerView.Adapter <LocationAdapter.Locat
 
                 @Override
                 public int getNewListSize() {
-                    return mLocationList.size();
+                    return locationList.size();
                 }
 
                 @Override
                 public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-                    if (newItemPosition < locationList.size()) {
+                    if  ((newItemPosition > 0 &&  oldItemPosition > 0)
+                            &&  (mLocationList.get(oldItemPosition) != null &&
+                            locationList.get(newItemPosition) != null )){
                         return mLocationList.get(oldItemPosition).getLocationId() ==
                                 locationList.get(newItemPosition).getLocationId();
                     }
@@ -64,7 +65,9 @@ public class LocationAdapter extends RecyclerView.Adapter <LocationAdapter.Locat
 
                 @Override
                 public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-                    if (newItemPosition < locationList.size()) {
+                    if ((newItemPosition > 0 &&  oldItemPosition > 0)
+                            &&  (mLocationList.get(oldItemPosition) != null &&
+                            locationList.get(newItemPosition) != null ))  {
                         Location newLocation = locationList.get(newItemPosition);
                         Location oldLocation = mLocationList.get(oldItemPosition);
                         return newLocation.getLocationId() == oldLocation.getLocationId()
@@ -74,6 +77,7 @@ public class LocationAdapter extends RecyclerView.Adapter <LocationAdapter.Locat
                 }
             });
             mLocationList = locationList;
+            notifyDataSetChanged();
             result.dispatchUpdatesTo(this);
         }
     }
@@ -91,7 +95,7 @@ public class LocationAdapter extends RecyclerView.Adapter <LocationAdapter.Locat
     @Override
     public void onBindViewHolder(LocationViewHolder holder, int position) {
 
-        if (mLocationList.get(position) != null)
+        if ( position >= 0 && mLocationList.get(position) != null)
         {
             holder.binding.setLocation(mLocationList.get(position));
             holder.binding.executePendingBindings();
@@ -100,20 +104,18 @@ public class LocationAdapter extends RecyclerView.Adapter <LocationAdapter.Locat
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     if (isChecked) {
-                        holder.binding.tbFavorite.setBackground(ContextCompat.getDrawable(mContext, R.drawable.ic_baseline_star_24px));
                         if (position < mLocationList.size()) {
                             Toast toast = Toast.makeText(mContext,
                                     mLocationList.get(position).getProperty_name() + " added to favorites.",
                                     Toast.LENGTH_SHORT);
-                            toast.show();
+                            //toast.show();
                         }
                     } else {
-                        holder.binding.tbFavorite.setBackground(ContextCompat.getDrawable(mContext, R.drawable.ic_baseline_star_border_24px));
                         if (position < mLocationList.size()) {
                             Toast toast = Toast.makeText(mContext,
                                     mLocationList.get(position).getProperty_name() + " removed from favorites.",
                                     Toast.LENGTH_SHORT);
-                            toast.show();
+                            //toast.show();
                         }
 
                     }
@@ -126,12 +128,12 @@ public class LocationAdapter extends RecyclerView.Adapter <LocationAdapter.Locat
 
     @Override
     public long getItemId(int position) {
-        return position;
+        return position > 0 ? position : 0;
     }
 
     @Override
     public int getItemViewType(int position) {
-        return position;
+        return position > 0 ? position : 0;
     }
 
     @Override

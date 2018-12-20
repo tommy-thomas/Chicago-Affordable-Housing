@@ -8,6 +8,7 @@ import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Update;
 
 import static androidx.room.OnConflictStrategy.REPLACE;
 
@@ -16,6 +17,9 @@ public interface LocationDAO {
 
     @Insert(onConflict = REPLACE)
     void save(LocationEntity location);
+
+    @Update(onConflict = REPLACE)
+    void updateLocation(LocationEntity location);
 
     @Insert(onConflict = REPLACE)
     void insertAll(List<LocationEntity> locationEntityList);

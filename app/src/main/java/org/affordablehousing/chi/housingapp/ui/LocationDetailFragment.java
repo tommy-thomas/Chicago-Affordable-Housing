@@ -27,7 +27,6 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -133,13 +132,11 @@ public class LocationDetailFragment extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 if ( isChecked ) {
-                    fav.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.ic_baseline_star_24px));
                     Toast toast = Toast.makeText(getContext(),
                             locationViewModel.getObservableLocation().getValue().getProperty_name() + " added to favorites.",
                             Toast.LENGTH_SHORT);
                     toast.show();
                 } else {
-                   fav.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.ic_baseline_star_border_24px));
                     Toast toast = Toast.makeText(getContext(),
                             locationViewModel.getObservableLocation().getValue().getProperty_name() + " removed from favorites.",
                             Toast.LENGTH_SHORT);
