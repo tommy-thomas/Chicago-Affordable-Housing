@@ -94,6 +94,7 @@ public class MapsActivity extends AppCompatActivity implements
     private int SELECTED_COMMUNITY_INDEX = 0;
     private ArrayList <String> mPropertyTypeListFilter;
     private boolean mIsListDisplay = false;
+    private boolean mIsShowFavorites = false;
     private final String KEY_CURRENT_COMMUNITY = "current-community";
     private final String KEY_CURRENT_LOCATION = "current-location";
     private final String KEY_SELECTED_COMMUNITY_INDEX = "selected-community-index";
@@ -342,10 +343,10 @@ public class MapsActivity extends AppCompatActivity implements
         /* handle community list */
         MenuItem community = menu.findItem(R.id.action_community);
         mSpinner = (Spinner) community.getActionView();
-
         mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView <?> parent, View view, int position, long id) {
+                //Toast.makeText(getApplicationContext(), CURRENT_COMMUNITY , Toast.LENGTH_LONG).show();
                 String selectedCommunityText = (String) parent.getItemAtPosition(position);
                 // Notify the selected item text
                 setCurrentCommunity(selectedCommunityText);
@@ -359,6 +360,9 @@ public class MapsActivity extends AppCompatActivity implements
                     // Move camera to new selected community
                     if (isListDisplay()) {
                         showLocationList();
+                    }
+                    if( isShowFavorites() ){
+                        showFavorites();
                     }
                     moveCameraToCommunity(selectedCommunityText);
                 }
@@ -380,7 +384,6 @@ public class MapsActivity extends AppCompatActivity implements
                         android.R.layout.simple_spinner_item,
                         communities
                 );
-
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 mSpinner.setAdapter(adapter);
                 mSpinner.setSelection(SELECTED_COMMUNITY_INDEX);
@@ -433,15 +436,26 @@ public class MapsActivity extends AppCompatActivity implements
 
     private void setIsListDisplay(boolean isListDisplay) {
         mIsListDisplay = isListDisplay;
+        mIsShowFavorites = false;
+    }
+
+    private void setIsShowFavorites( boolean isShowFavorites ){
+         mIsShowFavorites = isShowFavorites;
+         mIsListDisplay = false;
     }
 
     private boolean isListDisplay() {
         return mIsListDisplay;
     }
 
+    private boolean isShowFavorites(){
+       return mIsShowFavorites;
+    }
+
     private void showLocationList() {
 
         setIsListDisplay(true);
+
         LocationListFragment locationListFragment = new LocationListFragment();
 
         Bundle bundle = new Bundle();
@@ -459,7 +473,7 @@ public class MapsActivity extends AppCompatActivity implements
 
     private void showFavorites() {
 
-        setIsListDisplay(true);
+        setIsShowFavorites(true);
         LocationListFragment locationListFragment = new LocationListFragment();
 
         Bundle bundle = new Bundle();
@@ -483,9 +497,11 @@ public class MapsActivity extends AppCompatActivity implements
         bundle.putStringArrayList(KEY_PROPERTY_LIST_FILTER, mPropertyTypeListFilter);
         propertyTypeListFragment.setArguments(bundle);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(mContentFrameLayoutId, propertyTypeListFragment);
-        ft.commit();
-        ft.addToBackStack(null);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(mContentFrameLayoutId, propertyTypeListFragment)
+                .addToBackStack(null)
+                .commit();
     }
 
     public void setMapLocation() {
