@@ -31,6 +31,7 @@ android {
             storePassword '$adanna2009$'
         }
     }
+
     compileSdkVersion build_versions.target_sdk
     buildToolsVersion build_versions.build_tools
 
@@ -41,23 +42,16 @@ android {
 
     buildTypes {
         debug {
-            signingConfig signingConfigs.debug
-        }
-        release {
-            signingConfig signingConfigs.debug
-        }
-    }
-
-    buildTypes {
-        debug {
             buildConfigField 'String', "MapsApiKey", MapsAPIKey
             resValue 'string', "maps_api_key", MapsAPIKey
+            signingConfig signingConfigs.debug
         }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField 'String', "MapsApiKey", MapsAPIKey
             resValue 'string', "maps_api_key", MapsAPIKey
+            signingConfig signingConfigs.debug
         }
     }
 

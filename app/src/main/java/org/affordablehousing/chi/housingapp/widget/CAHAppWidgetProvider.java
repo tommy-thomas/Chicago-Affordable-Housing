@@ -65,16 +65,16 @@ public class CAHAppWidgetProvider extends AppWidgetProvider {
     public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
        LocationWidgetService.startActionUpdateLocationList(context);
-      // LocationWidgetService.startActionGetLocationList(context);
+       LocationWidgetService.startActionGetLocationList(context);
     }
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         // There may be multiple widgets active, so update all of them
-        for (int appWidgetId : appWidgetIds) {
-            updateAppWidget(context, appWidgetManager, appWidgetId);
-        }
-       LocationWidgetService.startActionUpdateLocationList(context);
+//        for (int appWidgetId : appWidgetIds) {
+//            updateAppWidget(context, appWidgetManager, appWidgetId);
+//        }
+     LocationWidgetService.startActionUpdateLocationList(context);
     }
 
     @Override

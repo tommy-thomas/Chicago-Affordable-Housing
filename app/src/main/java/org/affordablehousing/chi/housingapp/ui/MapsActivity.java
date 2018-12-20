@@ -361,7 +361,7 @@ public class MapsActivity extends AppCompatActivity implements
                     if (isListDisplay()) {
                         showLocationList();
                     }
-                    if( isShowFavorites() ){
+                    if (isShowFavorites()) {
                         showFavorites();
                     }
                     moveCameraToCommunity(selectedCommunityText);
@@ -439,17 +439,17 @@ public class MapsActivity extends AppCompatActivity implements
         mIsShowFavorites = false;
     }
 
-    private void setIsShowFavorites( boolean isShowFavorites ){
-         mIsShowFavorites = isShowFavorites;
-         mIsListDisplay = false;
+    private void setIsShowFavorites(boolean isShowFavorites) {
+        mIsShowFavorites = isShowFavorites;
+        mIsListDisplay = false;
     }
 
     private boolean isListDisplay() {
         return mIsListDisplay;
     }
 
-    private boolean isShowFavorites(){
-       return mIsShowFavorites;
+    private boolean isShowFavorites() {
+        return mIsShowFavorites;
     }
 
     private void showLocationList() {
