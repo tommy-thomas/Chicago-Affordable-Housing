@@ -16,7 +16,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:padding="@dimen/dp_8"
     android:orientation="horizontal"
     android:background="@color/colorWhite">
 
@@ -35,6 +34,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:id="@+id/info_text"
+        android:background="@color/colorWhite"
         android:layout_toRightOf="@+id/badge">
 
         <TextView
@@ -55,7 +55,7 @@
             android:layout_gravity="left"
             android:ellipsize="end"
             android:singleLine="true"
-            android:textColor="#ff7f7f7f"
+            android:textColor="@color/colorBlack"
             android:textSize="14dp" />
     </LinearLayout>
 </LinearLayout>

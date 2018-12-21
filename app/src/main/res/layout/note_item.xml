@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
@@ -16,9 +17,10 @@
         android:layout_marginEnd="@dimen/dp_8"
         android:minHeight="@dimen/note_minHeight"
         android:orientation="horizontal"
+        card_view:cardCornerRadius="@dimen/dp_8"
+        card_view:cardElevation="4dp"
         android:padding="8dp"
-        app:cardUseCompatPadding="true"
-        android:background="@drawable/rounded_red_bg">
+        app:cardUseCompatPadding="true">
         <RelativeLayout android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <TextView android:layout_width="wrap_content"

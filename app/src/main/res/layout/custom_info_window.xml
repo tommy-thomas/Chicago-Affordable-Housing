@@ -18,7 +18,7 @@
     android:layout_height="110dp"
     android:orientation="horizontal"
     android:padding="@dimen/dp_16"
-    android:background="@color/colorWhite">
+    android:background="@color/colorPrimaryDark">
 
     <ImageView
         android:id="@+id/badge"

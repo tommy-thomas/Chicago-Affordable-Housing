@@ -4,11 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="100dp"
     android:paddingLeft="16dp"
-    android:paddingRight="16dp">
+    android:paddingRight="16dp"
+    android:background="@color/colorPrimaryDark">
 
     <CheckBox
         android:id="@+id/cb_property_type"
-        android:textColor="#999999"
+        android:textColor="@color/colorBlack"
         android:layout_width="200dp"
         android:layout_height="100dp"
         android:theme="@style/CustomCheckbox" />

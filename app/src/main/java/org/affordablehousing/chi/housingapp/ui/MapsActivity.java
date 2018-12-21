@@ -343,17 +343,20 @@ public class MapsActivity extends AppCompatActivity implements
         /* handle community list */
         MenuItem community = menu.findItem(R.id.action_community);
         mSpinner = (Spinner) community.getActionView();
+
         mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView <?> parent, View view, int position, long id) {
                 //Toast.makeText(getApplicationContext(), CURRENT_COMMUNITY , Toast.LENGTH_LONG).show();
                 String selectedCommunityText = (String) parent.getItemAtPosition(position);
                 // Notify the selected item text
+
                 setCurrentCommunity(selectedCommunityText);
+
                 view.setBackground(getResources().getDrawable(R.drawable.rounded_red_bg));
-                view.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-                view.setPadding(4, 2, 4, 2);
-                view.setMinimumWidth(300);
+                view.setTextAlignment(View.TEXT_ALIGNMENT_GRAVITY);
+                view.setPadding(2, 2, 2, 2);
+                view.setMinimumWidth(500);
 
                 setSelectedCommunity(position);
                 if (position != 0) {

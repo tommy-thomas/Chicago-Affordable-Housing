@@ -6,6 +6,5 @@
         android:id="@+id/action_reset"
         android:title="Reset"
         android:orderInCategory="3"
-        android:background="#ff00"
         app:showAsAction="never" />
 </menu>

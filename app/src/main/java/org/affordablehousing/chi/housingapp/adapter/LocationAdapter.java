@@ -100,6 +100,8 @@ public class LocationAdapter extends RecyclerView.Adapter <LocationAdapter.Locat
             holder.binding.setLocation(mLocationList.get(position));
             holder.binding.executePendingBindings();
 
+
+
             holder.binding.tbFavorite.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {

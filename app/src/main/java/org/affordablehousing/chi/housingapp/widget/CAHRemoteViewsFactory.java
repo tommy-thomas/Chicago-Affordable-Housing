@@ -36,7 +36,7 @@ public class CAHRemoteViewsFactory implements RemoteViewsFactory {
 
         registerLocationListReceiver();
 
-      //LocationWidgetService.startActionGetLocationList(mContext);
+        LocationWidgetService.startActionGetLocationList(mContext);
     }
 
     @Override

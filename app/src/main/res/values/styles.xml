@@ -9,11 +9,26 @@
     </style>
 
     <style name="CustomCheckbox" parent="@style/Widget.AppCompat.CompoundButton.CheckBox">
-        <item name="android:colorControlNormal">@color/colorSecondary</item>
-        <item name="android:colorControlActivated">@color/colorSecondary</item>
-        <item name="android:colorControlHighlight">#cccccc</item>
-        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Body1</item>
+        <item name="android:colorControlNormal">@color/colorSecondaryDark</item>
+        <item name="android:colorControlActivated">@color/colorSecondaryDark</item>
+        <item name="android:colorControlHighlight">@color/colorAccent</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
     </style>
+
+    <style name="AppTheme.CardView" parent="Widget.MaterialComponents.CardView">
+        <item name="android:layout_marginStart">8dp</item>
+        <item name="android:layout_marginEnd">8dp</item>
+        <item name="android:layout_marginTop">4dp</item>
+    </style>
+
+    <style name="CardViewText" parent="TextAppearance.AppCompat">
+       <item name="android:textSize">20sp</item>
+        <item name="android:layout_marginStart">@dimen/dp_16</item>
+        <item name="android:layout_marginEnd">@dimen/dp_16</item>
+        <item name="android:textColor">@color/colorBlack</item>
+    </style>
+
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
@@ -44,3 +59,4 @@
 
 
 </resources>
+
