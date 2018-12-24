@@ -72,6 +72,18 @@
                 android:layout_below="@+id/tv_units"
                 android:text='@{"Property Type: " + location.property_type}' />
 
+            <TextView
+                android:id="@+id/tv_phone_number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/dp_16"
+                style="@style/CardViewText"
+                android:layout_below="@+id/tv_property_type"
+                android:autoLink="phone"
+                android:textColor="@color/colorSecondaryDark"
+                android:text='@{"Phone: " + location.phone_number}' />
+
+
 
             <ToggleButton
                 android:id="@+id/tb_favorite"
@@ -95,7 +107,7 @@
                     android:text="Add Note"
                     android:layout_marginBottom="@dimen/dp_8"
                     android:layout_marginStart="@dimen/dp_16"
-                    android:layout_below="@+id/tv_property_type"/>
+                    android:layout_below="@+id/tv_phone_number"/>
 
 
         </RelativeLayout>

@@ -27,6 +27,7 @@
         <item name="android:layout_marginStart">@dimen/dp_16</item>
         <item name="android:layout_marginEnd">@dimen/dp_16</item>
         <item name="android:textColor">@color/colorBlack</item>
+        <item name="android:textColorLink">@color/colorSecondaryDark</item>
     </style>
 
 

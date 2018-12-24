@@ -84,6 +84,7 @@ public class MapsActivity extends AppCompatActivity implements
     private boolean mLocationPermissionGranted;
     private ArrayList <Marker> mMapMarkers;
     private Spinner mSpinner;
+    private MenuItem mReset;
     private boolean mTwoPane;
     private int mContentFrameLayoutId;
     private int DEFAULT_ZOOM = 13;
@@ -95,6 +96,8 @@ public class MapsActivity extends AppCompatActivity implements
     private ArrayList <String> mPropertyTypeListFilter;
     private boolean mIsListDisplay = false;
     private boolean mIsShowFavorites = false;
+    private boolean mIsShowMap = false;
+    private boolean mIsShowPropertyTypeList = false;
     private final String KEY_CURRENT_COMMUNITY = "current-community";
     private final String KEY_CURRENT_LOCATION = "current-location";
     private final String KEY_SELECTED_COMMUNITY_INDEX = "selected-community-index";
@@ -207,7 +210,6 @@ public class MapsActivity extends AppCompatActivity implements
     }
 
     public void favorite(Location location, boolean isFavorite) {
-
         mLocationListViewModel.setFavorite(location.getLocationId(), isFavorite);
 
     }
@@ -316,6 +318,11 @@ public class MapsActivity extends AppCompatActivity implements
                             fm.popBackStack();
                         }
                         setIsListDisplay(false);
+                        if( mSpinner != null && mReset != null ){
+                            mReset.setVisible(true);
+                            mSpinner.setVisibility(View.VISIBLE);
+                        }
+
                     }
                     return true;
                 case R.id.navigation_list:
@@ -336,11 +343,10 @@ public class MapsActivity extends AppCompatActivity implements
 
         /* top nav */
         inflater.inflate(R.menu.actions_map, menu);
+        mReset = menu.findItem(R.id.action_reset);
 
         /* community list spinner */
         inflater.inflate(R.menu.community_list, menu);
-
-        /* handle community list */
         MenuItem community = menu.findItem(R.id.action_community);
         mSpinner = (Spinner) community.getActionView();
 
@@ -359,6 +365,7 @@ public class MapsActivity extends AppCompatActivity implements
                 view.setMinimumWidth(500);
 
                 setSelectedCommunity(position);
+
                 if (position != 0) {
                     // Move camera to new selected community
                     if (isListDisplay()) {
@@ -369,6 +376,7 @@ public class MapsActivity extends AppCompatActivity implements
                     }
                     moveCameraToCommunity(selectedCommunityText);
                 }
+
             }
 
             @Override
@@ -376,6 +384,7 @@ public class MapsActivity extends AppCompatActivity implements
                 mSpinner.setSelection(SELECTED_COMMUNITY_INDEX);
             }
         });
+
 
         mLocationListViewModel.getCommunities().observe(this, communities -> {
             if (communities != null && communities.size() > 0) {
@@ -387,6 +396,7 @@ public class MapsActivity extends AppCompatActivity implements
                         android.R.layout.simple_spinner_item,
                         communities
                 );
+
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 mSpinner.setAdapter(adapter);
                 mSpinner.setSelection(SELECTED_COMMUNITY_INDEX);
@@ -440,24 +450,57 @@ public class MapsActivity extends AppCompatActivity implements
     private void setIsListDisplay(boolean isListDisplay) {
         mIsListDisplay = isListDisplay;
         mIsShowFavorites = false;
+        mIsShowMap = false;
+        mIsShowPropertyTypeList = false;
+
     }
 
     private void setIsShowFavorites(boolean isShowFavorites) {
         mIsShowFavorites = isShowFavorites;
         mIsListDisplay = false;
+        mIsShowMap = false;
+        mIsShowPropertyTypeList = false;
+    }
+
+    private void setIsShowMap(boolean isShowMap) {
+        mIsShowMap = isShowMap;
+        mIsShowFavorites = false;
+        mIsListDisplay = false;
+        mIsShowPropertyTypeList = false;
+
+    }
+
+    private void setIsShowPropertyTypeList(boolean isShowPropertyTypeList) {
+        mIsShowPropertyTypeList = isShowPropertyTypeList;
+        mIsShowMap = false;
+        mIsShowFavorites = false;
+        mIsListDisplay = false;
+
     }
 
     private boolean isListDisplay() {
         return mIsListDisplay;
+
     }
 
     private boolean isShowFavorites() {
         return mIsShowFavorites;
     }
 
+    private boolean isShowMap() {
+        return (findViewById(R.id.map_fragment) != null) ? true : false;
+    }
+
+    private boolean isShowPropertyTypeList() {
+        return (findViewById(R.id.fragment_property_type_list) != null) ? true : false;
+    }
+
     private void showLocationList() {
 
-        setIsListDisplay(true);
+        if( mSpinner != null && mReset != null ){
+            mReset.setVisible(true);
+            mSpinner.setVisibility(View.VISIBLE);
+        }
 
         LocationListFragment locationListFragment = new LocationListFragment();
 
@@ -472,11 +515,21 @@ public class MapsActivity extends AppCompatActivity implements
                 .replace(mContentFrameLayoutId, locationListFragment)
                 .addToBackStack(null)
                 .commit();
+
+        setIsListDisplay(true);
+
+
     }
 
     private void showFavorites() {
 
         setIsShowFavorites(true);
+
+        if( mSpinner != null && mReset != null ){
+            mReset.setVisible(false);
+            mSpinner.setVisibility(View.INVISIBLE);
+        }
+
         LocationListFragment locationListFragment = new LocationListFragment();
 
         Bundle bundle = new Bundle();
@@ -493,7 +546,12 @@ public class MapsActivity extends AppCompatActivity implements
     }
 
     private void showPropertyTypeFilterList() {
-        setIsListDisplay(false);
+
+        if( mSpinner != null && mReset != null ){
+            mReset.setVisible(false);
+            mSpinner.setVisibility(View.INVISIBLE);
+        }
+
         PropertyTypeListFragment propertyTypeListFragment = new PropertyTypeListFragment();
 
         Bundle bundle = new Bundle();
@@ -505,9 +563,16 @@ public class MapsActivity extends AppCompatActivity implements
                 .replace(mContentFrameLayoutId, propertyTypeListFragment)
                 .addToBackStack(null)
                 .commit();
+
     }
 
     public void setMapLocation() {
+
+        if( mSpinner != null && mReset != null ){
+            mReset.setVisible(true);
+            mSpinner.setVisibility(View.VISIBLE);
+        }
+
         mSupportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map_fragment);
         if (mSupportMapFragment == null) {
             mSupportMapFragment = SupportMapFragment.newInstance();
@@ -642,6 +707,8 @@ public class MapsActivity extends AppCompatActivity implements
         }
         mPropertyTypeListFilter = new ArrayList <>();
         moveCameraToDefaultLocation();
+
+        mSpinner.setSelection(0);
     }
 
 
