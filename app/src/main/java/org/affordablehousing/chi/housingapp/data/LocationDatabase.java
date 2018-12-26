@@ -23,7 +23,7 @@ import retrofit2.Call;
 import retrofit2.Response;
 
 @SuppressWarnings("deprecation")
-@Database(entities = {LocationEntity.class, NoteEntity.class}, version = 4, exportSchema = true)
+@Database(entities = {LocationEntity.class, NoteEntity.class}, version = 5, exportSchema = true)
 @TypeConverters(DateConverter.class)
 public abstract class LocationDatabase extends RoomDatabase {
 

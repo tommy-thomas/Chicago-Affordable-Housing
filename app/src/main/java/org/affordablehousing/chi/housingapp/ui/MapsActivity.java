@@ -96,25 +96,21 @@ public class MapsActivity extends AppCompatActivity implements
     private ArrayList <String> mPropertyTypeListFilter;
     private boolean mIsListDisplay = false;
     private boolean mIsShowFavorites = false;
-    private boolean mIsShowMap = false;
+    private boolean mIsShowMap = true;
     private boolean mIsShowPropertyTypeList = false;
     private final String KEY_CURRENT_COMMUNITY = "current-community";
     private final String KEY_CURRENT_LOCATION = "current-location";
     private final String KEY_SELECTED_COMMUNITY_INDEX = "selected-community-index";
     private final String KEY_PROPERTY_LIST_FILTER = "property-filter-list";
-    private final String KEY_SHOW_LOCATION = "show-location";
+    private final String KEY_SHOW_LIST = "show-list";
+    private final String KEY_SHOW_MAP = "show-map";
+    private final String KEY_SHOW_PROPERTY_TYPE_LIST = "show-type-list";
+    private final String KEY_SHOW_FAVORITES = "show-favorites";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
-
-        if (savedInstanceState != null) {
-            setCurrentCommunity(savedInstanceState.getString(KEY_CURRENT_COMMUNITY, "Community"));
-            setCurrentLocation(savedInstanceState.getString(KEY_CURRENT_LOCATION, ""));
-            setPropertyTypeListFilter(savedInstanceState.getString(KEY_PROPERTY_LIST_FILTER, ""));
-            setSelectedCommunity(savedInstanceState.getInt(KEY_SELECTED_COMMUNITY_INDEX, 0));
-        }
 
         /* map view */
         setContentView(R.layout.activity_maps);
@@ -122,8 +118,11 @@ public class MapsActivity extends AppCompatActivity implements
         /* Two panes */
         setTwoPane();
 
-        /* set up the map */
-        setMapLocation();
+        restoreState(savedInstanceState);
+
+        if (isShowMap()) {
+            setMapLocation();
+        }
 
         mMapMarkers = new ArrayList <>();
 
@@ -160,6 +159,41 @@ public class MapsActivity extends AppCompatActivity implements
 
         if (isTwoPane()) {
             showLocationList();
+        }
+
+    }
+
+    private void restoreState(Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            setCurrentCommunity(savedInstanceState.getString(KEY_CURRENT_COMMUNITY, "Community"));
+            setCurrentLocation(savedInstanceState.getString(KEY_CURRENT_LOCATION, ""));
+            setSelectedCommunity(savedInstanceState.getInt(KEY_SELECTED_COMMUNITY_INDEX));
+            setPropertyTypeListFilter(savedInstanceState.getString(KEY_PROPERTY_LIST_FILTER));
+
+            setIsShowMap(savedInstanceState.getBoolean(KEY_SHOW_MAP));
+            setIsShowPropertyTypeList(savedInstanceState.getBoolean(KEY_SHOW_PROPERTY_TYPE_LIST));
+            setIsShowFavorites(savedInstanceState.getBoolean(KEY_SHOW_FAVORITES));
+            setIsListDisplay(savedInstanceState.getBoolean(KEY_SHOW_LIST));
+
+            if (isShowMap()) {
+                setMapLocation();
+                //Toast.makeText(this , "show map", Toast.LENGTH_LONG).show();
+            }
+
+            if (isListDisplay()) {
+                //Toast.makeText(this , "show list", Toast.LENGTH_LONG).show();
+                showLocationList();
+            }
+
+            if (isShowFavorites()) {
+                // Toast.makeText(this , "show favs", Toast.LENGTH_LONG).show();
+                showFavorites();
+            }
+
+            if (isShowPropertyTypeList()) {
+                //Toast.makeText(this , "show types", Toast.LENGTH_LONG).show();
+                showPropertyTypeFilterList();
+            }
         }
 
     }
@@ -232,28 +266,23 @@ public class MapsActivity extends AppCompatActivity implements
         outState.putString(KEY_PROPERTY_LIST_FILTER, listFilter);
         /* selected community index int */
         outState.putInt(KEY_SELECTED_COMMUNITY_INDEX, SELECTED_COMMUNITY_INDEX);
+        /* screen display flags */
+        outState.putBoolean(KEY_SHOW_LIST, mIsListDisplay);
+        outState.putBoolean(KEY_SHOW_MAP, mIsShowMap);
+        outState.putBoolean(KEY_SHOW_FAVORITES, mIsShowFavorites);
+        outState.putBoolean(KEY_SHOW_PROPERTY_TYPE_LIST, mIsShowPropertyTypeList);
 
-        Toast toast = Toast.makeText(getApplicationContext(),
-                "Save Instance: " + getCurrentCommunity(),
-                Toast.LENGTH_SHORT);
-        toast.show();
+//        Toast toast = Toast.makeText(getApplicationContext(),
+//                "Save Instance: " + getCurrentCommunity(),
+//                Toast.LENGTH_SHORT);
+//        toast.show();
 
         super.onSaveInstanceState(outState);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        if (savedInstanceState != null) {
-            setCurrentCommunity(savedInstanceState.getString(KEY_CURRENT_COMMUNITY, "Community"));
-            setCurrentLocation(savedInstanceState.getString(KEY_CURRENT_LOCATION, ""));
-            setSelectedCommunity(savedInstanceState.getInt(KEY_SELECTED_COMMUNITY_INDEX));
-            setPropertyTypeListFilter(savedInstanceState.getString(KEY_PROPERTY_LIST_FILTER));
-
-            Toast toast = Toast.makeText(getApplicationContext(),
-                    "Restore Instance: " + savedInstanceState.getString(KEY_CURRENT_LOCATION),
-                    Toast.LENGTH_SHORT);
-            toast.show();
-        }
+        restoreState(savedInstanceState);
         super.onRestoreInstanceState(savedInstanceState);
     }
 
@@ -318,7 +347,7 @@ public class MapsActivity extends AppCompatActivity implements
                             fm.popBackStack();
                         }
                         setIsListDisplay(false);
-                        if( mSpinner != null && mReset != null ){
+                        if (mSpinner != null && mReset != null) {
                             mReset.setVisible(true);
                             mSpinner.setVisibility(View.VISIBLE);
                         }
@@ -376,7 +405,6 @@ public class MapsActivity extends AppCompatActivity implements
                     }
                     moveCameraToCommunity(selectedCommunityText);
                 }
-
             }
 
             @Override
@@ -488,16 +516,16 @@ public class MapsActivity extends AppCompatActivity implements
     }
 
     private boolean isShowMap() {
-        return (findViewById(R.id.map_fragment) != null) ? true : false;
+        return mIsShowMap;
     }
 
     private boolean isShowPropertyTypeList() {
-        return (findViewById(R.id.fragment_property_type_list) != null) ? true : false;
+        return mIsShowPropertyTypeList;
     }
 
     private void showLocationList() {
 
-        if( mSpinner != null && mReset != null ){
+        if (mSpinner != null && mReset != null) {
             mReset.setVisible(true);
             mSpinner.setVisibility(View.VISIBLE);
         }
@@ -517,15 +545,11 @@ public class MapsActivity extends AppCompatActivity implements
                 .commit();
 
         setIsListDisplay(true);
-
-
     }
 
     private void showFavorites() {
 
-        setIsShowFavorites(true);
-
-        if( mSpinner != null && mReset != null ){
+        if (mSpinner != null && mReset != null) {
             mReset.setVisible(false);
             mSpinner.setVisibility(View.INVISIBLE);
         }
@@ -543,11 +567,13 @@ public class MapsActivity extends AppCompatActivity implements
                 .replace(mContentFrameLayoutId, locationListFragment)
                 .addToBackStack(null)
                 .commit();
+
+        setIsShowFavorites(true);
     }
 
     private void showPropertyTypeFilterList() {
 
-        if( mSpinner != null && mReset != null ){
+        if (mSpinner != null && mReset != null) {
             mReset.setVisible(false);
             mSpinner.setVisibility(View.INVISIBLE);
         }
@@ -564,11 +590,12 @@ public class MapsActivity extends AppCompatActivity implements
                 .addToBackStack(null)
                 .commit();
 
+        setIsShowPropertyTypeList(true);
     }
 
     public void setMapLocation() {
 
-        if( mSpinner != null && mReset != null ){
+        if (mSpinner != null && mReset != null) {
             mReset.setVisible(true);
             mSpinner.setVisibility(View.VISIBLE);
         }
@@ -609,6 +636,8 @@ public class MapsActivity extends AppCompatActivity implements
                 }
             }
         });
+
+        setIsShowMap(true);
     }
 
     @SuppressLint("MissingPermission")
@@ -654,7 +683,7 @@ public class MapsActivity extends AppCompatActivity implements
         mUiSettings.setZoomControlsEnabled(true);
         mUiSettings.setZoomGesturesEnabled(true);
 
-        Log.d(TAG, "CURRENT LOCATION FOR MAP: " + String.valueOf(currentLocation.latitude) + " , " + String.valueOf(currentLocation.longitude));
+        // Log.d(TAG, "CURRENT LOCATION FOR MAP: " + String.valueOf(currentLocation.latitude) + " , " + String.valueOf(currentLocation.longitude));
 
 
         CameraPosition cameraPosition = new CameraPosition.Builder()
@@ -754,10 +783,14 @@ public class MapsActivity extends AppCompatActivity implements
                             .zoom(13)
                             .build();
 
-                    mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                    if (mMap != null) {
+                        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                    }
+
                     if (isTwoPane()) {
                         filterMarkers();
                     }
+
                 } else {
 
                 }

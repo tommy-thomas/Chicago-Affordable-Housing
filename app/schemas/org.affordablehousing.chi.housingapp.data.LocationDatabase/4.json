@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 4,
-    "identityHash": "9c572b8ed11968adb3b4b81830e9fce4",
+    "identityHash": "03686b2ac2c7c6abd22047b603e54ffb",
     "entities": [
       {
         "tableName": "location",
@@ -129,7 +129,17 @@
           ],
           "autoGenerate": true
         },
-        "indices": [],
+        "indices": [
+          {
+            "name": "index_location_property_name_location_address",
+            "unique": true,
+            "columnNames": [
+              "property_name",
+              "location_address"
+            ],
+            "createSql": "CREATE UNIQUE INDEX `index_location_property_name_location_address` ON `${TABLE_NAME}` (`property_name`, `location_address`)"
+          }
+        ],
         "foreignKeys": []
       },
       {
@@ -195,7 +205,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"9c572b8ed11968adb3b4b81830e9fce4\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"03686b2ac2c7c6abd22047b603e54ffb\")"
     ]
   }
 }
