@@ -47,11 +47,13 @@ import org.affordablehousing.chi.housingapp.model.Location;
 import org.affordablehousing.chi.housingapp.model.LocationEntity;
 import org.affordablehousing.chi.housingapp.model.MarkerTag;
 import org.affordablehousing.chi.housingapp.viewmodel.LocationListViewModel;
+import org.affordablehousing.chi.housingapp.workmanager.CAHWorker;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -64,6 +66,10 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.work.Constraints;
+import androidx.work.NetworkType;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 
 import static com.google.android.gms.maps.GoogleMap.InfoWindowAdapter;
 import static com.google.android.gms.maps.GoogleMap.MAP_TYPE_NORMAL;
@@ -160,6 +166,24 @@ public class MapsActivity extends AppCompatActivity implements
         if (isTwoPane()) {
             showLocationList();
         }
+
+        // https://developer.android.com/topic/libraries/architecture/workmanager/basics#java
+        PeriodicWorkRequest.Builder dataCheckBuilder =
+                new PeriodicWorkRequest.Builder(CAHWorker.class, 90,
+                        TimeUnit.DAYS);
+        // ...if you want, you can apply constraints to the builder here...
+        Constraints jobConstraints = new Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .setRequiresCharging(true)
+                // Many other constraints are available, see the
+                // Constraints.Builder reference
+                .build();
+        // Create the actual work object:
+        PeriodicWorkRequest dataCheckWork = dataCheckBuilder
+                .setConstraints(jobConstraints)
+                .build();
+        // Then enqueue the recurring task:
+        WorkManager.getInstance().enqueue(dataCheckWork);
 
     }
 

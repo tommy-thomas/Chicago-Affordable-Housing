@@ -81,6 +81,34 @@ public abstract class LocationDatabase extends RoomDatabase {
 
     }
 
+    /**
+     * Build the database. {@link Builder#build()} only sets up the database configuration and
+     * creates a new instance of the database.
+     * The SQLite database is only created when it's accessed for the first time.
+     */
+    public static LocationDatabase refreshDatabase(final Context appContext,
+                                                  final AppExecutors executors) {
+        return Room.databaseBuilder(appContext, LocationDatabase.class, DATABASE_NAME)
+                .addCallback(new Callback() {
+                    @Override
+                    public void onCreate(@NonNull SupportSQLiteDatabase db) {
+                        super.onCreate(db);
+                        executors.diskIO().execute(() -> {
+                            // Add a delay to simulate a long-running operation
+                            LocationDatabase database = LocationDatabase.getInstance(appContext, executors);
+                            database.setPropertyEntityList();
+                            addDelay();
+                            insertData(database, mLocationEntityList);
+                            database.setDatabaseCreated();
+                        });
+
+                    }
+                })
+                .fallbackToDestructiveMigration()
+                .build();
+
+    }
+
     private void setPropertyEntityList() {
         LocationDataService locationDataService = RetrofitClient.getRetrofitInstance().create(LocationDataService.class);
         Call <List <LocationEntity>> call = locationDataService.getAllLocations();
