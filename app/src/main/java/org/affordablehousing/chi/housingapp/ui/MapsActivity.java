@@ -47,13 +47,11 @@ import org.affordablehousing.chi.housingapp.model.Location;
 import org.affordablehousing.chi.housingapp.model.LocationEntity;
 import org.affordablehousing.chi.housingapp.model.MarkerTag;
 import org.affordablehousing.chi.housingapp.viewmodel.LocationListViewModel;
-import org.affordablehousing.chi.housingapp.workmanager.CAHWorker;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -66,10 +64,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.work.Constraints;
-import androidx.work.NetworkType;
-import androidx.work.PeriodicWorkRequest;
-import androidx.work.WorkManager;
 
 import static com.google.android.gms.maps.GoogleMap.InfoWindowAdapter;
 import static com.google.android.gms.maps.GoogleMap.MAP_TYPE_NORMAL;
@@ -101,6 +95,8 @@ public class MapsActivity extends AppCompatActivity implements
     private int SELECTED_COMMUNITY_INDEX = 0;
     private ArrayList <String> mPropertyTypeListFilter;
     private boolean mIsListDisplay = false;
+    private boolean mIsShowLocation = false;
+    private Location mLocationObject = null;
     private boolean mIsShowFavorites = false;
     private boolean mIsShowMap = true;
     private boolean mIsShowPropertyTypeList = false;
@@ -109,6 +105,8 @@ public class MapsActivity extends AppCompatActivity implements
     private final String KEY_SELECTED_COMMUNITY_INDEX = "selected-community-index";
     private final String KEY_PROPERTY_LIST_FILTER = "property-filter-list";
     private final String KEY_SHOW_LIST = "show-list";
+    private final String KEY_SHOW_LOCATION = "show-location";
+    private final String KEY_LOCATION_OBJECT = "location-object s";
     private final String KEY_SHOW_MAP = "show-map";
     private final String KEY_SHOW_PROPERTY_TYPE_LIST = "show-type-list";
     private final String KEY_SHOW_FAVORITES = "show-favorites";
@@ -167,57 +165,44 @@ public class MapsActivity extends AppCompatActivity implements
             showLocationList();
         }
 
-        // https://developer.android.com/topic/libraries/architecture/workmanager/basics#java
-        PeriodicWorkRequest.Builder dataCheckBuilder =
-                new PeriodicWorkRequest.Builder(CAHWorker.class, 90,
-                        TimeUnit.DAYS);
-        // ...if you want, you can apply constraints to the builder here...
-        Constraints jobConstraints = new Constraints.Builder()
-                .setRequiredNetworkType(NetworkType.CONNECTED)
-                .setRequiresCharging(true)
-                // Many other constraints are available, see the
-                // Constraints.Builder reference
-                .build();
-        // Create the actual work object:
-        PeriodicWorkRequest dataCheckWork = dataCheckBuilder
-                .setConstraints(jobConstraints)
-                .build();
-        // Then enqueue the recurring task:
-        WorkManager.getInstance().enqueue(dataCheckWork);
-
     }
 
     private void restoreState(Bundle savedInstanceState) {
+
         if (savedInstanceState != null) {
+
             setCurrentCommunity(savedInstanceState.getString(KEY_CURRENT_COMMUNITY, "Community"));
             setCurrentLocation(savedInstanceState.getString(KEY_CURRENT_LOCATION, ""));
             setSelectedCommunity(savedInstanceState.getInt(KEY_SELECTED_COMMUNITY_INDEX));
             setPropertyTypeListFilter(savedInstanceState.getString(KEY_PROPERTY_LIST_FILTER));
+            setLocationObject(savedInstanceState.getString(KEY_LOCATION_OBJECT));
 
             setIsShowMap(savedInstanceState.getBoolean(KEY_SHOW_MAP));
             setIsShowPropertyTypeList(savedInstanceState.getBoolean(KEY_SHOW_PROPERTY_TYPE_LIST));
             setIsShowFavorites(savedInstanceState.getBoolean(KEY_SHOW_FAVORITES));
             setIsListDisplay(savedInstanceState.getBoolean(KEY_SHOW_LIST));
+            setIsShowLocation(savedInstanceState.getBoolean(KEY_SHOW_LOCATION));
 
             if (isShowMap()) {
                 setMapLocation();
-                //Toast.makeText(this , "show map", Toast.LENGTH_LONG).show();
+            }
+
+            if( isShowLocation() ){
+                show(mLocationObject);
             }
 
             if (isListDisplay()) {
-                //Toast.makeText(this , "show list", Toast.LENGTH_LONG).show();
                 showLocationList();
             }
 
             if (isShowFavorites()) {
-                // Toast.makeText(this , "show favs", Toast.LENGTH_LONG).show();
                 showFavorites();
             }
 
             if (isShowPropertyTypeList()) {
-                //Toast.makeText(this , "show types", Toast.LENGTH_LONG).show();
                 showPropertyTypeFilterList();
             }
+
         }
 
     }
@@ -258,6 +243,13 @@ public class MapsActivity extends AppCompatActivity implements
      */
     public void show(Location location) {
 
+        if (mSpinner != null && mReset != null) {
+            mReset.setVisible(false);
+            mSpinner.setVisibility(View.INVISIBLE);
+        }
+
+        mLocationObject = location;
+
         LocationDetailFragment locationDetailFragment = LocationDetailFragment.forLocation(location.getLocationId());
 
         getSupportFragmentManager()
@@ -265,6 +257,7 @@ public class MapsActivity extends AppCompatActivity implements
                 .addToBackStack("location")
                 .replace(mContentFrameLayoutId,
                         locationDetailFragment, null).commit();
+
     }
 
     public void favorite(Location location, boolean isFavorite) {
@@ -295,6 +288,12 @@ public class MapsActivity extends AppCompatActivity implements
         outState.putBoolean(KEY_SHOW_MAP, mIsShowMap);
         outState.putBoolean(KEY_SHOW_FAVORITES, mIsShowFavorites);
         outState.putBoolean(KEY_SHOW_PROPERTY_TYPE_LIST, mIsShowPropertyTypeList);
+        outState.putBoolean(KEY_SHOW_LOCATION, mIsShowLocation);
+        Type location = new TypeToken <Location>() {
+        }.getType();
+        String locationObject = gson.toJson(mLocationObject, location);
+        outState.putString(KEY_LOCATION_OBJECT , locationObject);
+
 
 //        Toast toast = Toast.makeText(getApplicationContext(),
 //                "Save Instance: " + getCurrentCommunity(),
@@ -382,6 +381,7 @@ public class MapsActivity extends AppCompatActivity implements
                     showLocationList();
                     return true;
                 case R.id.navigation_filter:
+                    setIsShowPropertyTypeList(true);
                     showPropertyTypeFilterList();
                     return true;
             }
@@ -412,10 +412,10 @@ public class MapsActivity extends AppCompatActivity implements
 
                 setCurrentCommunity(selectedCommunityText);
 
-                view.setBackground(getResources().getDrawable(R.drawable.rounded_red_bg));
-                view.setTextAlignment(View.TEXT_ALIGNMENT_GRAVITY);
-                view.setPadding(2, 2, 2, 2);
-                view.setMinimumWidth(500);
+                view.setBackground(getDrawable(R.drawable.rounded_red_bg));
+                view.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                view.setPadding(4, 2, 2, 4);
+                view.setMinimumWidth(420);
 
                 setSelectedCommunity(position);
 
@@ -478,6 +478,9 @@ public class MapsActivity extends AppCompatActivity implements
             case R.id.nav_favorite:
                 showFavorites();
                 break;
+            case R.id.nav_refresh:
+                // refresh here
+                break;
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -504,6 +507,16 @@ public class MapsActivity extends AppCompatActivity implements
         mIsShowFavorites = false;
         mIsShowMap = false;
         mIsShowPropertyTypeList = false;
+        mIsShowLocation = false;
+
+    }
+
+    private void setIsShowLocation(boolean isShowLocation) {
+        mIsShowLocation = isShowLocation;
+        mIsListDisplay = false;
+        mIsShowFavorites = false;
+        mIsShowMap = false;
+        mIsShowPropertyTypeList = false;
 
     }
 
@@ -512,6 +525,7 @@ public class MapsActivity extends AppCompatActivity implements
         mIsListDisplay = false;
         mIsShowMap = false;
         mIsShowPropertyTypeList = false;
+        mIsShowLocation = false;
     }
 
     private void setIsShowMap(boolean isShowMap) {
@@ -519,6 +533,7 @@ public class MapsActivity extends AppCompatActivity implements
         mIsShowFavorites = false;
         mIsListDisplay = false;
         mIsShowPropertyTypeList = false;
+        mIsShowLocation = false;
 
     }
 
@@ -527,12 +542,17 @@ public class MapsActivity extends AppCompatActivity implements
         mIsShowMap = false;
         mIsShowFavorites = false;
         mIsListDisplay = false;
+        mIsShowLocation = false;
 
     }
 
     private boolean isListDisplay() {
         return mIsListDisplay;
 
+    }
+
+    private boolean isShowLocation(){
+        return mIsShowLocation;
     }
 
     private boolean isShowFavorites() {
@@ -737,6 +757,16 @@ public class MapsActivity extends AppCompatActivity implements
         SELECTED_COMMUNITY_INDEX = selectedCommunity;
     }
 
+    private void setLocationObject( String locationObject ){
+        if (mLocationObject != null && locationObject != null) {
+            Gson gson = new Gson();
+            Type type = new TypeToken <Location>() {
+            }.getType();
+            mLocationObject = gson.fromJson(locationObject, type);
+
+        }
+    }
+
     private void setCurrentLocation(String currentLocation) {
         Gson gson = new Gson();
         Type type = new TypeToken <LatLng>() {
@@ -931,7 +961,7 @@ public class MapsActivity extends AppCompatActivity implements
                 SpannableString snippetText = new SpannableString(snippet);
                 int typeStartIndex = snippetText.toString().indexOf("Type:");
                 int typeEndIndex = snippetText.toString().length();
-                int typeColor = getResources().getColor(R.color.colorSecondaryDark);
+                int typeColor = getColor(R.color.colorSecondaryDark);
                 snippetText.setSpan(new ForegroundColorSpan(typeColor), typeStartIndex, typeEndIndex, 0);
                 snippetUi.setText(snippetText);
             } else {

@@ -19,7 +19,7 @@ public interface LocationDAO {
     void save(LocationEntity location);
 
     @Update(onConflict = REPLACE)
-    void updateLocation(LocationEntity location);
+    void updateAll(List<LocationEntity> locationEntityList);
 
     @Insert(onConflict = REPLACE)
     void insertAll(List<LocationEntity> locationEntityList);

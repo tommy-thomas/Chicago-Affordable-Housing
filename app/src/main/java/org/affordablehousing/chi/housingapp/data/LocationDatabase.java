@@ -98,7 +98,7 @@ public abstract class LocationDatabase extends RoomDatabase {
                             LocationDatabase database = LocationDatabase.getInstance(appContext, executors);
                             database.setPropertyEntityList();
                             addDelay();
-                            insertData(database, mLocationEntityList);
+                            updateData(database, mLocationEntityList);
                             database.setDatabaseCreated();
                         });
 
@@ -125,7 +125,6 @@ public abstract class LocationDatabase extends RoomDatabase {
 
             }
 
-
         });
     }
 
@@ -145,6 +144,18 @@ public abstract class LocationDatabase extends RoomDatabase {
     private static void insertData(final LocationDatabase database, final List <LocationEntity> locationEntities) {
         database.runInTransaction(() -> {
             database.locationDAO().insertAll(locationEntities);
+        });
+    }
+
+    private static void updateData(final LocationDatabase database, final List <LocationEntity> locationEntities) {
+        database.runInTransaction(() -> {
+            database.locationDAO().updateAll(locationEntities);
+
+            LocationEntity test = new LocationEntity();
+            test.setProperty_name("Tommy's Test Location");
+            test.setCommunity_area("Hyde Park");
+
+            database.locationDAO().save(test);
         });
     }
 
