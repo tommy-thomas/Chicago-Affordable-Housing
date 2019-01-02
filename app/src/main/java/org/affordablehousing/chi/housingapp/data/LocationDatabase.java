@@ -1,6 +1,7 @@
 package org.affordablehousing.chi.housingapp.data;
 
 import android.content.Context;
+import android.util.Log;
 
 import org.affordablehousing.chi.housingapp.AppExecutors;
 import org.affordablehousing.chi.housingapp.model.LocationEntity;
@@ -147,13 +148,15 @@ public abstract class LocationDatabase extends RoomDatabase {
         });
     }
 
-    private static void updateData(final LocationDatabase database, final List <LocationEntity> locationEntities) {
+    public static void updateData(final LocationDatabase database, final List <LocationEntity> locationEntities) {
         database.runInTransaction(() -> {
             database.locationDAO().updateAll(locationEntities);
 
             LocationEntity test = new LocationEntity();
             test.setProperty_name("Tommy's Test Location");
             test.setCommunity_area("Hyde Park");
+
+            Log.d(TAG , "REFRESH: " + test.getProperty_name());
 
             database.locationDAO().save(test);
         });
