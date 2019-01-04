@@ -10,6 +10,7 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
+import static androidx.room.OnConflictStrategy.IGNORE;
 import static androidx.room.OnConflictStrategy.REPLACE;
 
 @Dao
@@ -24,7 +25,10 @@ public interface LocationDAO {
     @Insert(onConflict = REPLACE)
     void insertAll(List<LocationEntity> locationEntityList);
 
-    @Query("Update location set is_favorite = :is_favorite where locationId = :locationId")
+    @Insert(onConflict = IGNORE)
+    void syncInsertAll(List<LocationEntity> locationEntityList);
+
+    @Query("update location set is_favorite = :is_favorite where locationId = :locationId")
     int setFavorite(int locationId , boolean is_favorite);
 
     @Query("select * from location where is_favorite = 1 order by locationId asc")
@@ -33,7 +37,7 @@ public interface LocationDAO {
     @Query("select * from location where is_favorite = 1 order by property_name asc limit 10")
     List<LocationEntity> loadFavoritesforWidget();
 
-    @Query("SELECT * FROM location order by locationId asc")
+    @Query("select * FROM location order by locationId asc")
     LiveData<List<LocationEntity>> loadAllLocations();
 
     @Query("select * from location where community_area = :community")
@@ -45,7 +49,7 @@ public interface LocationDAO {
     @Query("select * from location where community_area = :community and property_type in (:property_type_array)")
     LiveData<List<LocationEntity>> loadLocationsByCommunityAndPropertyType(String community, List<String> property_type_array );
 
-    @Query("SELECT * FROM location where property_type = :property_type")
+    @Query("select * FROM location where property_type = :property_type")
     LiveData<List<LocationEntity>> loadAllLocationsByType(String property_type);
 
     @Query("select * from location where locationId= :locationId")

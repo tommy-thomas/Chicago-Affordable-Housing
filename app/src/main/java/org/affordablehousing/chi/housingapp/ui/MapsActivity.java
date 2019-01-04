@@ -21,6 +21,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.jobdispatcher.Constraint;
+import com.firebase.jobdispatcher.FirebaseJobDispatcher;
+import com.firebase.jobdispatcher.GooglePlayDriver;
+import com.firebase.jobdispatcher.Job;
+import com.firebase.jobdispatcher.Lifetime;
+import com.firebase.jobdispatcher.RetryStrategy;
+import com.firebase.jobdispatcher.Trigger;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -46,6 +53,7 @@ import org.affordablehousing.chi.housingapp.R;
 import org.affordablehousing.chi.housingapp.model.Location;
 import org.affordablehousing.chi.housingapp.model.LocationEntity;
 import org.affordablehousing.chi.housingapp.model.MarkerTag;
+import org.affordablehousing.chi.housingapp.service.LocationSyncService;
 import org.affordablehousing.chi.housingapp.viewmodel.LocationListViewModel;
 
 import java.io.IOException;
@@ -111,10 +119,14 @@ public class MapsActivity extends AppCompatActivity implements
     private final String KEY_SHOW_PROPERTY_TYPE_LIST = "show-type-list";
     private final String KEY_SHOW_FAVORITES = "show-favorites";
 
+    private FirebaseJobDispatcher mJobDispatcher;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
+
+        /* job dispatcher */
+        mJobDispatcher = new FirebaseJobDispatcher( new GooglePlayDriver(this));
 
         /* map view */
         setContentView(R.layout.activity_maps);
@@ -165,7 +177,27 @@ public class MapsActivity extends AppCompatActivity implements
             showLocationList();
         }
 
+        scheduleSyncJob();
+
     }
+
+    private void scheduleSyncJob() {
+
+        Job syncJob = mJobDispatcher.newJobBuilder()
+                .setService(LocationSyncService.class)
+                .setTag(TAG)
+                .setRecurring(true)
+                //.setTrigger(Trigger.executionWindow(60*60*24*30,60*60*24*30+60))  FOR RELEASE //
+                .setTrigger(Trigger.executionWindow(0,30))
+                .setLifetime(Lifetime.FOREVER)
+                .setReplaceCurrent(false)
+                .setConstraints(Constraint.ON_ANY_NETWORK)
+                .setRetryStrategy(RetryStrategy.DEFAULT_EXPONENTIAL)
+                .build();
+        mJobDispatcher.mustSchedule(syncJob);
+        Toast.makeText(this, "Data sync has been scheduled.", Toast.LENGTH_LONG).show();
+    }
+
 
     private void restoreState(Bundle savedInstanceState) {
 

@@ -1,7 +1,6 @@
 package org.affordablehousing.chi.housingapp.data;
 
 import android.content.Context;
-import android.util.Log;
 
 import org.affordablehousing.chi.housingapp.AppExecutors;
 import org.affordablehousing.chi.housingapp.model.LocationEntity;
@@ -82,34 +81,6 @@ public abstract class LocationDatabase extends RoomDatabase {
 
     }
 
-    /**
-     * Build the database. {@link Builder#build()} only sets up the database configuration and
-     * creates a new instance of the database.
-     * The SQLite database is only created when it's accessed for the first time.
-     */
-    public static LocationDatabase refreshDatabase(final Context appContext,
-                                                  final AppExecutors executors) {
-        return Room.databaseBuilder(appContext, LocationDatabase.class, DATABASE_NAME)
-                .addCallback(new Callback() {
-                    @Override
-                    public void onCreate(@NonNull SupportSQLiteDatabase db) {
-                        super.onCreate(db);
-                        executors.diskIO().execute(() -> {
-                            // Add a delay to simulate a long-running operation
-                            LocationDatabase database = LocationDatabase.getInstance(appContext, executors);
-                            database.setPropertyEntityList();
-                            addDelay();
-                            updateData(database, mLocationEntityList);
-                            database.setDatabaseCreated();
-                        });
-
-                    }
-                })
-                .fallbackToDestructiveMigration()
-                .build();
-
-    }
-
     private void setPropertyEntityList() {
         LocationDataService locationDataService = RetrofitClient.getRetrofitInstance().create(LocationDataService.class);
         Call <List <LocationEntity>> call = locationDataService.getAllLocations();
@@ -145,20 +116,6 @@ public abstract class LocationDatabase extends RoomDatabase {
     private static void insertData(final LocationDatabase database, final List <LocationEntity> locationEntities) {
         database.runInTransaction(() -> {
             database.locationDAO().insertAll(locationEntities);
-        });
-    }
-
-    public static void updateData(final LocationDatabase database, final List <LocationEntity> locationEntities) {
-        database.runInTransaction(() -> {
-            database.locationDAO().updateAll(locationEntities);
-
-            LocationEntity test = new LocationEntity();
-            test.setProperty_name("Tommy's Test Location");
-            test.setCommunity_area("Hyde Park");
-
-            Log.d(TAG , "REFRESH: " + test.getProperty_name());
-
-            database.locationDAO().save(test);
         });
     }
 
