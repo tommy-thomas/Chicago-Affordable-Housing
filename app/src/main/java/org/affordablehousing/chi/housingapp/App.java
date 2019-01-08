@@ -4,7 +4,6 @@ import android.app.Application;
 
 import org.affordablehousing.chi.housingapp.data.LocationDatabase;
 import org.affordablehousing.chi.housingapp.data.LocationRepository;
-import org.affordablehousing.chi.housingapp.service.LocationSyncService;
 
 /**
  * Android Application class. Used for accessing singletons.
@@ -12,7 +11,6 @@ import org.affordablehousing.chi.housingapp.service.LocationSyncService;
 public class App extends Application {
 
     private AppExecutors mAppExecutors;
-    private final static String JOB_TAG = LocationSyncService.class.getSimpleName();
 
     @Override
     public void onCreate() {
