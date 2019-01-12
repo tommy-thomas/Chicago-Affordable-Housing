@@ -44,6 +44,8 @@ public class PropertyTypeListAdapter extends RecyclerView.Adapter<PropertyTypeLi
 
             holder.cbPropertyType.setText( mPropertyTypes.get(position)  );
 
+            holder.cbPropertyType.setContentDescription( mPropertyTypes.get(position) );
+
             if( mPropertyTypeFilter != null && mPropertyTypeFilter.size() > 0 ) {
                 if( mPropertyTypeFilter.contains( mPropertyTypes.get(position) ) ){
                     holder.cbPropertyType.setChecked(true);

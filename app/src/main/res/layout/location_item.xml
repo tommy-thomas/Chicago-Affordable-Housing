@@ -28,7 +28,8 @@
             android:id="@+id/rl_location_detail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorWhite">
+            android:background="@color/colorWhite"
+            android:focusable="true">
 
             <TextView
                 android:id="@+id/tv_property_name"
@@ -37,7 +38,8 @@
                 android:paddingTop="@dimen/dp_16"
                 android:textStyle="bold"
                 style="@style/CardViewText"
-                android:text="@{location.property_name}"/>
+                android:text="@{location.property_name}"
+                android:contentDescription="@string/property_name"/>
 
             <TextView
                 android:id="@+id/tv_location_address"
@@ -45,7 +47,8 @@
                 android:layout_height="wrap_content"
                 style="@style/CardViewText"
                 android:layout_below="@+id/tv_property_name"
-                android:text='@{location.address + ", " + location.zip_code}' />
+                android:text='@{location.address + ", " + location.zip_code}'
+                android:contentDescription="@string/location_address"/>
 
             <TextView
                 android:id="@+id/tv_management_company"
@@ -53,7 +56,8 @@
                 android:layout_height="wrap_content"
                 style="@style/CardViewText"
                 android:layout_below="@+id/tv_location_address"
-                android:text='@{"Managemment Company: " + location.management_company}' />
+                android:text='@{"Managemment Company: " + location.management_company}'
+                android:contentDescription="@string/management_company"/>
 
             <TextView
                 android:id="@+id/tv_units"
@@ -61,7 +65,8 @@
                 android:layout_height="wrap_content"
                 style="@style/CardViewText"
                 android:layout_below="@+id/tv_management_company"
-                android:text='@{"Units: " + String.valueOf(location.units)}' />
+                android:text='@{"Units: " + String.valueOf(location.units)}'
+                android:contentDescription="@string/number_of_units"/>
 
             <TextView
                 android:id="@+id/tv_property_type"
@@ -70,7 +75,8 @@
                 android:paddingBottom="@dimen/dp_16"
                 style="@style/CardViewText"
                 android:layout_below="@+id/tv_units"
-                android:text='@{"Property Type: " + location.property_type}' />
+                android:text='@{"Property Type: " + location.property_type}'
+                android:contentDescription="@string/property_type"/>
 
             <TextView
                 android:id="@+id/tv_phone_number"
@@ -81,7 +87,8 @@
                 android:layout_below="@+id/tv_property_type"
                 android:autoLink="phone"
                 android:textColor="@color/colorSecondaryDark"
-                android:text='@{"Phone: " + location.phone_number}' />
+                android:text='@{"Phone: " + location.phone_number}'
+                android:contentDescription="@string/phone_number"/>
 
 
 
@@ -98,6 +105,7 @@
                 android:onClick="@{() ->  callback.onFavoriteChecked(location)}"
                 android:textOff=""
                 android:textOn=""
+                android:contentDescription="@string/favorite_button"
                 android:background="@{location.is_favorite ? @drawable/ic_baseline_star_24px : @drawable/ic_baseline_star_border_24px}" />
 
                 <Button
@@ -107,7 +115,8 @@
                     android:text="Add Note"
                     android:layout_marginBottom="@dimen/dp_8"
                     android:layout_marginStart="@dimen/dp_16"
-                    android:layout_below="@+id/tv_phone_number"/>
+                    android:layout_below="@+id/tv_phone_number"
+                    android:contentDescription="@string/add_a_note_button"/>
 
 
         </RelativeLayout>

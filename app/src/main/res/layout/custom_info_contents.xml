@@ -46,7 +46,8 @@
             android:singleLine="true"
             android:textColor="#ff000000"
             android:textSize="14dp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:contentDescription="@string/property_name"/>
 
         <TextView
             android:id="@+id/snippet"
@@ -56,6 +57,7 @@
             android:ellipsize="end"
             android:singleLine="true"
             android:textColor="@color/colorBlack"
-            android:textSize="14dp" />
+            android:textSize="14dp"
+            android:contentDescription="@string/adddress_and_property_type"/>
     </LinearLayout>
 </LinearLayout>

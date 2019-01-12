@@ -18,7 +18,8 @@
             android:layout_height="@dimen/dp_24"
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_8"
-            android:src="@drawable/ic_baseline_blue_star" />
+            android:src="@drawable/ic_baseline_blue_star"
+            android:contentDescription="@string/widget_icon"/>
 
     <TextView
         android:id="@+id/tv_widget_location_id"
@@ -33,6 +34,7 @@
         android:layout_alignParentEnd="true"
         android:layout_toRightOf="@+id/iv_widget_icon"
         android:textColor="@color/colorCharcoal"
-        android:textStyle="bold"/>
+        android:textStyle="bold"
+        android:contentDescription="Property name for of favorite location."/>
 
 </RelativeLayout>
