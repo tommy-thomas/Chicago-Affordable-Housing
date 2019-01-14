@@ -107,7 +107,7 @@ public class MapsActivity extends AppCompatActivity implements
     private int DEFAULT_ZOOM = 13;
     private int DEFAULT_BEARING = 90;
     private int DEFAULT_TILT = 30;
-    private LatLng CURRENT_LOCATION; //= new LatLng(41.8087574, -87.677451);
+    private LatLng CURRENT_LOCATION;
     private LatLng DEFAULT_LOCATION = new LatLng(41.8087574, -87.677451);
     private String CURRENT_COMMUNITY = "Community";
     private int SELECTED_COMMUNITY_INDEX = 0;
@@ -170,10 +170,6 @@ public class MapsActivity extends AppCompatActivity implements
         /* Two panes */
         setTwoPane();
 
-        if (isShowMap()) {
-            setMapLocation();
-        }
-
         mMapMarkers = new ArrayList <>();
 
         mPropertyTypeListFilter = new ArrayList <>();
@@ -182,7 +178,7 @@ public class MapsActivity extends AppCompatActivity implements
                 ViewModelProviders.of(this).get(LocationListViewModel.class);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        //setMapLocation();
+        setMapLocation();
         /* end map */
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -212,6 +208,7 @@ public class MapsActivity extends AppCompatActivity implements
         }
 
         scheduleSyncJob();
+
     }
 
     private void setNavItemChecked(){
@@ -260,6 +257,7 @@ public class MapsActivity extends AppCompatActivity implements
 
             if (isShowMap()) {
                 setMapLocation();
+                Toast.makeText( this , "show map", Toast.LENGTH_LONG).show();
             }
 
             if (isShowLocation()) {
@@ -729,8 +727,7 @@ public class MapsActivity extends AppCompatActivity implements
                             .addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
-                                    Log.d(TAG, "Error trying to get last GPS location");
-                                    e.printStackTrace();
+                                    loadMap(googleMap, DEFAULT_LOCATION);
                                 }
                             });
                 }
@@ -744,7 +741,13 @@ public class MapsActivity extends AppCompatActivity implements
     public void loadMap(GoogleMap googleMap, LatLng currentLocation) {
         getLocationPermission();
 
-        mMap = googleMap;
+        if( mMap == null ){
+            mMap = googleMap;
+        }
+
+        if( currentLocation == null ){
+            currentLocation = DEFAULT_LOCATION;
+        }
 
         mMap.setMapType(MAP_TYPE_NORMAL);
 
@@ -796,8 +799,11 @@ public class MapsActivity extends AppCompatActivity implements
         // mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(CHICAGO.getCenter() , 13));
         //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(CURRENT_LOCATION, 13));
 
-
-        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(mCameraPosition));
+        if( CURRENT_COMMUNITY == "Community" ){
+            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(mCameraPosition));
+        } else {
+            mMap.moveCamera(CameraUpdateFactory.newCameraPosition(mCameraPosition));
+        }
 
     }
 
@@ -868,6 +874,7 @@ public class MapsActivity extends AppCompatActivity implements
 
     }
 
+
     private void moveCameraToCommunity(String community) {
         setCurrentCommunity(community);
         if (Geocoder.isPresent() && !community.equals("Community")) {
@@ -894,6 +901,8 @@ public class MapsActivity extends AppCompatActivity implements
 
                     if (mMap != null) {
                         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(mCameraPosition));
+                    } else {
+                        Toast.makeText(this, "no map", Toast.LENGTH_LONG).show();
                     }
 
                     if (isTwoPane()) {
@@ -901,15 +910,15 @@ public class MapsActivity extends AppCompatActivity implements
                     }
 
                 } else {
-
                 }
 
             } catch (IOException e) {
                 // handle the exception
                 Log.d(TAG , "GEOCODE: " + e.toString());
             }
-        }
+        } else {
 
+        }
     }
 
     /**
