@@ -26,7 +26,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/map_fragment_container"
         android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="750dp"
+        android:layout_width="wrap_content"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@id/navigation"
         app:layout_constraintTop_toBottomOf="@id/appbar"
@@ -39,10 +39,10 @@
 
     <FrameLayout xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/fr_content_fragment_container"
-        android:layout_width="550dp"
+        android:layout_width="440dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@id/navigation"
-        app:layout_constraintLeft_toRightOf="@+id/map_fragment_container"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/appbar"
         tools:context=".ui.MapsActivity" />
 
