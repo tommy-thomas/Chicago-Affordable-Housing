@@ -33,4 +33,7 @@
     <string name="add_a_note_button">Add a note button</string>
     <string name="edit_note">Edit note</string>
     <string name="adddress_and_property_type">Adddress and property type</string>
+    <string name="info">Info</string>
+    <string name="chicago_data_portal">Chicago Data Portal</string>
+    <string name="chicago_data_info">The data displayed in this app below is derived from the Chicago Data Portal. It does not constitute a complete list of affordable housing in Chicago. For information on affordable rental properties in Chicago and Illinois, call (877) 428-8844 or visit http://www.ilhousingsearch.org/.</string>
 </resources>

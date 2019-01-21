@@ -8,30 +8,30 @@
             android:id="@+id/nav_favorite"
             android:icon="@drawable/ic_baseline_star_24px"
             android:title="@string/nav_favorites" />
-        <item
-            android:id="@+id/nav_refresh"
-            android:icon="@drawable/ic_round_refresh_24px"
-            android:title="@string/nav_refresh" />
-        <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Slideshow" />
-        <item
-            android:id="@+id/nav_manage"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Tools" />
+        <!--<item-->
+            <!--android:id="@+id/nav_refresh"-->
+            <!--android:icon="@drawable/ic_round_refresh_24px"-->
+            <!--android:title="@string/nav_refresh" />-->
+        <!--<item-->
+            <!--android:id="@+id/nav_slideshow"-->
+            <!--android:icon="@drawable/ic_menu_slideshow"-->
+            <!--android:title="Slideshow" />-->
+        <!--<item-->
+            <!--android:id="@+id/nav_manage"-->
+            <!--android:icon="@drawable/ic_menu_manage"-->
+            <!--android:title="Tools" />-->
     </group>
 
-    <item android:title="Communicate">
+    <item android:title="Information">
         <menu>
             <item
-                android:id="@+id/nav_share"
-                android:icon="@drawable/ic_menu_share"
-                android:title="Share" />
+                android:id="@+id/nav_info"
+                android:icon="@drawable/ic_round_info_24px"
+                android:title="@string/info" />
             <item
-                android:id="@+id/nav_send"
-                android:icon="@drawable/ic_menu_send"
-                android:title="Send" />
+                android:id="@+id/nav_chicago_data"
+                android:icon="@drawable/ic_round_open_in_browser_24px"
+                android:title="@string/chicago_data_portal" />
         </menu>
     </item>
 

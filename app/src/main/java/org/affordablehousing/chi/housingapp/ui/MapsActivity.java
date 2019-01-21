@@ -2,10 +2,12 @@ package org.affordablehousing.chi.housingapp.ui;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.location.Address;
 import android.location.Geocoder;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -91,6 +93,7 @@ public class MapsActivity extends AppCompatActivity implements
     private static final String KEY_SHOW_MAP = "show-map";
     private static final String KEY_SHOW_PROPERTY_TYPE_LIST = "show-type-list";
     private static final String KEY_SHOW_FAVORITES = "show-favorites";
+    private static final String URL_CHICAGO_DATA = "https://data.cityofchicago.org/Community-Economic-Development/Affordable-Rental-Housing-Developments/s6ha-ppgi";
     private GoogleMap mMap;
     private LocationListViewModel mLocationListViewModel;
     private UiSettings mUiSettings;
@@ -200,8 +203,6 @@ public class MapsActivity extends AppCompatActivity implements
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-
-        // updateLocationUI();
 
         if (isTwoPane()) {
             showLocationList();
@@ -514,6 +515,10 @@ public class MapsActivity extends AppCompatActivity implements
         switch (item.getItemId()) {
             case R.id.action_reset:
                 resetMarkers();
+                if( isListDisplay() ){
+                    setCurrentCommunity("Community");
+                    showLocationList();
+                }
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -527,9 +532,14 @@ public class MapsActivity extends AppCompatActivity implements
             case R.id.nav_favorite:
                 showFavorites();
                 break;
-            case R.id.nav_refresh:
-                // refresh here
+            case R.id.nav_info:
+                Intent infoIntent = new Intent( this, InfoActivity.class);
+                startActivity( infoIntent );
                 break;
+            case R.id.nav_chicago_data:
+                Intent urlIntent = new Intent(Intent.ACTION_VIEW);
+                urlIntent.setData(Uri.parse(URL_CHICAGO_DATA));
+                startActivity(urlIntent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

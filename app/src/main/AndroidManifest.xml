@@ -66,14 +66,17 @@
         <service
             android:name=".widget.CAHRemoteViewsService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
-
         <service
-            android:exported="false"
-            android:name=".service.LocationSyncService">
+            android:name=".service.LocationSyncService"
+            android:exported="false">
             <intent-filter>
-                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE"/>
+                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
             </intent-filter>
         </service>
+
+        <activity android:name=".ui.InfoActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar"
+            android:parentActivityName=".ui.MapsActivity"></activity>
     </application>
 
 </manifest>
