@@ -181,7 +181,9 @@ public class MapsActivity extends AppCompatActivity implements
                 ViewModelProviders.of(this).get(LocationListViewModel.class);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        setMapLocation();
+        if( isShowMap() ){
+            setMapLocation();
+        }
         /* end map */
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -267,6 +269,7 @@ public class MapsActivity extends AppCompatActivity implements
 
             if (isListDisplay()) {
                 showLocationList();
+                Toast.makeText( this , "show list", Toast.LENGTH_LONG).show();
             }
 
             if (isShowFavorites()) {
@@ -373,7 +376,6 @@ public class MapsActivity extends AppCompatActivity implements
         String locationObject = gson.toJson(mLocationObject, location);
         outState.putString(KEY_LOCATION_OBJECT, locationObject);
         super.onSaveInstanceState(outState);
-
     }
 
     @Override
@@ -382,7 +384,6 @@ public class MapsActivity extends AppCompatActivity implements
             restoreState(savedInstanceState);
         }
        // super.onRestoreInstanceState(savedInstanceState);
-
     }
 
     private void hiudeMenus(){
@@ -912,7 +913,7 @@ public class MapsActivity extends AppCompatActivity implements
                     if (mMap != null) {
                         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(mCameraPosition));
                     } else {
-                        Toast.makeText(this, "no map", Toast.LENGTH_LONG).show();
+                        setMapLocation();
                     }
 
                     if (isTwoPane()) {
