@@ -40,7 +40,12 @@ public class LocationListFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_location_list, container, false);
-        mBinding.rvLocationList.setContentDescription("Location List");
+
+        if (CURRENT_COMMUNITY.equals("showFavorites")){
+            mBinding.rvLocationList.setContentDescription("Favorites List");
+        } else {
+            mBinding.rvLocationList.setContentDescription("Location List");
+        }
 
         LIST_FILTER = getArguments().getStringArrayList(KEY_PROPERTY_LIST_FILTER);
         CURRENT_COMMUNITY = getArguments().getString(KEY_CURRENT_COMMUNITY);
@@ -68,8 +73,6 @@ public class LocationListFragment extends Fragment {
             subscribeUi(viewModel.loadLocationsByPropertyType(LIST_FILTER));
         } else if (CURRENT_COMMUNITY.equals("showFavorites")) {
             subscribeUi(viewModel.getFavorites());
-            mBinding.rvLocationList.setContentDescription("Favorites List");
-
         }
     }
 
