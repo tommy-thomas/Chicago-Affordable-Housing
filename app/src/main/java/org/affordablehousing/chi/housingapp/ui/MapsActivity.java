@@ -251,6 +251,10 @@ public class MapsActivity extends AppCompatActivity implements
                 showFavorites();
             }
 
+            if( isShowPropertyTypeList() ){
+                navigationView.setSelectedItemId(R.id.navigation_filter);
+            }
+
         }
         // super.onRestoreInstanceState(savedInstanceState);
 
@@ -348,13 +352,6 @@ public class MapsActivity extends AppCompatActivity implements
             restoreState(savedInstanceState);
         }
         // super.onRestoreInstanceState(savedInstanceState);
-    }
-
-    private void hideMenus() {
-        if (mSpinner != null && mReset != null) {
-            mReset.setVisible(false);
-            mSpinner.setVisibility(View.INVISIBLE);
-        }
     }
 
     @Override
@@ -589,11 +586,6 @@ public class MapsActivity extends AppCompatActivity implements
 
     private void showFavorites() {
 
-        if (mSpinner != null && mReset != null) {
-            mReset.setVisible(false);
-            mSpinner.setVisibility(View.INVISIBLE);
-        }
-
         LocationListFragment locationListFragment = new LocationListFragment();
 
         Bundle bundle = new Bundle();
@@ -611,11 +603,6 @@ public class MapsActivity extends AppCompatActivity implements
 
     private void showPropertyTypeFilterList() {
 
-        if (mSpinner != null && mReset != null) {
-            mReset.setVisible(false);
-            mSpinner.setVisibility(View.INVISIBLE);
-        }
-
         PropertyTypeListFragment propertyTypeListFragment = new PropertyTypeListFragment();
 
         Bundle bundle = new Bundle();
@@ -631,11 +618,6 @@ public class MapsActivity extends AppCompatActivity implements
     }
 
     public void setMapLocation() {
-
-        if (mSpinner != null && mReset != null) {
-            mReset.setVisible(true);
-            mSpinner.setVisibility(View.VISIBLE);
-        }
 
         mSupportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map_fragment);
         if (mSupportMapFragment == null) {
