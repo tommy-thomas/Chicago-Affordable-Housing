@@ -41,14 +41,14 @@ public class LocationListFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_location_list, container, false);
 
+        LIST_FILTER = getArguments().getStringArrayList(KEY_PROPERTY_LIST_FILTER);
+        CURRENT_COMMUNITY = getArguments().getString(KEY_CURRENT_COMMUNITY);
+
         if (CURRENT_COMMUNITY.equals("showFavorites")){
             mBinding.rvLocationList.setContentDescription("Favorites List");
         } else {
             mBinding.rvLocationList.setContentDescription("Location List");
         }
-
-        LIST_FILTER = getArguments().getStringArrayList(KEY_PROPERTY_LIST_FILTER);
-        CURRENT_COMMUNITY = getArguments().getString(KEY_CURRENT_COMMUNITY);
 
         mLocationAdapter = new LocationAdapter(mLocationClickCallback, getContext());
         mBinding.rvLocationList.setAdapter(mLocationAdapter);
@@ -61,7 +61,6 @@ public class LocationListFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         final LocationListViewModel viewModel =
                 ViewModelProviders.of(this).get(LocationListViewModel.class);
-
 
         if ((CURRENT_COMMUNITY.equals("") || CURRENT_COMMUNITY.equals("Community")) && (LIST_FILTER == null || LIST_FILTER.size() == 0)) {
             subscribeUi(viewModel.getLocations());

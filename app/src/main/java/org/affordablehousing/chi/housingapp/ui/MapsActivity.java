@@ -85,12 +85,12 @@ public class MapsActivity extends AppCompatActivity implements
     private static final String TAG = MapsActivity.class.getSimpleName() + " -- MAP ACTIVITY -- ";
     private static final String KEY_CURRENT_COMMUNITY = "current-community";
     private static final String KEY_CURRENT_LOCATION = "current-location";
+    private static final String KEY_CURRENT_DISPLAY = "current-display";
     private static final String KEY_SELECTED_COMMUNITY_INDEX = "selected-community-index";
     private static final String KEY_PROPERTY_LIST_FILTER = "property-filter-list";
     private static final String KEY_SHOW_LOCATION = "show-location";
     private static final String KEY_LOCATION_OBJECT = "location-object";
     private static final String KEY_SHOW_MAP = "show-map";
-    private static final String KEY_SHOW_FAVORITES = "show-favorites";
     private static final String URL_CHICAGO_DATA = "https://data.cityofchicago.org/Community-Economic-Development/Affordable-Rental-Housing-Developments/s6ha-ppgi";
     private GoogleMap mMap;
     private LocationListViewModel mLocationListViewModel;
@@ -115,7 +115,6 @@ public class MapsActivity extends AppCompatActivity implements
     private ArrayList <String> mPropertyTypeListFilter;
     private boolean mIsShowLocation = false;
     private Location mLocationObject = null;
-    private boolean mIsShowFavorites = false;
     private boolean mIsShowMap = true;
     private FirebaseJobDispatcher mJobDispatcher;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -150,13 +149,10 @@ public class MapsActivity extends AppCompatActivity implements
 
     };
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
-        restoreState(savedInstanceState);
 
         /* job dispatcher */
         mJobDispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(this));
@@ -167,6 +163,8 @@ public class MapsActivity extends AppCompatActivity implements
         /* Two panes */
         setTwoPane();
 
+        restoreState(savedInstanceState);
+
         mMapMarkers = new ArrayList <>();
 
         mPropertyTypeListFilter = new ArrayList <>();
@@ -175,7 +173,7 @@ public class MapsActivity extends AppCompatActivity implements
                 ViewModelProviders.of(this).get(LocationListViewModel.class);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        if( isShowMap() ){
+        if (isShowMap()) {
             setMapLocation();
         }
         /* end map */
@@ -208,17 +206,6 @@ public class MapsActivity extends AppCompatActivity implements
 
     }
 
-    private void setNavItemChecked(){
-        BottomNavigationView navigationView = findViewById(R.id.navigation);
-        if( isShowMap() ){
-            navigationView.setSelectedItemId(R.id.navigation_home);
-        } else if( isShowLocation() || isListDisplay() || isShowFavorites() ){
-            navigationView.setSelectedItemId(R.id.navigation_list);
-        } else if( isShowPropertyTypeList() ){
-            navigationView.setSelectedItemId(R.id.navigation_filter);
-        }
-    }
-
     private void scheduleSyncJob() {
 
         Job syncJob = mJobDispatcher.newJobBuilder()
@@ -247,36 +234,22 @@ public class MapsActivity extends AppCompatActivity implements
             setLocationObject(savedInstanceState.getString(KEY_LOCATION_OBJECT));
 
             setIsShowMap(savedInstanceState.getBoolean(KEY_SHOW_MAP));
-            setIsShowFavorites(savedInstanceState.getBoolean(KEY_SHOW_FAVORITES));
             setIsShowLocation(savedInstanceState.getBoolean(KEY_SHOW_LOCATION));
 
-            if (isShowMap()) {
-                Toast.makeText( this , "show map", Toast.LENGTH_LONG).show();
-                setMapLocation();
-            }
+            BottomNavigationView navigationView = findViewById(R.id.navigation);
 
             if (isShowLocation()) {
                 show(mLocationObject);
             }
 
-            if (isListDisplay()) {
-                Toast.makeText( this , "show list", Toast.LENGTH_LONG).show();
-                showLocationList();
+            if (isShowList() ) {
+                navigationView.setSelectedItemId(R.id.navigation_list);
             }
 
-            if (isShowFavorites()) {
-                Toast.makeText( this , "fav list", Toast.LENGTH_LONG).show();
+            if ( isShowFavorites() ) {
+                navigationView.setSelectedItemId(R.id.navigation_list);
                 showFavorites();
-                hideMenus();
             }
-
-            if (isShowPropertyTypeList()) {
-                Toast.makeText( this , "type list", Toast.LENGTH_LONG).show();
-                showPropertyTypeFilterList();
-                hideMenus();
-            }
-
-            setNavItemChecked();
 
         }
         // super.onRestoreInstanceState(savedInstanceState);
@@ -361,7 +334,6 @@ public class MapsActivity extends AppCompatActivity implements
         outState.putInt(KEY_SELECTED_COMMUNITY_INDEX, SELECTED_COMMUNITY_INDEX);
         /* screen display flags */
         outState.putBoolean(KEY_SHOW_MAP, isShowMap());
-        outState.putBoolean(KEY_SHOW_FAVORITES, isShowFavorites());
         outState.putBoolean(KEY_SHOW_LOCATION, isShowLocation());
         Type location = new TypeToken <Location>() {
         }.getType();
@@ -375,10 +347,10 @@ public class MapsActivity extends AppCompatActivity implements
         if (savedInstanceState != null) {
             restoreState(savedInstanceState);
         }
-       // super.onRestoreInstanceState(savedInstanceState);
+        // super.onRestoreInstanceState(savedInstanceState);
     }
 
-    private void hideMenus(){
+    private void hideMenus() {
         if (mSpinner != null && mReset != null) {
             mReset.setVisible(false);
             mSpinner.setVisibility(View.INVISIBLE);
@@ -464,7 +436,7 @@ public class MapsActivity extends AppCompatActivity implements
 
                 if (position != 0) {
 
-                    if (isListDisplay()) {
+                    if (isShowList()) {
                         showLocationList();
                     }
 
@@ -472,11 +444,8 @@ public class MapsActivity extends AppCompatActivity implements
                         showFavorites();
                     }
 
-                    if( isShowPropertyTypeList() ){
+                    if (isShowPropertyTypeList()) {
                         showPropertyTypeFilterList();
-                    }
-                    if( isShowFavorites() || isShowPropertyTypeList() ){
-                        hideMenus();
                     }
                 }
             }
@@ -515,7 +484,7 @@ public class MapsActivity extends AppCompatActivity implements
         switch (item.getItemId()) {
             case R.id.action_reset:
                 resetMarkers();
-                if( isListDisplay() ){
+                if (isShowList()) {
                     setCurrentCommunity("Community");
                     showLocationList();
                 }
@@ -533,8 +502,8 @@ public class MapsActivity extends AppCompatActivity implements
                 showFavorites();
                 break;
             case R.id.nav_info:
-                Intent infoIntent = new Intent( this, InfoActivity.class);
-                startActivity( infoIntent );
+                Intent infoIntent = new Intent(this, InfoActivity.class);
+                startActivity(infoIntent);
                 break;
             case R.id.nav_chicago_data:
                 Intent urlIntent = new Intent(Intent.ACTION_VIEW);
@@ -563,27 +532,19 @@ public class MapsActivity extends AppCompatActivity implements
 
     private void setIsShowLocation(boolean isShowLocation) {
         mIsShowLocation = isShowLocation;
-        mIsShowFavorites = false;
         mIsShowMap = false;
 
-    }
-
-    private void setIsShowFavorites(boolean isShowFavorites) {
-        mIsShowFavorites = isShowFavorites;
-        mIsShowMap = false;
-        mIsShowLocation = false;
     }
 
     private void setIsShowMap(boolean isShowMap) {
         mIsShowMap = isShowMap;
-        mIsShowFavorites = false;
         mIsShowLocation = false;
 
     }
 
-    private boolean isListDisplay() {
+    private boolean isShowList() {
         RecyclerView rv = findViewById(R.id.rv_location_list);
-        return ( rv != null && rv.getContentDescription().equals("Location List"));
+        return (rv != null && rv.getContentDescription().equals("Location List"));
 
     }
 
@@ -592,9 +553,8 @@ public class MapsActivity extends AppCompatActivity implements
     }
 
     private boolean isShowFavorites() {
-
         RecyclerView rv = findViewById(R.id.rv_location_list);
-        return ( rv != null && rv.getContentDescription().equals("Favorites List"));
+        return (rv != null && rv.getContentDescription().equals("Favorites List"));
     }
 
     private boolean isShowMap() {
@@ -602,7 +562,7 @@ public class MapsActivity extends AppCompatActivity implements
     }
 
     private boolean isShowPropertyTypeList() {
-        return (findViewById(R.id.rv_property_type) != null );
+        return (findViewById(R.id.rv_property_type) != null);
     }
 
     private void showLocationList() {
@@ -647,8 +607,6 @@ public class MapsActivity extends AppCompatActivity implements
                 .replace(mContentFrameLayoutId, locationListFragment)
                 .addToBackStack(null)
                 .commit();
-
-        setIsShowFavorites(true);
     }
 
     private void showPropertyTypeFilterList() {
@@ -720,11 +678,11 @@ public class MapsActivity extends AppCompatActivity implements
     public void loadMap(GoogleMap googleMap, LatLng currentLocation) {
         getLocationPermission();
 
-        if( mMap == null ){
+        if (mMap == null) {
             mMap = googleMap;
         }
 
-        if( currentLocation == null ){
+        if (currentLocation == null) {
             currentLocation = DEFAULT_LOCATION;
         }
 
@@ -778,7 +736,7 @@ public class MapsActivity extends AppCompatActivity implements
         // mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(CHICAGO.getCenter() , 13));
         //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(CURRENT_LOCATION, 13));
 
-        if( CURRENT_COMMUNITY == "Community" ){
+        if (CURRENT_COMMUNITY == "Community") {
             mMap.animateCamera(CameraUpdateFactory.newCameraPosition(mCameraPosition));
         } else {
             mMap.moveCamera(CameraUpdateFactory.newCameraPosition(mCameraPosition));
@@ -893,7 +851,7 @@ public class MapsActivity extends AppCompatActivity implements
 
             } catch (IOException e) {
                 // handle the exception
-                Log.d(TAG , "GEOCODE: " + e.toString());
+                Log.d(TAG, "GEOCODE: " + e.toString());
             }
         } else {
 
