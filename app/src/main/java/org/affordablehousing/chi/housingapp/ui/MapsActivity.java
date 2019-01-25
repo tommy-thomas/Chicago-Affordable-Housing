@@ -198,8 +198,12 @@ public class MapsActivity extends AppCompatActivity implements
 
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        if (isTwoPane()) {
-            showLocationList();
+        if (isTwoPane() ) {
+            if( isShowPropertyTypeList() ){
+                showPropertyTypeFilterList();
+            } else {
+                showLocationList();
+            }
         }
 
         scheduleSyncJob();
@@ -423,8 +427,11 @@ public class MapsActivity extends AppCompatActivity implements
                 // Style for Spinner
                 view.setBackground(getDrawable(R.drawable.rounded_red_bg));
                 view.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-                view.setPadding(4, 2, 2, 4);
-                view.setMinimumWidth(420);
+                if( isTwoPane() ){
+                    view.setPadding(10, 2, 10, 2);
+                } else {
+                    view.setPadding(20, 2, 20, 2);
+                }
 
                 setSelectedCommunity(position);
 
