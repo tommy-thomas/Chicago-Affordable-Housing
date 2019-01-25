@@ -87,11 +87,9 @@ public class MapsActivity extends AppCompatActivity implements
     private static final String KEY_CURRENT_LOCATION = "current-location";
     private static final String KEY_SELECTED_COMMUNITY_INDEX = "selected-community-index";
     private static final String KEY_PROPERTY_LIST_FILTER = "property-filter-list";
-    private static final String KEY_SHOW_LIST = "show-list";
     private static final String KEY_SHOW_LOCATION = "show-location";
     private static final String KEY_LOCATION_OBJECT = "location-object";
     private static final String KEY_SHOW_MAP = "show-map";
-    private static final String KEY_SHOW_PROPERTY_TYPE_LIST = "show-type-list";
     private static final String KEY_SHOW_FAVORITES = "show-favorites";
     private static final String URL_CHICAGO_DATA = "https://data.cityofchicago.org/Community-Economic-Development/Affordable-Rental-Housing-Developments/s6ha-ppgi";
     private GoogleMap mMap;
@@ -115,12 +113,10 @@ public class MapsActivity extends AppCompatActivity implements
     private String CURRENT_COMMUNITY = "Community";
     private int SELECTED_COMMUNITY_INDEX = 0;
     private ArrayList <String> mPropertyTypeListFilter;
-    private boolean mIsListDisplay = false;
     private boolean mIsShowLocation = false;
     private Location mLocationObject = null;
     private boolean mIsShowFavorites = false;
     private boolean mIsShowMap = true;
-    private boolean mIsShowPropertyTypeList = false;
     private FirebaseJobDispatcher mJobDispatcher;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -144,11 +140,9 @@ public class MapsActivity extends AppCompatActivity implements
                     return true;
                 case R.id.navigation_list:
                     showLocationList();
-                    setIsListDisplay(true);
                     return true;
                 case R.id.navigation_filter:
                     showPropertyTypeFilterList();
-                    setIsShowPropertyTypeList(true);
                     return true;
             }
             return false;
@@ -215,7 +209,7 @@ public class MapsActivity extends AppCompatActivity implements
     }
 
     private void setNavItemChecked(){
-        BottomNavigationView navigationView = (BottomNavigationView) findViewById(R.id.navigation);
+        BottomNavigationView navigationView = findViewById(R.id.navigation);
         if( isShowMap() ){
             navigationView.setSelectedItemId(R.id.navigation_home);
         } else if( isShowLocation() || isListDisplay() || isShowFavorites() ){
@@ -253,14 +247,12 @@ public class MapsActivity extends AppCompatActivity implements
             setLocationObject(savedInstanceState.getString(KEY_LOCATION_OBJECT));
 
             setIsShowMap(savedInstanceState.getBoolean(KEY_SHOW_MAP));
-            setIsShowPropertyTypeList(savedInstanceState.getBoolean(KEY_SHOW_PROPERTY_TYPE_LIST));
             setIsShowFavorites(savedInstanceState.getBoolean(KEY_SHOW_FAVORITES));
-            setIsListDisplay(savedInstanceState.getBoolean(KEY_SHOW_LIST));
             setIsShowLocation(savedInstanceState.getBoolean(KEY_SHOW_LOCATION));
 
             if (isShowMap()) {
-                setMapLocation();
                 Toast.makeText( this , "show map", Toast.LENGTH_LONG).show();
+                setMapLocation();
             }
 
             if (isShowLocation()) {
@@ -268,18 +260,20 @@ public class MapsActivity extends AppCompatActivity implements
             }
 
             if (isListDisplay()) {
-                showLocationList();
                 Toast.makeText( this , "show list", Toast.LENGTH_LONG).show();
+                showLocationList();
             }
 
             if (isShowFavorites()) {
+                Toast.makeText( this , "fav list", Toast.LENGTH_LONG).show();
                 showFavorites();
-                hiudeMenus();
+                hideMenus();
             }
 
             if (isShowPropertyTypeList()) {
+                Toast.makeText( this , "type list", Toast.LENGTH_LONG).show();
                 showPropertyTypeFilterList();
-                hiudeMenus();
+                hideMenus();
             }
 
             setNavItemChecked();
@@ -366,10 +360,8 @@ public class MapsActivity extends AppCompatActivity implements
         /* selected community index int */
         outState.putInt(KEY_SELECTED_COMMUNITY_INDEX, SELECTED_COMMUNITY_INDEX);
         /* screen display flags */
-        outState.putBoolean(KEY_SHOW_LIST, isListDisplay());
         outState.putBoolean(KEY_SHOW_MAP, isShowMap());
         outState.putBoolean(KEY_SHOW_FAVORITES, isShowFavorites());
-        outState.putBoolean(KEY_SHOW_PROPERTY_TYPE_LIST, isShowPropertyTypeList());
         outState.putBoolean(KEY_SHOW_LOCATION, isShowLocation());
         Type location = new TypeToken <Location>() {
         }.getType();
@@ -386,7 +378,7 @@ public class MapsActivity extends AppCompatActivity implements
        // super.onRestoreInstanceState(savedInstanceState);
     }
 
-    private void hiudeMenus(){
+    private void hideMenus(){
         if (mSpinner != null && mReset != null) {
             mReset.setVisible(false);
             mSpinner.setVisibility(View.INVISIBLE);
@@ -459,6 +451,7 @@ public class MapsActivity extends AppCompatActivity implements
                 // Notify the selected item text
                 setCurrentCommunity(selectedCommunityText);
 
+                // Style for Spinner
                 view.setBackground(getDrawable(R.drawable.rounded_red_bg));
                 view.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
                 view.setPadding(4, 2, 2, 4);
@@ -466,18 +459,24 @@ public class MapsActivity extends AppCompatActivity implements
 
                 setSelectedCommunity(position);
 
+                // Move camera to new selected community
                 moveCameraToCommunity(selectedCommunityText);
 
                 if (position != 0) {
-                    // Move camera to new selected community
+
                     if (isListDisplay()) {
                         showLocationList();
                     }
+
                     if (isShowFavorites()) {
                         showFavorites();
                     }
+
+                    if( isShowPropertyTypeList() ){
+                        showPropertyTypeFilterList();
+                    }
                     if( isShowFavorites() || isShowPropertyTypeList() ){
-                        hiudeMenus();
+                        hideMenus();
                     }
                 }
             }
@@ -562,52 +561,27 @@ public class MapsActivity extends AppCompatActivity implements
 
     }
 
-    private void setIsListDisplay(boolean isListDisplay) {
-        mIsListDisplay = isListDisplay;
-        mIsShowFavorites = false;
-        mIsShowMap = false;
-        mIsShowPropertyTypeList = false;
-        mIsShowLocation = false;
-
-    }
-
     private void setIsShowLocation(boolean isShowLocation) {
         mIsShowLocation = isShowLocation;
-        mIsListDisplay = false;
         mIsShowFavorites = false;
         mIsShowMap = false;
-        mIsShowPropertyTypeList = false;
 
     }
 
     private void setIsShowFavorites(boolean isShowFavorites) {
         mIsShowFavorites = isShowFavorites;
-        mIsListDisplay = false;
         mIsShowMap = false;
-        mIsShowPropertyTypeList = false;
         mIsShowLocation = false;
     }
 
     private void setIsShowMap(boolean isShowMap) {
         mIsShowMap = isShowMap;
         mIsShowFavorites = false;
-        mIsListDisplay = false;
-        mIsShowPropertyTypeList = false;
-        mIsShowLocation = false;
-
-    }
-
-    private void setIsShowPropertyTypeList(boolean isShowPropertyTypeList) {
-        mIsShowPropertyTypeList = isShowPropertyTypeList;
-        mIsShowMap = false;
-        mIsShowFavorites = false;
-        mIsListDisplay = false;
         mIsShowLocation = false;
 
     }
 
     private boolean isListDisplay() {
-
         RecyclerView rv = findViewById(R.id.rv_location_list);
         return ( rv != null && rv.getContentDescription().equals("Location List"));
 
@@ -628,8 +602,7 @@ public class MapsActivity extends AppCompatActivity implements
     }
 
     private boolean isShowPropertyTypeList() {
-     return findViewById(R.id.rv_property_type) != null ;
-
+        return (findViewById(R.id.rv_property_type) != null );
     }
 
     private void showLocationList() {
@@ -652,8 +625,6 @@ public class MapsActivity extends AppCompatActivity implements
                 .replace(mContentFrameLayoutId, locationListFragment)
                 .addToBackStack(null)
                 .commit();
-
-        setIsListDisplay(true);
     }
 
     private void showFavorites() {
@@ -699,7 +670,6 @@ public class MapsActivity extends AppCompatActivity implements
                 .addToBackStack(null)
                 .commit();
 
-        setIsShowPropertyTypeList(true);
     }
 
     public void setMapLocation() {
@@ -744,8 +714,6 @@ public class MapsActivity extends AppCompatActivity implements
                 }
             }
         });
-
-        setIsShowMap(true);
     }
 
     @SuppressLint("MissingPermission")
