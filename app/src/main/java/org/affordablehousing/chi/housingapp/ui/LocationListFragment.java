@@ -113,7 +113,7 @@ public class LocationListFragment extends Fragment {
         @Override
         public void onFavoriteChecked(Location location) {
             if (getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED)) {
-                boolean isFavorite = location.getIs_favorite();
+                boolean isFavorite = location.getIs_favorite() ? false : true;
                 ((MapsActivity) getActivity()).favorite(location, isFavorite);
                 LocationWidgetService.notifyServiceUpdateLocationWidget(getContext());
             }
