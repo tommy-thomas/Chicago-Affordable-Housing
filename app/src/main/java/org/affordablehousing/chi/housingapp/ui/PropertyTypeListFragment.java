@@ -47,7 +47,7 @@ public class PropertyTypeListFragment extends Fragment {
 
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString()
-                    + " must implement PropertyTypeClickListener.");
+                    + " " + getResources().getString(R.string.property_type_click_listener_exception));
         }
     }
 

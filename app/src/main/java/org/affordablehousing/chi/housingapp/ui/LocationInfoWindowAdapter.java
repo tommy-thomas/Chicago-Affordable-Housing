@@ -63,7 +63,7 @@ class LocationInfoWindowAdapter implements InfoWindowAdapter {
         TextView snippetUi = ((TextView) view.findViewById(R.id.snippet));
         if (snippet != null && snippet.length() > 0) {
             SpannableString snippetText = new SpannableString(snippet);
-            int typeStartIndex = snippetText.toString().indexOf("Type:");
+            int typeStartIndex = snippetText.toString().indexOf(mContext.getResources().getString(R.string.marker_type_label));
             int typeEndIndex = snippetText.toString().length();
             int typeColor = getColor(mContext, colorSecondaryDark);
             snippetText.setSpan(new ForegroundColorSpan(typeColor), typeStartIndex, typeEndIndex, 0);

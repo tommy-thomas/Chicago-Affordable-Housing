@@ -90,10 +90,10 @@ public class LocationDetailFragment extends Fragment {
 
         // setup the alert builder
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Add a Note");
+        builder.setTitle(getResources().getString(R.string.add_a_note));
 
         // add the buttons
-        builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(getResources().getString(R.string.save_note), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 // EditText noteView = builder.getApplicationContext().findViewById(R.id.et_note_edit);
@@ -105,7 +105,7 @@ public class LocationDetailFragment extends Fragment {
                 mLocationViewModel.addNote(newNote);
             }
         });
-        builder.setNegativeButton("Cancel", null);
+        builder.setNegativeButton(getResources().getString(R.string.cancel_note), null);
 
         builder.setView(rowView);
 

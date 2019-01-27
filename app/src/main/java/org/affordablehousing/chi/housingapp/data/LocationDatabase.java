@@ -17,7 +17,6 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
-import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 import retrofit2.Call;
 import retrofit2.Response;
@@ -134,18 +133,6 @@ public abstract class LocationDatabase extends RoomDatabase {
     public static void destroyInstance() {
         sInstance = null;
     }
-
-    private static final Migration MIGRATION_1_2 = new Migration(1, 2) {
-
-        @Override
-        public void migrate(@NonNull SupportSQLiteDatabase database) {
-//            database.execSQL("CREATE VIRTUAL TABLE IF NOT EXISTS `productsFts` USING FTS4("
-//                    + "`name` TEXT, `description` TEXT, content=`products`)");
-//            database.execSQL("INSERT INTO productsFts (`rowid`, `name`, `description`) "
-//                    + "SELECT `id`, `name`, `description` FROM products");
-
-        }
-    };
 
 
 

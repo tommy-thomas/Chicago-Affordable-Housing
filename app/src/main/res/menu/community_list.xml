@@ -3,7 +3,7 @@
     <item
         android:id="@+id/action_community"
         android:orderInCategory="1"
-        android:title="Community"
+        android:title="@string/community"
         app:actionViewClass="android.widget.Spinner"
         app:showAsAction="always" />
 </menu>

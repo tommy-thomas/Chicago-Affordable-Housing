@@ -80,8 +80,8 @@ public class MapsActivity extends AppCompatActivity implements
         PropertyTypeClickListener {
 
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
-    private static final int JOB_START_TIME = 2592000;
-    private static final int JOB_END_TIME = 2678400;
+    private static final int JOB_START_TIME = 86400;
+    private static final int JOB_END_TIME = 86460;
     private static final String TAG = MapsActivity.class.getSimpleName() + " -- MAP ACTIVITY -- ";
     private static final String KEY_CURRENT_COMMUNITY = "current-community";
     private static final String KEY_CURRENT_LOCATION = "current-location";
@@ -216,8 +216,8 @@ public class MapsActivity extends AppCompatActivity implements
                 .setService(LocationSyncService.class)
                 .setTag(TAG)
                 .setRecurring(true)
-                //.setTrigger(Trigger.executionWindow(JOB_START_TIME,JOB_END_TIME))  FOR RELEASE //
-                .setTrigger(Trigger.executionWindow(0, 10))
+                .setTrigger(Trigger.executionWindow(JOB_START_TIME,JOB_END_TIME))
+                //.setTrigger(Trigger.executionWindow(0, 10))
                 .setLifetime(Lifetime.FOREVER)
                 .setReplaceCurrent(false)
                 .setConstraints(Constraint.ON_ANY_NETWORK)

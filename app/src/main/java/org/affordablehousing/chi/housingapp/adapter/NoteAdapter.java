@@ -131,15 +131,15 @@ public class NoteAdapter extends RecyclerView.Adapter <NoteAdapter.NoteViewHolde
         noteTextView.setText(noteText, TextView.BufferType.EDITABLE);
         // setup the alert builder
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-        builder.setTitle("Edit Note");
+        builder.setTitle(mContext.getResources().getString(R.string.edit_note));
         // add the buttons
-        builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(mContext.getResources().getString(R.string.save_note), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 mEditNoteMenuClickListener.editNote(noteId, noteTextView.getText().toString());
             }
         });
-        builder.setNegativeButton("Cancel", null);
+        builder.setNegativeButton(mContext.getResources().getString(R.string.cancel_note), null);
         builder.setView(rowView);
         // create and show the alert dialog
         AlertDialog dialog = builder.create();

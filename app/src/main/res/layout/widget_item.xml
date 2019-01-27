@@ -35,6 +35,6 @@
         android:layout_toRightOf="@+id/iv_widget_icon"
         android:textColor="@color/colorCharcoal"
         android:textStyle="bold"
-        android:contentDescription="Property name for of favorite location."/>
+        android:contentDescription="@string/property_name_for_of_favorite_location"/>
 
 </RelativeLayout>

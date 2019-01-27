@@ -36,4 +36,19 @@
     <string name="info">Info</string>
     <string name="chicago_data_portal">Chicago Data Portal</string>
     <string name="chicago_data_info">The data displayed in this app is derived from the Chicago Data Portal. It does not constitute a complete list of affordable housing in Chicago. For information on affordable rental properties in Chicago and Illinois, call (877) 428-8844 or visit http://www.ilhousingsearch.org/.</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="community">Community</string>
+    <string name="filter">Filter</string>
+    <string name="list">List</string>
+    <string name="home">Home</string>
+    <string name="reset">Reset</string>
+    <string name="splash_screen_icon">Splash screen icon</string>
+    <string name="property_name_for_of_favorite_location">Property name for of favorite location.</string>
+    <string name="added_to_favorites">added to favorites.</string>
+    <string name="removed_from_favorites">removed from favorites.</string>
+    <string name="save_note">Save</string>
+    <string name="cancel_note">Cancel</string>
+    <string name="marker_type_label">Type:</string>
+    <string name="property_type_click_listener_exception">must implement PropertyTypeClickListener.</string>
 </resources>

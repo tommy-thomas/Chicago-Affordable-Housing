@@ -108,16 +108,16 @@ public class LocationAdapter extends RecyclerView.Adapter <LocationAdapter.Locat
                     if (isChecked) {
                         if (position < mLocationList.size()) {
                             Toast toast = Toast.makeText(mContext,
-                                    mLocationList.get(position).getProperty_name() + " added to favorites.",
+                                    mLocationList.get(position).getProperty_name() + " " + mContext.getResources().getString(R.string.added_to_favorites),
                                     Toast.LENGTH_SHORT);
-                            //toast.show();
+                            toast.show();
                         }
                     } else {
                         if (position < mLocationList.size()) {
                             Toast toast = Toast.makeText(mContext,
-                                    mLocationList.get(position).getProperty_name() + " removed from favorites.",
+                                    mLocationList.get(position).getProperty_name() + " " + mContext.getResources().getString(R.string.removed_from_favorites),
                                     Toast.LENGTH_SHORT);
-                            //toast.show();
+                            toast.show();
                         }
 
                     }
