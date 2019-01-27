@@ -10,7 +10,7 @@
             android:title="@string/nav_favorites" />
     </group>
 
-    <item android:title="Information">
+    <item android:title="@string/information">
         <menu>
             <item
                 android:id="@+id/nav_info"

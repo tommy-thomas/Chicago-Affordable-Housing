@@ -51,4 +51,9 @@
     <string name="cancel_note">Cancel</string>
     <string name="marker_type_label">Type:</string>
     <string name="property_type_click_listener_exception">must implement PropertyTypeClickListener.</string>
+    <string name="loading_notes">Loading notes...</string>
+    <string name="notes">Notes</string>
+    <string name="location_list">Location List</string>
+    <string name="add_note">Add Note</string>
+    <string name="information">Information</string>
 </resources>

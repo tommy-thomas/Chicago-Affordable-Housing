@@ -27,20 +27,20 @@
         android:layout_marginStart="@dimen/dp_8"
         android:layout_marginEnd="@dimen/dp_8"
         android:adjustViewBounds="true"
-        android:layout_alignLeft="@id/info_text" />
+        android:layout_alignStart="@id/info_text" />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:id="@+id/info_text"
-        android:layout_toRightOf="@+id/badge">
+        android:layout_toEndOf="@+id/badge">
 
         <TextView
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="left"
+            android:layout_gravity="start"
             android:ellipsize="end"
             android:singleLine="true"
             android:textColor="#ff000000"
@@ -52,7 +52,7 @@
             android:id="@+id/snippet"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="left"
+            android:layout_gravity="start"
             android:ellipsize="end"
             android:singleLine="true"
             android:textColor="#ff7f7f7f"

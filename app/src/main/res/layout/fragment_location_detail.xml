@@ -33,7 +33,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/tv_loading_notes"
-            android:text="Loading notes..."
+            android:text="@string/loading_notes"
             app:visibleGone="@{isLoading}"/>
 
 
@@ -44,7 +44,7 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/note_list"
-            android:contentDescription="Notes"
+            android:contentDescription="@string/notes"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layoutManager="LinearLayoutManager"

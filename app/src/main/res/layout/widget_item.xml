@@ -32,7 +32,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_alignParentEnd="true"
-        android:layout_toRightOf="@+id/iv_widget_icon"
+        android:layout_toEndOf="@+id/iv_widget_icon"
         android:textColor="@color/colorCharcoal"
         android:textStyle="bold"
         android:contentDescription="@string/property_name_for_of_favorite_location"/>

@@ -4,7 +4,6 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.Configuration;
 import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
@@ -17,7 +16,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.firebase.jobdispatcher.Constraint;
 import com.firebase.jobdispatcher.FirebaseJobDispatcher;
@@ -224,7 +222,6 @@ public class MapsActivity extends AppCompatActivity implements
                 .setRetryStrategy(RetryStrategy.DEFAULT_EXPONENTIAL)
                 .build();
         mJobDispatcher.mustSchedule(syncJob);
-        //Toast.makeText(this, "Data sync has been scheduled.", Toast.LENGTH_LONG).show();
     }
 
     private void restoreState(Bundle savedInstanceState) {
@@ -276,17 +273,6 @@ public class MapsActivity extends AppCompatActivity implements
 
     private boolean isTwoPane() {
         return mTwoPane;
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        // Checks the orientation of the screen
-        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE && isTwoPane()) {
-            Toast.makeText(this, "landscape", Toast.LENGTH_SHORT).show();
-        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
-            Toast.makeText(this, "portrait", Toast.LENGTH_SHORT).show();
-        }
     }
 
     @Override
@@ -725,7 +711,7 @@ public class MapsActivity extends AppCompatActivity implements
         // mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(CHICAGO.getCenter() , 13));
         //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(CURRENT_LOCATION, 13));
 
-        if (CURRENT_COMMUNITY == "Community") {
+        if (CURRENT_COMMUNITY.equals("Community")) {
             mMap.animateCamera(CameraUpdateFactory.newCameraPosition(mCameraPosition));
         } else {
             mMap.moveCamera(CameraUpdateFactory.newCameraPosition(mCameraPosition));
@@ -835,9 +821,7 @@ public class MapsActivity extends AppCompatActivity implements
                         filterMarkers();
                     }
 
-                } else {
                 }
-
             } catch (IOException e) {
                 // handle the exception
                 Log.d(TAG, "GEOCODE: " + e.toString());
