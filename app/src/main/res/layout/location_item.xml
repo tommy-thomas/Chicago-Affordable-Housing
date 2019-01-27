@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="java.lang.Integer" />
+    <variable name="location"
+        type="org.affordablehousing.chi.housingapp.model.Location"/>
+    <variable name="callback"
+        type="org.affordablehousing.chi.housingapp.ui.LocationClickCallback" />
+
+</data>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cv_location_detail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="@{() ->  callback.onClick(location)}"
+        android:orientation="horizontal"
+        card_view:cardCornerRadius="@dimen/dp_8"
+        card_view:cardElevation="4dp"
+        app:cardUseCompatPadding="true"
+        android:background="@color/colorWhite"
+        style="@style/AppTheme.CardView">
+        <RelativeLayout
+            android:id="@+id/rl_location_detail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorWhite"
+            android:focusable="true">
+
+            <TextView
+                android:id="@+id/tv_property_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/dp_16"
+                android:textStyle="bold"
+                style="@style/CardViewText"
+                android:text="@{location.property_name}"
+                android:contentDescription="@string/property_name"/>
+
+            <TextView
+                android:id="@+id/tv_location_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/CardViewText"
+                android:layout_below="@+id/tv_property_name"
+                android:text='@{location.address + ", " + location.zip_code}'
+                android:contentDescription="@string/location_address"/>
+
+            <TextView
+                android:id="@+id/tv_management_company"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/CardViewText"
+                android:layout_below="@+id/tv_location_address"
+                android:text='@{"Managemment Company: " + location.management_company}'
+                android:contentDescription="@string/management_company"/>
+
+            <TextView
+                android:id="@+id/tv_units"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/CardViewText"
+                android:layout_below="@+id/tv_management_company"
+                android:text='@{"Units: " + String.valueOf(location.units)}'
+                android:contentDescription="@string/number_of_units"/>
+
+            <TextView
+                android:id="@+id/tv_property_type"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/dp_16"
+                style="@style/CardViewText"
+                android:layout_below="@+id/tv_units"
+                android:text='@{"Property Type: " + location.property_type}'
+                android:contentDescription="@string/property_type"/>
+
+            <TextView
+                android:id="@+id/tv_phone_number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/dp_16"
+                style="@style/CardViewText"
+                android:layout_below="@+id/tv_property_type"
+                android:autoLink="phone"
+                android:textColor="@color/colorSecondaryDark"
+                android:text='@{"Phone: " + location.phone_number}'
+                android:contentDescription="@string/phone_number"/>
+
+
+
+            <ToggleButton
+                android:id="@+id/tb_favorite"
+                android:layout_width="@dimen/dp_24"
+                android:layout_height="@dimen/dp_24"
+                android:layout_alignEnd="@+id/tv_property_name"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="@dimen/dp_8"
+                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginEnd="@dimen/dp_8"
+                android:checked="@{location.is_favorite}"
+                android:onClick="@{() ->  callback.onFavoriteChecked(location)}"
+                android:textOff=""
+                android:textOn=""
+                android:contentDescription="@string/favorite_button"
+                android:background="@{location.is_favorite ? @drawable/ic_baseline_star_24px : @drawable/ic_baseline_star_border_24px}" />
+
+                <Button
+                    android:id="@+id/btn_add_note"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/add_note"
+                    android:layout_marginBottom="@dimen/dp_8"
+                    android:layout_marginStart="@dimen/dp_16"
+                    android:layout_below="@+id/tv_phone_number"
+                    android:contentDescription="@string/add_a_note_button"/>
+
+
+        </RelativeLayout>
+
+
+    </androidx.cardview.widget.CardView>
+
+
+
+</layout>

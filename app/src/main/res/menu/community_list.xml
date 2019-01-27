@@ -1,0 +1,9 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_community"
+        android:orderInCategory="1"
+        android:title="@string/community"
+        app:actionViewClass="android.widget.Spinner"
+        app:showAsAction="always" />
+</menu>

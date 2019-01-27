@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable name="note"
+            type="org.affordablehousing.chi.housingapp.model.Note"/>
+        <variable name="callback"
+            type="org.affordablehousing.chi.housingapp.ui.NoteClickCallback"/>
+    </data>
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardBackgroundColor="@color/colorPrimaryLight"
+        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginEnd="@dimen/dp_8"
+        android:minHeight="@dimen/note_minHeight"
+        android:orientation="horizontal"
+        card_view:cardCornerRadius="@dimen/dp_8"
+        card_view:cardElevation="4dp"
+        android:padding="8dp"
+        app:cardUseCompatPadding="true">
+        <RelativeLayout android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/note_padding"
+                android:padding="@dimen/dp_8"
+                android:textSize="18sp"
+                android:textColor="@color/colorCharcoal"
+                android:text="@{note.text}"
+                android:hint="@string/add_a_note"/>
+            <TextView
+                android:id="@+id/tv_menu_note_edit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="&#8942;"
+                android:textColor="#000000"
+                android:textSize="24sp"
+                android:layout_marginEnd="@dimen/dp_8"
+                android:layout_marginTop="@dimen/dp_8"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:contentDescription="@string/menu_for_editing_notes"/>
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+</layout>

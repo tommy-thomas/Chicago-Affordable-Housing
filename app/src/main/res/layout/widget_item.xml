@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/colorWhite"
+    tools:context=".ui.MapsActivity"
+    android:paddingTop="4dp"
+    android:paddingBottom="4dp"
+    android:layout_margin="0dp">
+
+        <ImageView
+            android:id="@+id/iv_widget_icon"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_8"
+            android:src="@drawable/ic_baseline_blue_star"
+            android:contentDescription="@string/widget_icon"/>
+
+    <TextView
+        android:id="@+id/tv_widget_location_id"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="invisible" />
+
+    <TextView
+        android:id="@+id/tv_widget_property_name"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentEnd="true"
+        android:layout_toEndOf="@+id/iv_widget_icon"
+        android:textColor="@color/colorCharcoal"
+        android:textStyle="bold"
+        android:contentDescription="@string/property_name_for_of_favorite_location"/>
+
+</RelativeLayout>

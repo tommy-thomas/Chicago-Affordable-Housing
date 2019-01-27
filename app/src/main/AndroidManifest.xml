@@ -8,8 +8,12 @@
          location permissions for the 'MyLocation' functionality.
     -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
+        android:name=".App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -29,8 +33,9 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <!-- Splash Screen //-->
-        <activity android:name="org.affordablehousing.chi.housingapp.SplashScreenActivity"
+        <!-- Splash Screen // -->
+        <activity
+            android:name=".SplashScreenActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -41,10 +46,37 @@
 
         <!-- Maps Activity // -->
         <activity
-            android:name="org.affordablehousing.chi.housingapp.ui.MapsActivity"
+            android:name=".ui.MapsActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar">
             android:label="@string/title_activity_maps">
         </activity>
 
+        <service android:name=".service.LocationWidgetService" />
+
+        <receiver android:name=".widget.CAHAppWidgetProvider">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/cahapp_widget_provider_info" />
+        </receiver>
+
+        <service
+            android:name=".widget.CAHRemoteViewsService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+        <service
+            android:name=".service.LocationSyncService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
+            </intent-filter>
+        </service>
+
+        <activity android:name=".ui.InfoActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar"
+            android:parentActivityName=".ui.MapsActivity"></activity>
     </application>
 
 </manifest>
