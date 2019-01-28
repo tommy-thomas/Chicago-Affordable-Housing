@@ -2,8 +2,12 @@ package org.affordablehousing.chi.housingapp.ui;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
@@ -32,6 +36,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
@@ -46,6 +51,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import org.affordablehousing.chi.housingapp.R;
+import org.affordablehousing.chi.housingapp.adapter.LocationInfoWindowAdapter;
 import org.affordablehousing.chi.housingapp.model.Location;
 import org.affordablehousing.chi.housingapp.model.LocationEntity;
 import org.affordablehousing.chi.housingapp.model.MarkerTag;
@@ -57,6 +63,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -299,7 +306,7 @@ public class MapsActivity extends AppCompatActivity implements
                 .beginTransaction()
                 .addToBackStack("location")
                 .replace(mContentFrameLayoutId,
-                        locationDetailFragment, null).commit();
+                        locationDetailFragment, null).commitAllowingStateLoss();
 
     }
 
@@ -678,13 +685,14 @@ public class MapsActivity extends AppCompatActivity implements
 
         mLocationListViewModel.getLocations().observe(this, locationEntities -> {
             if (locationEntities != null) {
+                BitmapDescriptor markerCircle = BitmapDescriptorFactory.fromResource(R.drawable.ic_map_marker_24px);
+
                 for (LocationEntity locationEntity : locationEntities) {
                     LatLng latLng = new LatLng(locationEntity.getLatitude(), locationEntity.getLongitude());
                     Marker marker = mMap.addMarker(new MarkerOptions()
                             .position(latLng).title(locationEntity.getProperty_name())
                             .snippet(locationEntity.getAddress() + " Type: " + locationEntity.getProperty_type())
-                            .icon(BitmapDescriptorFactory
-                                    .defaultMarker(206)));
+                            .icon(bitmapDescriptorFromVector(this, R.drawable.ic_map_marker_24px)));
                     marker.setTag(new MarkerTag(locationEntity));
                     mMapMarkers.add(marker);
                 }
@@ -717,6 +725,18 @@ public class MapsActivity extends AppCompatActivity implements
             mMap.moveCamera(CameraUpdateFactory.newCameraPosition(mCameraPosition));
         }
 
+    }
+
+    private BitmapDescriptor bitmapDescriptorFromVector(Context context, @DrawableRes int vectorDrawableResourceId) {
+        Drawable background = ContextCompat.getDrawable(context, R.drawable.ic_map_marker_bg_24px);
+        background.setBounds(0, 0, background.getIntrinsicWidth(), background.getIntrinsicHeight());
+        Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorDrawableResourceId);
+        vectorDrawable.setBounds(6, 6, vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight());
+        Bitmap bitmap = Bitmap.createBitmap(background.getIntrinsicWidth(), background.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        background.draw(canvas);
+        vectorDrawable.draw(canvas);
+        return BitmapDescriptorFactory.fromBitmap(bitmap);
     }
 
     private String getCurrentCommunity() {
@@ -826,8 +846,6 @@ public class MapsActivity extends AppCompatActivity implements
                 // handle the exception
                 Log.d(TAG, "GEOCODE: " + e.toString());
             }
-        } else {
-
         }
     }
 

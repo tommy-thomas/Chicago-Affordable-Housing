@@ -1,4 +1,4 @@
-package org.affordablehousing.chi.housingapp.ui;
+package org.affordablehousing.chi.housingapp.adapter;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -19,13 +19,13 @@ import static org.affordablehousing.chi.housingapp.R.color.colorSecondaryDark;
 /**
  * Marker window presentation.
  */
-class LocationInfoWindowAdapter implements InfoWindowAdapter {
+public class LocationInfoWindowAdapter implements InfoWindowAdapter {
 
     private final View mWindow;
     private final View mContents;
     private Context mContext;
 
-    LocationInfoWindowAdapter(Context context) {
+    public LocationInfoWindowAdapter(Context context) {
         mContext = context;
         LayoutInflater inflater = LayoutInflater.from(mContext);
         mWindow = inflater.inflate(R.layout.custom_info_window, null);
