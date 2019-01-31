@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     tools:context=".ui.MapsActivity">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -21,6 +21,25 @@
             app:popupTheme="@style/AppTheme.PopupOverlay" />
     </com.google.android.material.appbar.AppBarLayout>
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_56"
+        android:padding="@dimen/dp_8"
+        android:textSize="@dimen/sp_16"
+        android:id="@+id/tv_filters"
+        app:layout_constraintTop_toBottomOf="@id/appbar"
+        android:text="Filter:"
+        android:textStyle="bold"
+        android:textColor="@color/colorAccent"
+        android:background="@color/colorWhite" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorPrimaryDark"
+        android:id="@+id/separator"
+        app:layout_constraintTop_toBottomOf="@id/tv_filters" />
+
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:map="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
@@ -29,19 +48,22 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        app:layout_constraintTop_toBottomOf="@id/appbar"
-        map:layout_constraintBottom_toTopOf="@+id/fr_content_fragment_container"
+        app:layout_constraintTop_toBottomOf="@id/separator"
+        map:layout_constraintBottom_toTopOf="@+id/separator_two"
         tools:context=".ui.MapsActivity" />
 
     <View
-        android:layout_width="1dp"
-        android:layout_height="match_parent"
-        android:background="@color/colorCharcoal" />
+        android:id="@+id/separator_two"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorCharcoal"
+        app:layout_constraintTop_toBottomOf="@id/map_fragment_container"/>
 
     <FrameLayout xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/fr_content_fragment_container"
         android:layout_width="match_parent"
         android:layout_height="470dp"
+        android:layout_marginTop="1dp"
         app:layout_constraintBottom_toTopOf="@id/navigation"
         app:layout_constraintEnd_toEndOf="parent"
         tools:context=".ui.MapsActivity" />

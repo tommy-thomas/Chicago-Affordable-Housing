@@ -21,10 +21,30 @@
             app:popupTheme="@style/AppTheme.PopupOverlay" />
     </com.google.android.material.appbar.AppBarLayout>
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_56"
+        android:padding="@dimen/dp_8"
+        android:textSize="@dimen/sp_16"
+        android:id="@+id/tv_filters"
+        app:layout_constraintBottom_toTopOf="@id/separator"
+        android:text="Filter:"
+        android:textStyle="bold"
+        android:textColor="@color/colorAccent"
+        android:background="@color/colorWhite" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorPrimaryDark"
+        android:id="@+id/separator"
+        app:layout_constraintBottom_toTopOf="@id/map_fragment_container"/>
+
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:map="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/map_fragment_container"
+        android:layout_marginTop="@dimen/dp_56"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
