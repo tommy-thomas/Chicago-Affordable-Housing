@@ -2,12 +2,8 @@ package org.affordablehousing.chi.housingapp.ui;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
@@ -20,6 +16,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.firebase.jobdispatcher.Constraint;
 import com.firebase.jobdispatcher.FirebaseJobDispatcher;
@@ -63,7 +60,6 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -524,6 +520,7 @@ public class MapsActivity extends AppCompatActivity implements
         if (isTwoPane()) {
             filterMarkers();
         }
+        setFiltersDisplay();
 
     }
 
@@ -692,7 +689,8 @@ public class MapsActivity extends AppCompatActivity implements
                     Marker marker = mMap.addMarker(new MarkerOptions()
                             .position(latLng).title(locationEntity.getProperty_name())
                             .snippet(locationEntity.getAddress() + " Type: " + locationEntity.getProperty_type())
-                            .icon(bitmapDescriptorFromVector(this, R.drawable.ic_map_marker_24px)));
+                            .icon(BitmapDescriptorFactory
+                                    .defaultMarker(206)));
                     marker.setTag(new MarkerTag(locationEntity));
                     mMapMarkers.add(marker);
                 }
@@ -727,20 +725,18 @@ public class MapsActivity extends AppCompatActivity implements
 
     }
 
-    private BitmapDescriptor bitmapDescriptorFromVector(Context context, @DrawableRes int vectorDrawableResourceId) {
-        Drawable background = ContextCompat.getDrawable(context, R.drawable.ic_map_marker_bg_24px);
-        background.setBounds(0, 0, background.getIntrinsicWidth(), background.getIntrinsicHeight());
-        Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorDrawableResourceId);
-        vectorDrawable.setBounds(6, 6, vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight());
-        Bitmap bitmap = Bitmap.createBitmap(background.getIntrinsicWidth(), background.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-        background.draw(canvas);
-        vectorDrawable.draw(canvas);
-        return BitmapDescriptorFactory.fromBitmap(bitmap);
-    }
-
     private String getCurrentCommunity() {
         return CURRENT_COMMUNITY;
+    }
+
+    private void setFiltersDisplay(){
+
+        if( findViewById(R.id.tv_filters) != null && mPropertyTypeListFilter != null ){
+            TextView filterTv = findViewById(R.id.tv_filters);
+            String filterString = String.join(", ", mPropertyTypeListFilter);
+            filterString = "Filter: " + filterString;
+            filterTv.setText(filterString);
+        }
     }
 
     private void setCurrentCommunity(String currentCommunity) {

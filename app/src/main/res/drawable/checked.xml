@@ -9,9 +9,9 @@
                         android:width="4dp"
                         android:color="@color/colorPrimaryDark" />
                     <gradient
-                        android:startColor="@color/colorSecondaryLight"
+                        android:startColor="@color/colorSecondary"
                         android:centerColor="@color/colorSecondary"
-                        android:endColor="@color/colorSecondaryLight"
+                        android:endColor="@color/colorSecondary"
                         android:angle="270" />
                     <size
                         android:width="30dp"

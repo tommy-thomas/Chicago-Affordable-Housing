@@ -16,11 +16,11 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="110dp"
-    android:layout_height="110dp"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="@dimen/dp_16"
-    android:background="@color/colorPrimaryDark">
+    android:paddingTop="8dp"
+    android:background="@color/colorWhite">
 
     <ImageView
         android:id="@+id/badge"
@@ -29,6 +29,7 @@
         android:layout_marginStart="@dimen/dp_8"
         android:layout_marginEnd="@dimen/dp_8"
         android:adjustViewBounds="true"
+        android:src="@drawable/ic_baseline_star_24px"
         android:layout_alignStart="@id/info_text"
         tools:ignore="ContentDescription"/>
 
@@ -37,7 +38,9 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:id="@+id/info_text"
-        android:layout_toEndOf="@+id/badge">
+        android:layout_toEndOf="@+id/badge"
+        android:paddingRight="8dp"
+        android:paddingBottom="8dp">
 
         <TextView
             android:id="@+id/title"
@@ -58,7 +61,7 @@
             android:layout_gravity="start"
             android:ellipsize="end"
             android:singleLine="true"
-            android:textColor="#ff7f7f7f"
+            android:textColor="@color/colorBlack"
             android:textSize="14dp"
             android:contentDescription="@string/adddress_and_property_type"/>
     </LinearLayout>

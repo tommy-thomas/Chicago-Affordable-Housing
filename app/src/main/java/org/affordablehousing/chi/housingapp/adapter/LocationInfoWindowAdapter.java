@@ -14,7 +14,7 @@ import org.affordablehousing.chi.housingapp.R;
 
 import static androidx.core.content.ContextCompat.getColor;
 import static com.google.android.gms.maps.GoogleMap.InfoWindowAdapter;
-import static org.affordablehousing.chi.housingapp.R.color.colorSecondaryDark;
+import static org.affordablehousing.chi.housingapp.R.color.colorSecondary;
 
 /**
  * Marker window presentation.
@@ -65,7 +65,7 @@ public class LocationInfoWindowAdapter implements InfoWindowAdapter {
             SpannableString snippetText = new SpannableString(snippet);
             int typeStartIndex = snippetText.toString().indexOf(mContext.getResources().getString(R.string.marker_type_label));
             int typeEndIndex = snippetText.toString().length();
-            int typeColor = getColor(mContext, colorSecondaryDark);
+            int typeColor = getColor(mContext, colorSecondary);
             snippetText.setSpan(new ForegroundColorSpan(typeColor), typeStartIndex, typeEndIndex, 0);
             snippetUi.setText(snippetText);
         } else {

@@ -19,6 +19,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
+    android:paddingTop="8dp"
     android:background="@color/colorWhite">
 
     <ImageView
@@ -37,8 +38,9 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:id="@+id/info_text"
-        android:background="@color/colorWhite"
-        android:layout_toEndOf="@+id/badge">
+        android:layout_toEndOf="@+id/badge"
+        android:paddingRight="8dp"
+        android:paddingBottom="8dp">
 
         <TextView
             android:id="@+id/title"
