@@ -23,17 +23,28 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_48"
-        android:padding="@dimen/dp_8"
-        android:textSize="@dimen/sp_16"
-        android:id="@+id/tv_filters"
+        android:layout_height="@dimen/dp_72"
+        android:id="@+id/ll_filters"
         app:layout_constraintBottom_toTopOf="@id/separator"
-        android:text="Filter:"
-        android:textStyle="bold"
-        android:textColor="@color/colorAccent"
-        android:background="@color/colorWhite" />
+        android:background="@color/colorWhite">
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_margin="@dimen/dp_16"
+            android:id="@+id/iv_filters"
+            android:background="@drawable/ic_outline_filter_list_24px" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="@dimen/dp_8"
+            android:textSize="@dimen/sp_16"
+            android:lineSpacingExtra="6dp"
+            android:id="@+id/tv_filters"
+            android:textStyle="bold"
+            android:background="@color/colorWhite"/>
+    </LinearLayout>
 
     <View
         android:layout_width="match_parent"
@@ -47,7 +58,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/map_fragment_container"
         android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_marginTop="@dimen/dp_48"
+        android:layout_marginTop="@dimen/dp_72"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintStart_toStartOf="parent"

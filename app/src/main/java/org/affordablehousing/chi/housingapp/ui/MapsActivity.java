@@ -8,6 +8,8 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -199,13 +202,34 @@ public class MapsActivity extends AppCompatActivity implements
 
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        if (isTwoPane() ) {
-            if( isShowPropertyTypeList() ){
+        if (isTwoPane()) {
+            if (isShowPropertyTypeList()) {
                 showPropertyTypeFilterList();
             } else {
                 showLocationList();
             }
         }
+
+        TextView filterTextView = findViewById(R.id.tv_filters);
+        filterTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showPropertyTypeFilterList();
+                BottomNavigationView bottomNavigationView = findViewById(R.id.navigation);
+                bottomNavigationView.setSelectedItemId(R.id.navigation_filter);
+            }
+        });
+
+        ImageView filterImageView = findViewById(R.id.iv_filters);
+        filterImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showPropertyTypeFilterList();
+                BottomNavigationView bottomNavigationView = findViewById(R.id.navigation);
+                bottomNavigationView.setSelectedItemId(R.id.navigation_filter);
+            }
+        });
+
 
         scheduleSyncJob();
 
@@ -217,7 +241,7 @@ public class MapsActivity extends AppCompatActivity implements
                 .setService(LocationSyncService.class)
                 .setTag(TAG)
                 .setRecurring(true)
-                .setTrigger(Trigger.executionWindow(JOB_START_TIME,JOB_END_TIME))
+                .setTrigger(Trigger.executionWindow(JOB_START_TIME, JOB_END_TIME))
                 //.setTrigger(Trigger.executionWindow(0, 10))
                 .setLifetime(Lifetime.FOREVER)
                 .setReplaceCurrent(false)
@@ -246,21 +270,22 @@ public class MapsActivity extends AppCompatActivity implements
                 show(mLocationObject);
             }
 
-            if (isShowList() ) {
+            if (isShowList()) {
                 navigationView.setSelectedItemId(R.id.navigation_list);
             }
 
-            if ( isShowFavorites() ) {
+            if (isShowFavorites()) {
                 navigationView.setSelectedItemId(R.id.navigation_list);
                 showFavorites();
             }
 
-            if( isShowPropertyTypeList() ){
+            if (isShowPropertyTypeList()) {
                 navigationView.setSelectedItemId(R.id.navigation_filter);
             }
 
         }
         // super.onRestoreInstanceState(savedInstanceState);
+        setFiltersDisplay();
 
     }
 
@@ -416,7 +441,7 @@ public class MapsActivity extends AppCompatActivity implements
                 // Style for Spinner
                 view.setBackground(getDrawable(R.drawable.rounded_red_bg));
                 view.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-                if( isTwoPane() ){
+                if (isTwoPane()) {
                     view.setPadding(10, 2, 10, 2);
                 } else {
                     view.setPadding(20, 2, 20, 2);
@@ -477,6 +502,7 @@ public class MapsActivity extends AppCompatActivity implements
         switch (item.getItemId()) {
             case R.id.action_reset:
                 resetMarkers();
+                resetFilterDisplay();
                 if (isShowList()) {
                     setCurrentCommunity("Community");
                     showLocationList();
@@ -729,14 +755,28 @@ public class MapsActivity extends AppCompatActivity implements
         return CURRENT_COMMUNITY;
     }
 
-    private void setFiltersDisplay(){
+    private void setFiltersDisplay() {
 
-        if( findViewById(R.id.tv_filters) != null && mPropertyTypeListFilter != null ){
+        if (findViewById(R.id.tv_filters) != null && mPropertyTypeListFilter != null) {
             TextView filterTv = findViewById(R.id.tv_filters);
-            String filterString = String.join(", ", mPropertyTypeListFilter);
-            filterString = "Filter: " + filterString;
-            filterTv.setText(filterString);
+            filterTv.setText("");
+            String filterString = "";
+            SpannableStringBuilder stringBuilder = new SpannableStringBuilder();
+            //filterString = "Filter: " + filterString;
+            for (String filter : mPropertyTypeListFilter) {
+                // start spannable
+                stringBuilder.append(filterString);
+                if (filterString.length() == 0) filterString = "  ";
+                String thisTag = "  "+filter+"  ";
+                stringBuilder.append(thisTag);
+                stringBuilder.setSpan(new RoundedBackgroundSpan(this), stringBuilder.length() - thisTag.length(),
+                        stringBuilder.length() - thisTag.length() + thisTag.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                // end spannable
+            }
+
+            filterTv.append(stringBuilder);
         }
+
     }
 
     private void setCurrentCommunity(String currentCommunity) {
@@ -770,6 +810,13 @@ public class MapsActivity extends AppCompatActivity implements
             }.getType();
             mPropertyTypeListFilter = gson.fromJson(listFilter, type);
 
+        }
+    }
+
+    private void resetFilterDisplay(){
+        if( findViewById(R.id.tv_filters) != null ){
+            TextView filtersDisplay = findViewById(R.id.tv_filters);
+            filtersDisplay.setText("");
         }
     }
 
