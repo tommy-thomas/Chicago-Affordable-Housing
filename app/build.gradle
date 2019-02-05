@@ -8,8 +8,8 @@ android {
         applicationId 'org.affordablehousing.chi.housingapp'
         minSdkVersion build_versions.min_sdk
         targetSdkVersion build_versions.target_sdk
-        versionCode 1
-        versionName "1.0"
+        versionCode 4
+        versionName "4.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         vectorDrawables {
@@ -24,12 +24,22 @@ android {
     }
 
     signingConfigs {
+
         debug {
             keyAlias 'cah-alias'
             keyPassword '$adanna2009$'
             storeFile file('../cah-keystore.jks')
             storePassword '$adanna2009$'
         }
+
+        release {
+            keyAlias 'release-keystore'
+            keyPassword '$adanna2009$'
+            storeFile file('../release-keystore.jks')
+            storePassword '$adanna2009$'
+        }
+
+
     }
 
     compileSdkVersion build_versions.target_sdk
@@ -51,7 +61,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField 'String', "MapsApiKey", MapsAPIKey
             resValue 'string', "maps_api_key", MapsAPIKey
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
         }
     }
 
