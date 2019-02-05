@@ -27,16 +27,16 @@ android {
 
         debug {
             keyAlias 'cah-alias'
-            keyPassword '$adanna2009$'
+            keyPassword ''
             storeFile file('../cah-keystore.jks')
-            storePassword '$adanna2009$'
+            storePassword ''
         }
 
         release {
-            keyAlias 'release-keystore'
-            keyPassword '$adanna2009$'
-            storeFile file('../release-keystore.jks')
-            storePassword '$adanna2009$'
+            keyAlias 'cah-alias'
+            keyPassword ''
+            storeFile file('../cah-keystore.jks')
+            storePassword ''
         }
 
 
@@ -51,6 +51,7 @@ android {
     }
 
     buildTypes {
+
         debug {
             buildConfigField 'String', "MapsApiKey", MapsAPIKey
             resValue 'string', "maps_api_key", MapsAPIKey
@@ -132,4 +133,6 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.2-alpha01'
+    androidTestImplementation 'androidx.test:rules:1.1.2-alpha01'
 }
