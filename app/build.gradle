@@ -27,16 +27,16 @@ android {
 
         debug {
             keyAlias 'cah-alias'
-            keyPassword ''
+            keyPassword '$adanna2009$'
             storeFile file('../cah-keystore.jks')
-            storePassword ''
+            storePassword '$adanna2009$'
         }
 
         release {
             keyAlias 'cah-alias'
-            keyPassword ''
+            keyPassword '$adanna2009$'
             storeFile file('../cah-keystore.jks')
-            storePassword ''
+            storePassword '$adanna2009$'
         }
 
 
