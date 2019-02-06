@@ -56,4 +56,5 @@
     <string name="location_list">Location List</string>
     <string name="add_note">Add Note</string>
     <string name="information">Information</string>
+    <string name="chicago_data_disclaimer">This application uses data that has been modified for use from its original source, www.cityofchicago.org, the official website of the City of Chicago. The City of Chicago makes no claims as to the content, accuracy, timeliness, or completeness of any of the data provided. The data provided in this application is subject to change at any time. It is understood that the data provided by this application is being used at one’s own risk.</string>
 </resources>
