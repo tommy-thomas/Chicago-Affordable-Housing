@@ -730,8 +730,6 @@ public class MapsActivity extends AppCompatActivity implements
         mUiSettings.setZoomControlsEnabled(true);
         mUiSettings.setZoomGesturesEnabled(true);
 
-        // Log.d(TAG, "CURRENT LOCATION FOR MAP: " + String.valueOf(currentLocation.latitude) + " , " + String.valueOf(currentLocation.longitude));
-
 
         mCameraPosition = new CameraPosition.Builder()
                 .target(currentLocation)
@@ -740,14 +738,7 @@ public class MapsActivity extends AppCompatActivity implements
                 .tilt(DEFAULT_TILT)
                 .build();
 
-        // mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(CHICAGO.getCenter() , 13));
-        //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(CURRENT_LOCATION, 13));
-
-        if (CURRENT_COMMUNITY.equals("Community")) {
-            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(mCameraPosition));
-        } else {
-            mMap.moveCamera(CameraUpdateFactory.newCameraPosition(mCameraPosition));
-        }
+        mMap.moveCamera(CameraUpdateFactory.newCameraPosition(mCameraPosition));
 
     }
 
@@ -841,7 +832,7 @@ public class MapsActivity extends AppCompatActivity implements
                         .zoom(DEFAULT_ZOOM)
                         .build();
 
-                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(mCameraPosition));
+                mMap.moveCamera(CameraUpdateFactory.newCameraPosition(mCameraPosition));
             } catch (Exception e) {
                 // handle the exception
             }
@@ -875,7 +866,7 @@ public class MapsActivity extends AppCompatActivity implements
                             .build();
 
                     if (mMap != null) {
-                        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(mCameraPosition));
+                        mMap.moveCamera(CameraUpdateFactory.newCameraPosition(mCameraPosition));
                     } else {
                         setMapLocation();
                     }
