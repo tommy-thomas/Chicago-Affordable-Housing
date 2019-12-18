@@ -56,7 +56,7 @@
                 android:layout_height="wrap_content"
                 style="@style/CardViewText"
                 android:layout_below="@+id/tv_location_address"
-                android:text='@{"Managemment Company: " + location.management_company}'
+                android:text='@{"Management Company: " + location.management_company}'
                 android:contentDescription="@string/management_company"/>
 
             <TextView
