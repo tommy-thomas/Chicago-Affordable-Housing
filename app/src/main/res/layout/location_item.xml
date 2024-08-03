@@ -5,7 +5,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <import type="java.lang.Integer" />
     <variable name="location"
         type="org.affordablehousing.chi.housingapp.model.Location"/>
     <variable name="callback"

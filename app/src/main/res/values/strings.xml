@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Chicago Affordable Housing App</string>
+    <string name="app_name">Chicago Affordable Housing</string>
     <string name="title_activity_maps">Map</string>
     <string name="normal_map">normal</string>
     <string name="hybrid_map">satellite</string>

@@ -2,7 +2,6 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion build_versions.target_sdk
-    buildToolsVersion build_versions.build_tools
 
     defaultConfig {
         applicationId 'org.affordablehousing.chi.housingapp'
@@ -33,7 +32,6 @@ android {
     }
 
     compileSdkVersion build_versions.target_sdk
-    buildToolsVersion build_versions.build_tools
 
     defaultConfig {
         minSdkVersion build_versions.min_sdk
@@ -61,12 +59,13 @@ android {
     productFlavors {
     }
 
-    lintOptions {
-        abortOnError false
-    }
     compileOptions {
         sourceCompatibility = '1.8'
         targetCompatibility = '1.8'
+    }
+    namespace 'org.affordablehousing.chi.housingapp'
+    lint {
+        abortOnError false
     }
 
 
@@ -110,7 +109,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.0.0'
     implementation 'com.android.support:design:28.1.0'
-    implementation 'com.google.android.gms:play-services-maps:16.0.0'
+    implementation 'com.google.android.gms:play-services-maps:19.0.0'
     implementation 'com.google.android.gms:play-services-location:16.0.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.2'
     implementation 'com.squareup.retrofit2:retrofit:2.5.0'
