@@ -78,12 +78,9 @@ public class MapsActivity extends AppCompatActivity implements
         PropertyTypeClickListener {
 
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
-    private static final int JOB_START_TIME = 86400;
-    private static final int JOB_END_TIME = 86460;
     private static final String TAG = MapsActivity.class.getSimpleName() + " -- MAP ACTIVITY -- ";
     private static final String KEY_CURRENT_COMMUNITY = "current-community";
     private static final String KEY_CURRENT_LOCATION = "current-location";
-    private static final String KEY_CURRENT_DISPLAY = "current-display";
     private static final String KEY_SELECTED_COMMUNITY_INDEX = "selected-community-index";
     private static final String KEY_PROPERTY_LIST_FILTER = "property-filter-list";
     private static final String KEY_SHOW_LOCATION = "show-location";
@@ -93,7 +90,6 @@ public class MapsActivity extends AppCompatActivity implements
     private GoogleMap mMap;
     private LocationListViewModel mLocationListViewModel;
     private UiSettings mUiSettings;
-    private GoogleApiClient mGoogleApiClient;
     private FusedLocationProviderClient mFusedLocationClient;
     private SupportMapFragment mSupportMapFragment;
     private CameraPosition mCameraPosition;
@@ -114,7 +110,6 @@ public class MapsActivity extends AppCompatActivity implements
     private boolean mIsShowLocation = false;
     private Location mLocationObject = null;
     private boolean mIsShowMap = true;
-    private FirebaseJobDispatcher mJobDispatcher;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -392,7 +387,7 @@ public class MapsActivity extends AppCompatActivity implements
 
                 // Style for Spinner
                 view.setBackground(getDrawable(R.drawable.rounded_red_bg));
-                view.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                view.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
                 if( isTwoPane() ){
                     view.setPadding(10, 2, 10, 2);
                 } else {
