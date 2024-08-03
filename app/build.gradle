@@ -7,8 +7,8 @@ android {
         applicationId 'org.affordablehousing.chi.housing'
         minSdkVersion build_versions.min_sdk
         targetSdkVersion build_versions.target_sdk
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         vectorDrawables {
@@ -24,10 +24,10 @@ android {
 
     signingConfigs {
         debug {
-            keyAlias 'cah-alias'
-            keyPassword '$adanna2009$'
+            keyAlias 'cah-key'
+            keyPassword 'Hill$1992'
             storeFile file('../cah-keystore.jks')
-            storePassword '$adanna2009$'
+            storePassword 'Hill$1992'
         }
     }
 
