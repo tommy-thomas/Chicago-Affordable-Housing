@@ -152,9 +152,6 @@ public class MapsActivity extends AppCompatActivity implements
         //setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
 
-        /* job dispatcher */
-       // mJobDispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(this));
-
         /* map view */
         setContentView(R.layout.activity_maps);
 
@@ -204,25 +201,8 @@ public class MapsActivity extends AppCompatActivity implements
             }
         }
 
-       // scheduleSyncJob();
 
     }
-
-//    private void scheduleSyncJob() {
-//
-//        Job syncJob = mJobDispatcher.newJobBuilder()
-//                .setService(LocationSyncService.class)
-//                .setTag(TAG)
-//                .setRecurring(true)
-//                .setTrigger(Trigger.executionWindow(JOB_START_TIME,JOB_END_TIME))
-//                //.setTrigger(Trigger.executionWindow(0, 10))
-//                .setLifetime(Lifetime.FOREVER)
-//                .setReplaceCurrent(false)
-//                .setConstraints(Constraint.ON_ANY_NETWORK)
-//                .setRetryStrategy(RetryStrategy.DEFAULT_EXPONENTIAL)
-//                .build();
-//        mJobDispatcher.mustSchedule(syncJob);
-//    }
 
     private void restoreState(Bundle savedInstanceState) {
 
