@@ -4,7 +4,7 @@ android {
     compileSdkVersion build_versions.target_sdk
 
     defaultConfig {
-        applicationId 'org.affordablehousing.chi.housingapp'
+        applicationId 'org.affordablehousing.chi.housing'
         minSdkVersion build_versions.min_sdk
         targetSdkVersion build_versions.target_sdk
         versionCode 1
@@ -63,7 +63,7 @@ android {
         sourceCompatibility = '1.8'
         targetCompatibility = '1.8'
     }
-    namespace 'org.affordablehousing.chi.housingapp'
+    namespace 'org.affordablehousing.chi.housing'
     lint {
         abortOnError false
     }

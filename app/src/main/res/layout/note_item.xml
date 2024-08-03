@@ -5,9 +5,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
         <variable name="note"
-            type="org.affordablehousing.chi.housingapp.model.Note"/>
+            type="org.affordablehousing.chi.housing.model.Note"/>
         <variable name="callback"
-            type="org.affordablehousing.chi.housingapp.ui.NoteClickCallback"/>
+            type="org.affordablehousing.chi.housing.ui.NoteClickCallback"/>
     </data>
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"

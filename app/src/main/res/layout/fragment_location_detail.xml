@@ -13,7 +13,7 @@
 
         <variable
             name="locationViewModel"
-            type="org.affordablehousing.chi.housingapp.viewmodel.LocationViewModel"/>
+            type="org.affordablehousing.chi.housing.viewmodel.LocationViewModel"/>
     </data>
 
 
