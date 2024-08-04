@@ -7,8 +7,8 @@ android {
         applicationId 'org.affordablehousing.chi.housing'
         minSdkVersion build_versions.min_sdk
         targetSdkVersion build_versions.target_sdk
-        versionCode 2
-        versionName "1.1"
+        versionCode 4
+        versionName "1.3"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         vectorDrawables {
@@ -73,6 +73,7 @@ android {
 
 
 dependencies {
+    implementation 'androidx.test.ext:junit:1.2.1'
     def room_version = "2.1.0-alpha02"
     def lifecycle_version = "2.0.0"
     def dagger_version = 2.17 // or latest version
@@ -119,6 +120,7 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
     implementation 'android.arch.lifecycle:extensions:1.1.1'
     testImplementation 'junit:junit:4.12'
+    testImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 }
