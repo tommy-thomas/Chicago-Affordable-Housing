@@ -2,10 +2,9 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion build_versions.target_sdk
-    buildToolsVersion build_versions.build_tools
 
     defaultConfig {
-        applicationId 'org.affordablehousing.chi.housingapp'
+        applicationId 'org.affordablehousing.chi.housing'
         minSdkVersion build_versions.min_sdk
         targetSdkVersion build_versions.target_sdk
         versionCode 1
@@ -25,15 +24,14 @@ android {
 
     signingConfigs {
         debug {
-            keyAlias 'cah-alias'
-            keyPassword '$adanna2009$'
+            keyAlias 'cah-key'
+            keyPassword 'Hill$1992'
             storeFile file('../cah-keystore.jks')
-            storePassword '$adanna2009$'
+            storePassword 'Hill$1992'
         }
     }
 
     compileSdkVersion build_versions.target_sdk
-    buildToolsVersion build_versions.build_tools
 
     defaultConfig {
         minSdkVersion build_versions.min_sdk
@@ -61,12 +59,13 @@ android {
     productFlavors {
     }
 
-    lintOptions {
-        abortOnError false
-    }
     compileOptions {
         sourceCompatibility = '1.8'
         targetCompatibility = '1.8'
+    }
+    namespace 'org.affordablehousing.chi.housing'
+    lint {
+        abortOnError false
     }
 
 
@@ -74,6 +73,7 @@ android {
 
 
 dependencies {
+    implementation 'androidx.test.ext:junit:1.2.1'
     def room_version = "2.1.0-alpha02"
     def lifecycle_version = "2.0.0"
     def dagger_version = 2.17 // or latest version
@@ -110,7 +110,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.0.0'
     implementation 'com.android.support:design:28.1.0'
-    implementation 'com.google.android.gms:play-services-maps:16.0.0'
+    implementation 'com.google.android.gms:play-services-maps:19.0.0'
     implementation 'com.google.android.gms:play-services-location:16.0.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.2'
     implementation 'com.squareup.retrofit2:retrofit:2.5.0'
@@ -120,6 +120,7 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
     implementation 'android.arch.lifecycle:extensions:1.1.1'
     testImplementation 'junit:junit:4.12'
+    testImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 }

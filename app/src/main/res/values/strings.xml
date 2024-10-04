@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Chicago Affordable Housing App</string>
+    <string name="app_name">Chicago Affordable Housing</string>
     <string name="title_activity_maps">Map</string>
     <string name="normal_map">normal</string>
     <string name="hybrid_map">satellite</string>
@@ -35,7 +35,8 @@
     <string name="adddress_and_property_type">Adddress and property type</string>
     <string name="info">Info</string>
     <string name="chicago_data_portal">Chicago Data Portal</string>
-    <string name="chicago_data_info">The data displayed in this app is derived from the Chicago Data Portal. It does not constitute a complete list of affordable housing in Chicago. For information on affordable rental properties in Chicago and Illinois, call (877) 428-8844 or visit http://www.ilhousingsearch.org/.</string>
+    <string name="chicago_data_info_one">This application is not affiliated with or endorsed by the City of Chicago or any government entity. It is an independent tool that uses data from www.cityofchicago.org for informational purposes. Users should refer to official government sources for authoritative information regarding affordable housing in Chicago.</string>
+    <string name="chicago_data_info_two">The data displayed in this app is derived from the Chicago Data Portal. It does not constitute a complete list of affordable housing in Chicago. For information on affordable rental properties in Chicago and Illinois, call (877) 428-8844 or visit http://www.ilhousingsearch.org/.</string>
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
     <string name="community">Community</string>

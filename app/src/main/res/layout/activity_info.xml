@@ -18,15 +18,25 @@
         android:textColor="@color/colorBlack"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toStartOf="parent" />
-
     <TextView
-        android:id="@+id/body"
+        android:id="@+id/info_one"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/chicago_data_info"
+        android:text="@string/chicago_data_info_one"
         android:textColor="@color/colorBlack"
         android:textSize="@dimen/sp_16"
         android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@+id/title" />
+
+    <TextView
+        android:id="@+id/info_two"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_24"
+        android:text="@string/chicago_data_info_two"
+        android:textColor="@color/colorBlack"
+        android:textSize="@dimen/sp_16"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@+id/info_one" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

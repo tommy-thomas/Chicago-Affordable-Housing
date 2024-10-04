@@ -1,0 +1,7 @@
+Here's the disclaimer statement for your mobile application:
+
+"The Chicago Affordable Housing App uses data that has been modified for use from its source, www.cityofchicago.org, the official website of the City of Chicago. The City of Chicago makes no claims as to the content, accuracy, timeliness, or completeness of any of the data provided. The data provided in this application is subject to change at any time. It is understood that the data provided by this application is being used at one’s own risk.
+
+The application provides a Google map of housing locations, filtered location listings by neighborhood and other property types, the ability to save a list of favorite locations, and the ability to maintain notes about locations."
+
+Is there anything else you would like to add or modify?
