@@ -5,6 +5,6 @@ This app consumes data from the [Chicago Data Portal](https://data.cityofchicago
 	
 ## Technologies
 Project is created with:
-* Room: 2.6.0
-* Retrofit
+* [Room](https://developer.android.com/jetpack/androidx/releases/room#2.6.1): 2.6.0
+* [Retrofit](https://square.github.io/retrofit/)
 
