@@ -1,11 +1,11 @@
 # Chicago Affordable Housing
 
 ## General Info
-This app consumes data from the [Chicago Data Portal](https://data.cityofchicago.org/Community-Economic-Development/Affordable-Rental-Housing-Developments/s6ha-ppgi/about_data) and presents the data in an accessible way to help Chicago residents discover affordable housing options across the city.
+This app consumes data from the [Chicago Data Portal](https://data.cityofchicago.org/Community-Economic-Development/Affordable-Rental-Housing-Developments/s6ha-ppgi/about_data) and presents the dat[...]
 
 ## Overview
 
-The Chicago Affordable Housing application provides a comprehensive resource for finding and accessing information about affordable rental housing developments throughout Chicago. It integrates with the City of Chicago's official data portal to deliver up-to-date, reliable housing information.
+The Chicago Affordable Housing application provides a comprehensive resource for finding and accessing information about affordable rental housing developments throughout Chicago. It integrates wit[...]
 
 ## Features
 
@@ -112,7 +112,7 @@ We welcome contributions! Please follow these steps:
 
 ## License
 
-[Specify your license here]
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Contact & Support
 
