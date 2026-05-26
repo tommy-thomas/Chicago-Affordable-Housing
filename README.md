@@ -78,11 +78,7 @@ Housing data is sourced from:
 
 ## API Integration
 
-The app connects to Chicago's official APIs to fetch:
-- Property information and locations
-- Rental costs and unit availability
-- Eligibility requirements
-- Application procedures
+The app connects to Chicago's official APIs to fetch property information and locations.
 
 ## Project Structure
 
