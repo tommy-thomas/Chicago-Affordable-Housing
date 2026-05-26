@@ -97,13 +97,8 @@ Chicago-Affordable-Housing/
 └── README.md
 ```
 
-## Configuration
-
-[Add configuration instructions for API keys, database setup, or environment-specific settings]
-
 ## Usage
 
-[Add specific usage instructions for navigating and using the application]
 
 ## Contributing
 
